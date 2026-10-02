@@ -1,0 +1,9 @@
+[project]
+name = "dof-juridico-monitor"
+version = "1.0.0"
+description = "Vendor-neutral legal monitoring protocol for Mexico's Diario Oficial de la Federación"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
