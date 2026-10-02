@@ -1,0 +1,25 @@
+timezone: America/Mexico_City
+schedule:
+  start_time: "06:00"
+  target_ready_time: "09:00"
+  human_send_time: "12:00"
+  tuesday: [friday_previous, monday_previous, tuesday_current]
+  thursday: [wednesday_previous, thursday_current]
+continuity:
+  weekends: true
+  post_cutoff_publications: true
+  errata_corrections_republications: true
+priorities: [fiscal, compliance_pld_ft, administrativo, amparo]
+public_agenda:
+  enabled: true
+  max_typical_items: 3
+coverage:
+  preferred_route: pdf_complete
+  fallback_route: index_plus_collections
+  require_integral_read_for_complete: true
+outputs:
+  office_report_pdf: true
+  operator_report_docx: true
+  operator_study_pdf: true
+  operator_study_docx: true
+final_recipient_auto_send: false
