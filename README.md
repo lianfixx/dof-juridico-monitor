@@ -26,12 +26,20 @@ No depende de ChatGPT, de una conversación previa ni de servidores privados de 
 **Despacho:** reporte PDF + correo BLUF para revisión humana.
 **Operador:** editable DOCX + guía PDF/DOCX + comentario + bitácora.
 
-## Inicio
-1. AGENTS.md
-2. docs/SPECIFICATION.md
-3. docs/WORKFLOW.md
-4. docs/QUALITY_GATE.md
-5. prompts/master.md
-6. config/default.yaml
+## Skill portable y estilo Castorena
 
-Versión: **1.0.0**.
+- [SKILL.md](SKILL.md): instrucciones operativas y formato final aprobado, compatible con agentes que admitan skills de Markdown.
+- Reporte blanco/negro/grises, fuentes directas dentro de cada fila, sin leyendas operativas, con «Lo relevante» y tabla ejecutiva.
+- Paquete completo para Emi: PDF del Licenciado, editable DOCX, guía PDF/DOCX, comentario sugerido separado y correo HTML BLUF.
+- Revisión profesional proporcional al encargo: distinguirla expresamente de la certificación exhaustiva de cobertura. Los requisitos estrictos de cobertura completa no cambian.
+
+## Inicio
+1. SKILL.md
+2. AGENTS.md
+3. docs/SPECIFICATION.md
+4. docs/WORKFLOW.md
+5. docs/QUALITY_GATE.md
+6. prompts/master.md
+7. config/default.yaml
+
+Versión: **1.1.0**.
