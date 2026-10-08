@@ -15,10 +15,13 @@ Martes: viernes anterior, lunes y martes. Jueves: miércoles y jueves. Zona Amer
 ## Investigación y control
 1. Identificar las ediciones de cada fecha mediante calendario/índice oficial DOF/SIDOF, incluyendo matutina, vespertina y extraordinaria. No inventar ediciones.
 2. Intentar abrir el PDF completo real, no su icono. Si existe, utilizarlo para comprobar estructura, secciones y potenciales omisiones. Si no puede abrirse, emplear índice oficial y notas individuales; señalar limitaciones.
-3. Aplicar filtro de relevancia antes de lectura jurídica profunda. Leer íntegramente cada publicación seleccionada y los anexos aplicables; revisar artículos, transitorios, vigencia, sujetos, excepciones y efectos.
+3. OBLIGATORIO: leer íntegramente, palabra por palabra, TODAS las publicaciones de todas las ediciones y colecciones, incluyendo contenido secundario, artículos, resolutivos, transitorios, tablas, notas al pie y anexos. No filtrar por relevancia antes de completar la lectura. Solo después seleccionar los hallazgos que aparecerán en el reporte ejecutivo. Registrar rangos/páginas y estados sin huecos.
 4. Confirmar cada enlace directo de nota oficial y cada fundamento. Separar anuncio, iniciativa, dictamen, aprobación, publicación y vigencia. Nunca presentar sentencia aislada como jurisprudencia.
-5. La revisión profesional proporcional al encargo NO equivale a certificación de lectura íntegra de todas las publicaciones secundarias. Solo usar «COBERTURA COMPLETA AL CORTE» si se cumplen los criterios estrictos de docs/QUALITY_GATE.md; de lo contrario explicar el alcance real sin afirmar exhaustividad.
+5. Prohibido sustituir la lectura íntegra por revisión selectiva o proporcional. Solo declarar «COBERTURA COMPLETA AL CORTE» cuando todas las ediciones, publicaciones y anexos hayan sido leídos íntegramente y se cumplan docs/QUALITY_GATE.md. Si existe un solo tramo sin cerrar, marcar PARCIAL y no presentar ni enviar una versión como final.
 6. No extrapolar efectos a expedientes concretos sin documentación autorizada y suficiente. Corregir cualquier error en todos los entregables antes de cerrar.
+
+## Condición previa de cierre y envío
+No generar ni enviar un paquete presentado como final antes de terminar la lectura exhaustiva y una investigación jurídica profunda, razonada, crítica, argumentada y verificada. Si hay fuentes inaccesibles, explicar con precisión el bloqueo, sin inventar contenido ni declarar final. La concisión del reporte no reduce el alcance de la investigación. Estas reglas prevalecen sobre cualquier referencia histórica a revisión selectiva.
 
 ## Entregables
 **Para el Lic. Castorena:** PDF «Actualización DOF | [fecha]» y texto de correo BLUF para revisión de Emi. Reporte sin controles operativos, metodología, guía ni portada vacía.
@@ -34,7 +37,7 @@ Martes: viernes anterior, lunes y martes. Jueves: miércoles y jueves. Zona Amer
 - Correo al Licenciado inicia «Licenciado, buen día. Le comparto la actualización del DOF correspondiente a ...»; firma «Emiliano García Milla». BLUF, directo y sin burocratismos.
 
 ## Envío y verificación
-Solo enviar UN correo a emilianogarciamilla@gmail.com, sin CC/CCO, si Gmail está disponible y autorizado. Antes buscar duplicados en Enviados; adjuntar cuatro archivos reales (PDF del Licenciado, DOCX editable, guía PDF y DOCX), confirmar respuesta de Gmail y releer metadatos y adjuntos. No enviar al Licenciado. Si el usuario solo pide actualización de repositorio, no enviar correos.
+Solo tras superar el control exhaustivo y verificar los cuatro archivos, enviar UN correo a emilianogarciamilla@gmail.com, sin CC/CCO, si Gmail está disponible y autorizado. Antes buscar duplicados en Enviados; adjuntar cuatro archivos reales (PDF del Licenciado, DOCX editable, guía PDF y DOCX), confirmar respuesta de Gmail y releer metadatos y adjuntos. No enviar al Licenciado. Si el usuario solo pide actualización de repositorio, no enviar correos.
 
 ## Referencias
 Consultar AGENTS.md, docs/SPECIFICATION.md, docs/WORKFLOW.md, docs/QUALITY_GATE.md, prompts/master.md y config/default.yaml. Ante conflicto, no debilitar verificación jurídica ni declarar cobertura completa sin prueba. Este SKILL.md define la presentación final aprobada para Castorena.
