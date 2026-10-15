@@ -2,6 +2,14 @@
 
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
+## [Unreleased]
+### Added
+- Módulo documental SJF con lectura integral, estudio, opinión, continuidad y síntesis en el DOF del martes.
+- Guía didáctica y plantillas de reporte, estudio y correo con lenguaje claro y fuentes verificables.
+- Auditoría jurídica/editorial y ADR 0004 para distinguir publicación, obligatoriedad, efectos y cobertura.
+### Scope
+- Sin cambios al código, schemas, calendario DOF existente ni versión publicada. El módulo no aplica el parche 1.2.0 ni acredita una edición semanal leída.
+
 ## [1.1.0] - 2026-10-07
 ### Added
 - Skill portable `SKILL.md` para reportes DOF Castorena.
