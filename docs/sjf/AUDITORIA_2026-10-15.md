@@ -50,4 +50,15 @@ Base remota revisada: `1493bebbd2c6df358b8e36b30d3afd14a11c8a0e`. Se añaden doc
 
 Las cinco funciones de prueba existentes en `tests/test_quality.py` se ejecutaron directamente con Python y pasaron. `python3 -m pytest -q` no pudo ejecutarse localmente porque ese intérprete no tiene pytest; no se presenta la ejecución directa como una corrida de pytest. Esas pruebas verifican el comportamiento existente y no acreditan por sí solas la exhaustividad de una investigación jurídica.
 
-Se revisaron 10 documentos y 16 enlaces relativos, sin destinos faltantes. Se corrigieron los espacios finales detectados por la revisión del diff; el control final de formato no reportó errores. La programación efectiva se documentará con el resultado confirmado de las herramientas; el calendario descrito en el método no acredita por sí mismo una tarea activa.
+Se revisaron 10 documentos y 16 enlaces relativos, sin destinos faltantes. Se corrigieron los espacios finales detectados por la revisión del diff; el control final de formato no reportó errores. La programación efectiva se comprobó mediante respuestas exitosas de creación y actualización, y lectura posterior de las tareas; sus identificadores y prompts completos permanecen fuera de esta documentación.
+
+
+## Programación confirmada
+
+- Tarea «Semanario semanal» creada y activa: viernes por la tarde, con referencia aproximada de 15:00 y ventana flexible, zona America/Mexico_City. Inicio previsto: 16-10-2026.
+- Tarea DOF existente actualizada con integración del Semanario el martes y correcciones posteriores el jueves. Se conservaron íntegramente el prompt previo, su estado activo y el calendario martes/jueves a las 06:00.
+- Las instrucciones de ambas tareas remiten al módulo aprobado del commit `c898035c030c449e6790175e063a9bf92979fd4d`, sin depender de que el PR esté fusionado.
+- GitHub, Gmail y persistencia admitieron consultas de lectura durante la configuración. Esto verifica acceso en esta sesión; cada ejecución debe comprobar sus propias fuentes y resultados.
+- No se envió un correo de prueba ni se generaron reportes de una edición futura. La primera ejecución, lectura y entrega siguen pendientes.
+
+Los documentos se publican en una rama independiente para revisión. No se fusionó la rama principal ni se declaró instalado el parche 1.2.0.
