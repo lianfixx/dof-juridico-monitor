@@ -26,6 +26,16 @@ No depende de ChatGPT, de una conversación previa ni de servidores privados de 
 **Despacho:** reporte PDF + correo BLUF para revisión humana.
 **Operador:** editable DOCX + guía PDF/DOCX + comentario + bitácora.
 
+## Semanario Judicial semanal
+
+El [módulo SJF](docs/sjf/METODO.md) añade criterios judiciales, estudio y opinión al seguimiento. Explica primero qué resolvió el tribunal, por qué importa y qué revisar; conserva después todo el fundamento y sus límites. Mantiene la lectura íntegra antes de seleccionar y los cuatro entregables aprobados.
+
+- [Cómo estudiar los criterios](docs/sjf/GUIA.md).
+- [Prompt de ejecución](prompts/sjf.md) y plantillas de [reporte](templates/sjf-report.md), [guía](templates/sjf-study.md) y [correo](templates/sjf-email.md).
+- [Auditoría del método](docs/sjf/AUDITORIA_2026-10-15.md).
+
+La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-2026. La programación efectiva y el primer reporte requieren comprobación propia. Esta documentación no aplica el parche DOF 1.2.0 ni declara una nueva versión del código.
+
 ## Skill portable y estilo Castorena
 
 - [SKILL.md](SKILL.md): instrucciones operativas y formato final aprobado, compatible con agentes que admitan skills de Markdown.
