@@ -32,3 +32,13 @@
 - [ ] Enlaces funcionales.
 - [ ] No prometer adjuntos inexistentes.
 - [ ] No enviar a tercero sin aprobación.
+
+
+## Control DOF + SJF integrado (adición 2026-10-20)
+- [ ] Inventarios DOF y SJF separados, conciliados con índices oficiales y paginaciones sin huecos.
+- [ ] Cada documento y anexo con evidencia de lectura completa, notas específicas y fuente primaria verificable; el validador sólo comprueba campos declarados, nunca lectura real.
+- [ ] Tesis aislada, sentencia, voto y jurisprudencia identificados correctamente; obligatoriedad, fecha, votación, ámbito y efectos cotejados con fuente y régimen temporal.
+- [ ] Manifiesto conforme a `schemas/evidence-manifest.schema.json` y control de rangos contiguos sin solapamientos.
+- [ ] Cuatro archivos reales renderizados, inspeccionados y sus SHA-256 calculados externamente y cotejados.
+- [ ] Gmail: destinatario personal único, duplicados y tentativas revisados, estado inequívoco; ante `ENVIO_INCIERTO` no reenviar.
+- [ ] Ejecución de controles en la ruta real de generación/envío, no únicamente en pruebas unitarias; de lo contrario marcar integración pendiente.
