@@ -23,3 +23,7 @@ Mantener separados inventario oficial, lectura comprobada, selección, estudio y
 ## Alternativa descartada
 
 Seleccionar sólo por rubros o buscadores y llamar completo al resultado incumpliría las reglas expresas del usuario. Los resúmenes externos pueden orientar búsquedas, pero no sustituyen el universo ni las fuentes oficiales.
+
+
+## Actualización de estado — 2026-10-20
+El PR #1 fue fusionado en `main` (merge `8bf67ebe8ec207e35194b53766daf32094f837b4`) y `SKILL.md` se amplió en `a9e21fb1f2c9e463a19ef3586b2aa74b11f45a85`. Los párrafos anteriores conservan el estado histórico del 15 de octubre. Esta incorporación documental no acredita lectura de la edición del 16 de octubre ni aplicación del parche 1.2.0.
