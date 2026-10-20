@@ -42,3 +42,10 @@
 - [ ] Cuatro archivos reales renderizados, inspeccionados y sus SHA-256 calculados externamente y cotejados.
 - [ ] Gmail: destinatario personal único, duplicados y tentativas revisados, estado inequívoco; ante `ENVIO_INCIERTO` no reenviar.
 - [ ] Ejecución de controles en la ruta real de generación/envío, no únicamente en pruebas unitarias; de lo contrario marcar integración pendiente.
+
+## Matriz de auditoría por día — 20/10/2026
+- [ ] Martes: se acreditan **por separado** DOF y SJF; exactamente cuatro archivos conjuntos, sin duplicación y fecha SJF original del viernes.
+- [ ] Jueves: universo y contenido exclusivamente DOF; ningún hallazgo, sección o corrección SJF. Cuatro archivos DOF.
+- [ ] Viernes: preparación SJF interna sin correo de rutina; preservar inventario y control recuperable.
+- [ ] Un SJF parcial bloquea el cierre conjunto del martes, pero **no** el DOF autónomo del jueves.
+- [ ] Comprobar destinatario, duplicados, versión de archivos y estado de envío por día y tipo de paquete.
