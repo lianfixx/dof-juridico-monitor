@@ -53,8 +53,27 @@ def evidence_gaps(manifest):
                 gaps.append(f"{prefix}: not integral")
             if not _valid_url(record.get("url")):
                 gaps.append(f"{prefix}: invalid source URL")
-            if not record.get("read_ranges") or not record.get("total_pages"):
-                gaps.append(f"{prefix}: missing page evidence")
+            total = record.get("total_pages")
+            ranges = record.get("read_ranges")
+            if type(total) is not int or total < 1 or not isinstance(ranges, list):
+                gaps.append(f"{prefix}: missing or invalid page evidence")
+            else:
+                valid = all(isinstance(pair, list) and len(pair) == 2
+                            and all(type(n) is int for n in pair)
+                            and 1 <= pair[0] <= pair[1] <= total for pair in ranges)
+                if not valid:
+                    gaps.append(f"{prefix}: invalid page ranges")
+                else:
+                    ordered = sorted(ranges)
+                    cursor = 1
+                    for start, end in ordered:
+                        if start != cursor:
+                            gaps.append(f"{prefix}: page gap or overlap at {cursor}")
+                            break
+                        cursor = end + 1
+                    else:
+                        if cursor != total + 1:
+                            gaps.append(f"{prefix}: unread final pages")
             if record.get("annexes_verified") is not True:
                 gaps.append(f"{prefix}: annex verification missing")
             if not record.get("reading_notes"):
