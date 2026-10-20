@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Changed — 2026-10-20: calendario definitivo de entregas
+- Viernes: preparación SJF interna sin correo ordinario separado.
+- Martes: un único paquete DOF + SJF de cuatro adjuntos.
+- Jueves: exclusivamente DOF, cuatro adjuntos, sin correcciones SJF.
+- Independencia de auditoría DOF jueves y bloqueo de cierre conjunto martes cuando falte DOF o SJF.
+- Se conservan horarios y reglas de lectura íntegra; el parche 1.2.0 continúa independiente.
+
+
 
 ### Audit follow-up (2026-10-20)
 - Propuesta PR #2: controles fail-closed de evidencia DOF/SJF, rangos sin huecos, hashes declarados y estados de envío; pruebas unitarias y esquema de manifiesto.
