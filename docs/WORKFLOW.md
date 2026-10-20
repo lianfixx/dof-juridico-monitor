@@ -22,3 +22,9 @@
 fecha, edición, vía, colección, emisor, título, identificador, URL, páginas/rangos, anexos, estado, incluido/excluido, motivo.
 
 Estados: INTEGRO, PARCIAL, PENDIENTE, INACCESIBLE.
+
+
+## Integración semanal SJF (adición 2026-10-20)
+Leer `docs/sjf/METODO.md` y `SKILL.md`. Viernes: inventario oficial SJF, lectura íntegra y control independiente. Martes: recuperar control y cuatro archivos SJF persistidos, comprobar corte y novedades, integrar en los cuatro archivos DOF sin duplicarlos. Jueves: sólo correcciones posteriores comprobadas. Mantener fechas y coberturas distintas.
+
+Antes de cualquier cierre o envío, verificar manualmente evidencia primaria y usar el manifiesto de `schemas/evidence-manifest.schema.json`; `evidence_gaps`, `can_release_package` y `can_attempt_send` son controles auxiliares no conectados todavía al motor de ejecución. Nunca asumir que CI acredita lectura real, obligatoriedad o aceptación de Gmail.
