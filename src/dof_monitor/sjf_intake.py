@@ -65,7 +65,9 @@ def add_document(control, file_path, source_url, identifier=None):
         raise ValueError("An official HTTPS source URL is required")
     if path.suffix.lower() != ".pdf":
         raise ValueError("Only PDF source files are accepted")
-    with path.open("rb") as stream:\n        signature = stream.read(5)\n    if signature != b"%PDF-":
+    with path.open("rb") as stream:
+        signature = stream.read(5)
+    if signature != b"%PDF-":
         raise ValueError("File does not have a PDF signature")
     digest = _hash(path)
     if any(x["sha256"] == digest for x in data["documents"]):
