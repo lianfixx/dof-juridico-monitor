@@ -38,3 +38,8 @@ Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ### Changed
 - Consolidación de las iteraciones desarrolladas durante septiembre-octubre de 2026 en una fuente de verdad independiente.
+
+### Operación SJF asistida (2026-10-20)
+- Nuevo registro local de PDF, hashes, páginas y controles jurídicos por edición con estado inicial PENDIENTE.
+- Procedimiento de recuperación manual desde fuentes oficiales, sin sustituir lectura por índices.
+- Pruebas para rechazar documentos faltantes, duplicados y cierres sin evidencia. Sin automatización de Gmail ni generación documental implícita.
