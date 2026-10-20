@@ -61,7 +61,7 @@ def add_document(control, file_path, source_url, identifier=None):
     if not path.is_file():
         raise FileNotFoundError(path)
     parsed = urlsplit(source_url)
-    if parsed.scheme != "https" or not parsed.hostname:
+    if parsed.scheme != "https" or not parsed.hostname or not (parsed.hostname == "scjn.gob.mx" or parsed.hostname.endswith(".scjn.gob.mx")):
         raise ValueError("An official HTTPS source URL is required")
     if path.suffix.lower() != ".pdf":
         raise ValueError("Only PDF source files are accepted")
@@ -128,7 +128,7 @@ def gaps(data, verify_files=True):
         else:
             cursor = 1
             valid = True
-            for pair in sorted(ranges):
+            for pair in sorted(ranges, key=lambda x: x[0] if isinstance(x, list) and x and type(x[0]) is int else -1):
                 if not isinstance(pair, list) or len(pair) != 2 or any(type(v) is not int for v in pair) or pair[0] != cursor or pair[1] < pair[0] or pair[1] > n:
                     valid = False
                     break
