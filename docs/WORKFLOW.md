@@ -28,3 +28,11 @@ Estados: INTEGRO, PARCIAL, PENDIENTE, INACCESIBLE.
 Leer `docs/sjf/METODO.md` y `SKILL.md`. Viernes: inventario oficial SJF, lectura íntegra y control independiente. Martes: recuperar control y cuatro archivos SJF persistidos, comprobar corte y novedades, integrar en los cuatro archivos DOF sin duplicarlos. Jueves: sólo correcciones posteriores comprobadas. Mantener fechas y coberturas distintas.
 
 Antes de cualquier cierre o envío, verificar manualmente evidencia primaria y usar el manifiesto de `schemas/evidence-manifest.schema.json`; `evidence_gaps`, `can_release_package` y `can_attempt_send` son controles auxiliares no conectados todavía al motor de ejecución. Nunca asumir que CI acredita lectura real, obligatoriedad o aceptación de Gmail.
+
+## Distribución aprobada — 20/10/2026
+
+- Viernes: preparación interna SJF; inventario exhaustivo, lectura, estudio y persistencia sin envío por defecto.
+- Martes: DOF + SJF en **cuatro archivos conjuntos** y un correo a Emi, sólo con auditoría completa de ambos.
+- Jueves: **sólo DOF**, cuatro archivos DOF; sin sección ni actualización SJF. Registrar novedades SJF para el martes siguiente, sin perder trazabilidad.
+- El jueves DOF es independiente del cierre SJF; no bloquearlo por un SJF incompleto. Nunca llamar final al conjunto del martes con cualquier módulo parcial.
+- Estas reglas prevalecen sobre el apartado anterior que permitía incorporar correcciones SJF el jueves.
