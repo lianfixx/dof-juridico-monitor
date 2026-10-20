@@ -38,3 +38,45 @@ def test_incomplete_control_blocks_generation(tmp_path):
     with pytest.raises(ValueError,match="NO FINAL"):
         build(control,editorial,tmp_path/"output")
     assert not (tmp_path/"output").exists()
+
+def test_four_real_files_generated_but_not_final(tmp_path):
+    import json
+    from reportlab.pdfgen import canvas
+    from pypdf import PdfReader
+    from docx import Document
+    from src.dof_monitor.sjf_intake import initialize, add_document, _load, _save
+    from src.dof_monitor.sjf_weekly import import_inventory
+    import csv
+
+    control = initialize("2026-10-16", tmp_path)
+    source = tmp_path / "source.pdf"
+    pdf = canvas.Canvas(str(source))
+    pdf.drawString(40, 750, "Synthetic test only")
+    pdf.save()
+    url = "https://sjfsemanal.scjn.gob.mx/detalle/tesis/2031846"
+    csvpath = tmp_path / "index.csv"
+    with csvpath.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["id","section","type","official_url","related_ids"])
+        writer.writeheader()
+        writer.writerow({"id":"2031846","section":"Pleno","type":"tesis","official_url":url,"related_ids":""})
+    import_inventory(control, csvpath, url, "Synthetic index for integration test")
+    add_document(control, source, url, "2031846")
+    data = _load(control)
+    data.update(edition_verified=True, inventory_reconciled=True, universe_closed=True,
+                legal_review_approved=True, audit_approved=True)
+    document = data["documents"][0]
+    document.update(status="INTEGRO", pages=1, read_ranges=[[1,1]],
+                    reading_notes="Synthetic test", annexes_verified=True)
+    document["legal_checks"] = {key:True for key in document["legal_checks"]}
+    _save(control, data)
+    editorial = tmp_path / "editorial.json"
+    editorial.write_text(json.dumps(sample()), encoding="utf-8")
+    output = tmp_path / "out"
+    files = build(control, editorial, output)
+    assert len(files) == 4
+    assert all(not x["render_checked"] for x in files.values())
+    assert len(list(output.glob("*.pdf"))) == 2
+    assert len(list(output.glob("*.docx"))) == 2
+    assert all(len(PdfReader(str(p)).pages) >= 1 for p in output.glob("*.pdf"))
+    assert all(Document(str(p)).paragraphs for p in output.glob("*.docx"))
+    assert _load(control)["status"] == "READY_FOR_VISUAL_REVIEW"
