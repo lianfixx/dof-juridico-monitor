@@ -5,7 +5,7 @@ def valid_manifest():
     return {"dof":{"universe_closed":True,"records":[dict(rec)]},
             "sjf":{"universe_closed":True,"records":[dict(rec)]},
             "audit_approved":True,
-            "files":{k:{"sha256":"abc","render_checked":True} for k in ("report_pdf","report_docx","study_pdf","study_docx")},
+            "files":{k:{"sha256":"a"*64,"render_checked":True} for k in ("report_pdf","report_docx","study_pdf","study_docx")},
             "recipient":"emilianogarciamilla@gmail.com","duplicates_checked":True,"send_state":"NOT_SENT"}
 
 def test_no_manifest_fails_closed():
