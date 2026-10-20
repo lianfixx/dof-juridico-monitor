@@ -13,3 +13,7 @@ Prepara para Emi el reporte del Semanario correspondiente al corte solicitado. L
 9. En una integración de martes, recupera el paquete SJF auditado, revalida correcciones y agrega sólo la síntesis pertinente al DOF. Conserva fechas y coberturas separadas. No supongas que un informe de otro hilo está disponible.
 
 Documentar o programar este procedimiento no acredita una ejecución. Reporta sólo acciones efectivamente realizadas y comprobadas.
+
+## Entrega semanal vigente
+
+Este prompt ejecuta **preparación interna de viernes** y persiste el control, sin enviar correo por defecto. El martes la tarea DOF integra SJF y DOF en los mismos cuatro archivos, sólo tras doble auditoría. El jueves no incorpora ni envía SJF. Cualquier instrucción anterior de envío SJF autónomo el viernes o correcciones SJF en el jueves queda sustituida por esta política. Conservar las reglas de lectura exhaustiva, persistencia, fuentes, análisis jurídico y no duplicación.
