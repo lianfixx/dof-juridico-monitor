@@ -65,7 +65,7 @@ def add_document(control, file_path, source_url, identifier=None):
         raise ValueError("An official HTTPS source URL is required")
     if path.suffix.lower() != ".pdf":
         raise ValueError("Only PDF source files are accepted")
-    if path.read_bytes()[:5] != b"%PDF-":
+    with path.open("rb") as stream:\n        signature = stream.read(5)\n    if signature != b"%PDF-":
         raise ValueError("File does not have a PDF signature")
     digest = _hash(path)
     if any(x["sha256"] == digest for x in data["documents"]):
@@ -75,7 +75,7 @@ def add_document(control, file_path, source_url, identifier=None):
     try:
         from pypdf import PdfReader
         pages = len(PdfReader(str(path)).pages)
-    except (ImportError, Exception):
+    except Exception:
         pages = None
     record = {
         "id": identifier or path.stem,
