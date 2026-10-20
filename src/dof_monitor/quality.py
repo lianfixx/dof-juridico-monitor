@@ -3,6 +3,7 @@
 These checks validate structured evidence, not whether a human actually read a page.
 """
 from urllib.parse import urlparse
+import re
 
 VALID_STATES = {"INTEGRO", "PARCIAL", "PENDIENTE", "INACCESIBLE"}
 REQUIRED_FILES = ("report_pdf", "report_docx", "study_pdf", "study_docx")
@@ -91,7 +92,9 @@ def can_release_package(manifest):
         return False
     return all(isinstance(files.get(k), dict) and
                files[k].get("render_checked") is True and
-               bool(files[k].get("sha256")) for k in REQUIRED_FILES)
+               isinstance(files[k].get("sha256"), str) and
+               re.fullmatch(r"[0-9a-fA-F]{64}", files[k]["sha256"]) is not None
+               for k in REQUIRED_FILES)
 
 def can_attempt_send(manifest):
     """Sending requires explicit deduplication and an unambiguous prior state."""
