@@ -53,3 +53,7 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 7. config/default.yaml
 
 Versión: **1.1.0**.
+
+
+## Estado de implementación y límites (2026-10-20)
+El módulo SJF está documentado en `main`. Los controles de evidencia estructurada propuestos en el PR #2 requieren integración adicional con el motor de generación, persistencia y Gmail; no se debe interpretar una ejecución exitosa de `pytest` como prueba de lectura jurídica completa. La versión de la skill (1.1.0) y la versión del paquete Python (1.0.0) son independientes. El parche 1.2.0 no se ha aplicado.
