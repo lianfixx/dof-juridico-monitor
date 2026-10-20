@@ -47,3 +47,9 @@ Obtener enlaces exactos pendientes: `python -m src.dof_monitor.sjf_weekly missin
 Revisar consistencia: `python -m src.dof_monitor.sjf_weekly audit --control privado/SJF_2026-10-16/SJF_2026-10-16_Control.json`. Este control combina inventario y evidencias por documento, pero **no demuestra que el índice se haya transcrito completo ni que los campos declarados sean ciertos**. La conciliación humana con el índice oficial sigue siendo indispensable. No cerrar ni enviar con cualquier discrepancia.
 
 La tarea del viernes debe guardar el CSV, PDF originales y JSON en un destino privado persistente; la del martes debe recuperar esos mismos bytes, cotejar hashes y verificar correcciones. Si no existe acceso a archivos entre tareas, pedir al usuario los archivos de control y originales y mantener SJF PENDIENTE hasta recuperarlos. Nunca almacenar este paquete en el repositorio público.
+
+### Limitación comprobada del portal y alternativa
+
+En una prueba de acceso automatizado del 20-10-2026, la portada del SJF semanal y su búsqueda de tesis devolvieron únicamente el aviso «Su navegador esta desactualizado para este sitio». Eso **no demuestra que el Semanario no tenga publicaciones**; demuestra que esa vía de extracción no permite cerrar el inventario. No fabricar resultados ni marcar el viernes como vacío. Usar un navegador compatible, otra ruta oficial efectivamente comprobada o los PDF oficiales adjuntos por Emi; verificar manualmente el índice completo antes de marcar `inventory_reconciled`.
+
+Para contar páginas en la CLI local instalar la dependencia opcional: `pip install '.[pdf]'`. Sin `pypdf` el conteo permanece `null` y bloquea el cierre hasta verificación posterior. Nunca modificar manualmente el conteo sin cotejo del PDF real.
