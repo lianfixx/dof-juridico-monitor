@@ -55,3 +55,17 @@ Las instrucciones prioritarias de lectura exhaustiva y bloqueo ante evidencia in
 
 ## Operación SJF asistida y recuperación de documentos
 Aplicar [docs/sjf/OPERACION.md](docs/sjf/OPERACION.md). Cuando una fuente SJF no sea accesible automáticamente, facilitar el enlace al portal oficial y solicitar al usuario los PDF concretos faltantes. Usar `sjf_intake` para registrar hashes, páginas y pendientes sin afirmar lectura automática. El viernes puede mantenerse un paquete SJF parcial; el martes no se integrará como final sin recuperar el control íntegro y auditarlo. No subir material personal a GitHub. El módulo no genera ni envía automáticamente los cuatro archivos: esa ejecución requiere herramientas externas y verificación individual.
+
+## Distribución semanal definitiva — aprobada 20/10/2026
+
+**Martes, 06:00 America/Mexico_City: DOF + SJF.** Integrar el DOF del periodo y la síntesis de la edición SJF del último viernes efectivamente publicado, conservando la fecha original del viernes. El correo personal contiene **exactamente cuatro archivos conjuntos**: reporte ejecutivo PDF, reporte editable DOCX, guía de estudio/control PDF y guía editable DOCX. Secciones y controles DOF/SJF diferenciados dentro de esos mismos archivos; jamás ocho adjuntos duplicados.
+
+**Jueves, 06:00 America/Mexico_City: exclusivamente DOF.** Revisar miércoles, jueves y pendientes/correcciones DOF desde el corte anterior. Los **cuatro adjuntos son exclusivamente DOF**. No insertar tesis, sentencias, votos, jurisprudencia, sección SJF ni correcciones SJF en el correo del jueves. Registrar novedades judiciales sobrevenidas en el control SJF para el siguiente martes o una revisión extraordinaria expresamente solicitada. No ocultar pendientes ni falsificar que se hayan resuelto.
+
+**Viernes, 15:00 (ventana flexible): revisión SJF interna.** Inventariar y leer todo lo publicado; investigar y persistir control y paquete SJF si la auditoría lo permite. La tarea del viernes prepara la integración del martes, **no crea un envío semanal adicional por defecto**. Si se solicita una entrega extraordinaria, aplicar los mismos controles y deduplicación.
+
+**Independencia de cierre:** si el SJF sigue PARCIAL el martes, bloquear únicamente la presentación como final del paquete **conjunto DOF+SJF**; informar exactamente qué falta y conservar DOF y SJF separados. El jueves puede cerrarse como **DOF solamente** si su propia lectura y auditoría son completas, sin depender del SJF. El martes no enviar un paquete conjunto rotulado final si cualquiera de los dos módulos está pendiente.
+
+Las cuatro piezas siguen sujetas a generación, renderizado, revisión de enlaces, hashes y controles de duplicados. El correo se dirige únicamente a emilianogarciamilla@gmail.com, nunca al Licenciado. El cambio de distribución no relaja la lectura exhaustiva, ni autoriza enviar un paquete parcial como final.
+
+Esta sección prevalece sobre toda referencia anterior que incorpore novedades SJF el jueves o que presuponga un correo separado los viernes. El calendario DOF y sus horas no cambian.

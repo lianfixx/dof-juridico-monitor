@@ -60,3 +60,13 @@ El módulo SJF está documentado en `main`. Los controles de evidencia estructur
 
 ### Flujo práctico SJF con PDF adjuntos
 Ver [operación asistida y enlaces oficiales](docs/sjf/OPERACION.md). El comando local `python -m src.dof_monitor.sjf_intake` crea un control privado, incorpora PDF adjuntos con hash y bloquea el cierre cuando falta lectura o investigación. No equivale a un servicio autónomo de publicación, generación de cuatro documentos o envío Gmail.
+
+## Calendario de entrega definitivo (20-10-2026)
+
+| Día | Trabajo | Correo a Emi | Archivos |
+|---|---|---|---|
+| Viernes 15:00 | Investigación y control SJF interno | No, salvo solicitud extraordinaria | Control y fuentes persistentes; paquete interno si procede |
+| Martes 06:00 | DOF + SJF del viernes publicado | Uno, únicamente tras auditoría completa | Cuatro archivos conjuntos: reporte PDF/DOCX y guía PDF/DOCX |
+| Jueves 06:00 | DOF exclusivamente | Uno, únicamente tras auditoría DOF completa | Cuatro archivos DOF: reporte PDF/DOCX y guía PDF/DOCX |
+
+El jueves nunca incluye una sección SJF. Las novedades judiciales sobrevenidas quedan para el martes siguiente; el jueves puede cerrarse aunque SJF tenga pendientes. El martes no se declara completo si DOF o SJF carecen de lectura íntegra. Las tareas programadas deben mantener sus horas actuales; el repositorio documenta la política y no demuestra ejecución automática ni envíos.

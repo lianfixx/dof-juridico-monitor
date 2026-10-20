@@ -23,3 +23,23 @@ outputs:
   operator_study_pdf: true
   operator_study_docx: true
 final_recipient_auto_send: false
+
+# Política semanal aprobada 2026-10-20; configuración descriptiva, no crea tareas.
+weekly_delivery:
+  timezone: America/Mexico_City
+  friday_sjf:
+    review_start: "15:00"
+    mode: internal_preparation
+    auto_email: false
+  tuesday:
+    at: "06:00"
+    modules: [dof, sjf]
+    attachment_count: 4
+    require_all_modules_complete: true
+  thursday:
+    at: "06:00"
+    modules: [dof]
+    attachment_count: 4
+    require_dof_complete: true
+    include_sjf: false
+  sjf_post_friday_corrections: next_tuesday_or_explicit_extraordinary_review
