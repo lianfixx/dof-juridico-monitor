@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DOF+SJF evidence manifest v1",
+  "type": "object",
+  "required": [
+    "dof",
+    "sjf",
+    "audit_approved",
+    "files",
+    "recipient",
+    "duplicates_checked",
+    "send_state"
+  ],
+  "properties": {
+    "dof": {
+      "$ref": "#/$defs/coverage"
+    },
+    "sjf": {
+      "$ref": "#/$defs/coverage"
+    },
+    "audit_approved": {
+      "type": "boolean"
+    },
+    "files": {
+      "type": "object",
+      "required": [
+        "report_pdf",
+        "report_docx",
+        "study_pdf",
+        "study_docx"
+      ],
+      "properties": {
+        "report_pdf": {
+          "$ref": "#/$defs/file"
+        },
+        "report_docx": {
+          "$ref": "#/$defs/file"
+        },
+        "study_pdf": {
+          "$ref": "#/$defs/file"
+        },
+        "study_docx": {
+          "$ref": "#/$defs/file"
+        }
+      },
+      "additionalProperties": false
+    },
+    "recipient": {
+      "const": "emilianogarciamilla@gmail.com"
+    },
+    "duplicates_checked": {
+      "type": "boolean"
+    },
+    "send_state": {
+      "enum": [
+        "NOT_SENT",
+        "SENT",
+        "ENVIO_INCIERTO",
+        "FAILED"
+      ]
+    }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "required": [
+        "sha256",
+        "render_checked"
+      ],
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        },
+        "render_checked": {
+          "const": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "universe_closed",
+        "records"
+      ],
+      "properties": {
+        "universe_closed": {
+          "type": "boolean"
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/record"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "status",
+        "url",
+        "total_pages",
+        "read_ranges",
+        "annexes_verified",
+        "reading_notes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "INTEGRO",
+            "PARCIAL",
+            "PENDIENTE",
+            "INACCESIBLE"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "total_pages": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "read_ranges": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "integer",
+                "minimum": 1
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "annexes_verified": {
+          "type": "boolean"
+        },
+        "reading_notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
