@@ -26,3 +26,24 @@ El comando comprueba consistencia estructural y hashes de PDF registrados, pero 
 ## Seguridad
 
 La carpeta `privado/` debe mantenerse fuera de Git. No subir a GitHub expedientes, notas confidenciales, PDF de clientes, direcciones de correo adicionales ni credenciales. Los documentos del SJF pueden ser públicos, pero los análisis y controles personales deben permanecer privados.
+
+## Inventario semanal conciliado (mejora de octubre de 2026)
+
+El acceso preferente es el [SJF semanal](https://sjfsemanal.scjn.gob.mx/) y sus secciones de tesis, ejecutorias, votos, acuerdos y demás publicaciones. Consultar también la [Gaceta de la SCJN](https://www.scjn.gob.mx/coordinacion/gaceta): los tomos semanales pueden incluir varios volúmenes y posteriormente formar un libro mensual. El libro mensual es una vía de contraste, no motivo para confundir la fecha de publicación del viernes.
+
+Tras comprobar **todas las páginas y secciones del índice de la edición**, crear un CSV UTF-8 con encabezado exacto `id,section,type,official_url,related_ids`. Cada fila corresponde a una entrada real y su URL oficial exacta. Los identificadores deben ser únicos; `related_ids` permite referencias separadas por punto y coma, siempre que estén respaldadas por la fuente. No copiar sólo los criterios relevantes: el CSV incluye incluso acuerdos, votos, sentencias y documentos secundarios.
+
+Ejemplo **de estructura, no inventario de una edición real**:
+
+```csv
+id,section,type,official_url,related_ids
+2031846,Pleno jurisprudencia,tesis,https://sjfsemanal.scjn.gob.mx/detalle/tesis/2031846,
+```
+
+Importar: `python -m src.dof_monitor.sjf_weekly inventory --control privado/SJF_2026-10-16/SJF_2026-10-16_Control.json --csv inventario_oficial.csv --index-url https://sjfsemanal.scjn.gob.mx/ --evidence "Revisadas todas las secciones y paginaciones del viernes; conservar evidencia en carpeta privada"`.
+
+Obtener enlaces exactos pendientes: `python -m src.dof_monitor.sjf_weekly missing --control privado/SJF_2026-10-16/SJF_2026-10-16_Control.json`. Con ellos, solicitar a Emi únicamente los PDF faltantes. Cuando un documento esté disponible, usar `sjf_intake add --id IDENTIFICADOR --url URL_OFICIAL` con su PDF original. No inventar rutas de descarga ni convertir HTML en PDF oficial.
+
+Revisar consistencia: `python -m src.dof_monitor.sjf_weekly audit --control privado/SJF_2026-10-16/SJF_2026-10-16_Control.json`. Este control combina inventario y evidencias por documento, pero **no demuestra que el índice se haya transcrito completo ni que los campos declarados sean ciertos**. La conciliación humana con el índice oficial sigue siendo indispensable. No cerrar ni enviar con cualquier discrepancia.
+
+La tarea del viernes debe guardar el CSV, PDF originales y JSON en un destino privado persistente; la del martes debe recuperar esos mismos bytes, cotejar hashes y verificar correcciones. Si no existe acceso a archivos entre tareas, pedir al usuario los archivos de control y originales y mantener SJF PENDIENTE hasta recuperarlos. Nunca almacenar este paquete en el repositorio público.
