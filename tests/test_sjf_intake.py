@@ -60,3 +60,19 @@ def test_gap_detection(tmp_path):
     data = _load(control)
     data["documents"][0].update(pages=3,read_ranges=[[1,1],[3,3]])
     assert any("page gaps" in x for x in gaps(data, verify_files=False))
+
+def test_add_rejects_non_scjn_https_domain(tmp_path):
+    control = initialize("2026-10-16", tmp_path)
+    pdf = tmp_path / "official.pdf"
+    pdf.write_bytes(b"%PDF-1.4\nplaceholder")
+    with pytest.raises(ValueError):
+        add_document(control, pdf, "https://scjn.gob.mx.evil.example/tesis")
+
+def test_malformed_page_ranges_fail_closed(tmp_path):
+    control = initialize("2026-10-16", tmp_path)
+    pdf = tmp_path / "official.pdf"
+    pdf.write_bytes(b"%PDF-1.4\nplaceholder")
+    add_document(control, pdf, "https://sjf2.scjn.gob.mx/")
+    data = _load(control)
+    data["documents"][0].update(pages=2, read_ranges=[{"bad": 1}])
+    assert any("page gaps" in x for x in gaps(data, verify_files=False))
