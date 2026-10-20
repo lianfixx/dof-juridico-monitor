@@ -56,3 +56,23 @@ def test_valid_evidence_structure():
 
 def test_malformed_links():
     assert len(validate_direct_links([{"source_url":"https://"},{"source_url":"https://valid.example/path"}])) == 1
+
+def test_page_gap_blocks():
+    m=valid_manifest();m["sjf"]["records"][0].update(total_pages=3,read_ranges=[[1,1],[3,3]])
+    assert not can_release_package(m)
+
+def test_page_overlap_blocks():
+    m=valid_manifest();m["sjf"]["records"][0].update(total_pages=3,read_ranges=[[1,2],[2,3]])
+    assert not can_release_package(m)
+
+def test_page_ranges_can_be_unsorted_but_complete():
+    m=valid_manifest();m["sjf"]["records"][0].update(total_pages=3,read_ranges=[[3,3],[1,2]])
+    assert can_release_package(m)
+
+def test_boolean_page_number_rejected():
+    m=valid_manifest();m["sjf"]["records"][0]["total_pages"]=True
+    assert not can_release_package(m)
+
+def test_empty_document_universe_rejected():
+    m=valid_manifest();m["sjf"]["records"]=[]
+    assert not can_release_package(m)
