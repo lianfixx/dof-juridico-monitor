@@ -6,3 +6,11 @@ __pycache__/
 .DS_Store
 outputs/
 secrets/
+
+# Private SJF sources, controls and user-supplied documents
+privado/
+SJF_*_Control.json
+SJF_*_Reporte.pdf
+SJF_*_Reporte.docx
+SJF_*_Guia.pdf
+SJF_*_Guia.docx
