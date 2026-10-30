@@ -3,6 +3,12 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+
+### Audit — 2026-10-30: recuperación de fuentes SJF
+- Documenta PDF oficial de octubre recuperado, identidad SHA-256 y límites de cobertura.
+- Rechaza un inventario automático contradictorio y mantiene PARCIAL hasta conciliación y lectura reales.
+- Sin cambios al código, versión, política de entrega ni parche 1.2.0.
+
 ### Changed — 2026-10-20: calendario definitivo de entregas
 - Viernes: preparación SJF interna sin correo ordinario separado.
 - Martes: un único paquete DOF + SJF de cuatro adjuntos.
