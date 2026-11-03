@@ -54,6 +54,16 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 
 Versión: **1.1.0**.
 
+Validación local reproducible con Python 3.10 o posterior:
+
+```bash
+python -m pip install -e '.[test,pdf,artifacts]'
+python -m pytest -q
+```
+
+Las pruebas comprueban estructura y controles; no acreditan que una edición haya
+sido leída, que los entregables se hayan renderizado ni que un correo se enviara.
+
 
 ## Estado de implementación y límites (2026-10-20)
 El módulo SJF está documentado en `main`. Los controles de evidencia estructurada propuestos en el PR #2 requieren integración adicional con el motor de generación, persistencia y Gmail; no se debe interpretar una ejecución exitosa de `pytest` como prueba de lectura jurídica completa. La versión de la skill (1.1.0) y la versión del paquete Python (1.0.0) son independientes. El parche 1.2.0 no se ha aplicado.

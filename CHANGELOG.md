@@ -3,6 +3,11 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Maintenance — 2026-11-03
+- Se modernizó el frontmatter de la skill para Codex sin cambiar la versión 1.1.0 ni el método jurídico.
+- La descripción distingue el encargo DOF/SJF de la redacción jurídica genérica.
+- Se añadió un extra reproducible de pruebas y el comando local correspondiente.
+
 ### Changed — 2026-10-20: calendario definitivo de entregas
 - Viernes: preparación SJF interna sin correo ordinario separado.
 - Martes: un único paquete DOF + SJF de cuatro adjuntos.

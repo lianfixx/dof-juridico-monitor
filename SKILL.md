@@ -1,7 +1,11 @@
 ---
 name: dof-castorena
-description: Revisa el DOF de martes y jueves para Castorena; verifica fuentes oficiales y genera reporte ejecutivo minimalista, guía personal, comentario y correo de revisión.
-version: 1.1.0
+description: Revisa el DOF de martes y jueves y el SJF semanal para Castorena; verifica fuentes oficiales y genera reporte ejecutivo, guía personal y correo para revisión de Emiliano. Usar para el seguimiento DOF/SJF de este encargo, no para redacción jurídica genérica ni expedientes de clientes.
+metadata:
+  version: "1.1.0"
+  release_date: "2026-10-07"
+  language: "es-MX"
+  jurisdiction: "MX"
 ---
 
 # DOF Castorena · Skill 1.1.0
