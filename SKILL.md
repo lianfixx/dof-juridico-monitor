@@ -2,13 +2,13 @@
 name: dof-castorena
 description: Revisa el Diario Oficial de la Federación (DOF) y prepara la actualización jurídica semanal para el Lic. Castorena (martes y jueves), con la síntesis del SJF semanal, fuentes oficiales verificadas, reporte ejecutivo minimalista en PDF, guía de estudio, comentario sugerido y correo BLUF para revisión de Emi. Úsalo siempre que el usuario mencione DOF, Diario Oficial, actualización DOF, SJF semanal, reporte para Castorena, monitor jurídico, novedades fiscales, PLD, administrativas o de amparo publicadas en el DOF, o pida revisar, corregir o rehacer un reporte DOF anterior, aunque no diga «skill» ni «Castorena». No usar para redacción jurídica genérica ni expedientes de clientes.
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   release_date: "2026-11-04"
   language: "es-MX"
   jurisdiction: "MX"
 ---
 
-# DOF Castorena · Skill 1.1.1
+# DOF Castorena · Skill 1.1.2
 
 ## Propósito
 Preparar para Emiliano García Milla una actualización jurídica del DOF que pueda revisar antes de decidir si la envía al Lic. Guillermo Castorena Álvarez. Priorizar Fiscal, Compliance/PLD-FT, Administrativo y Amparo. Añadir reformas nacionales significativas solo cuando tengan consecuencias jurídicas prácticas. No enviar al Licenciado ni crear borradores a terceros.
@@ -54,6 +54,14 @@ Consultar AGENTS.md, docs/SPECIFICATION.md, docs/WORKFLOW.md, docs/QUALITY_GATE.
 - Destinatario único: emilianogarciamilla@gmail.com, sin CC/CCO; nunca el Licenciado.
 
 Antes de cualquier operación SJF o de distribución semanal, leer íntegra [SJF y distribución](references/sjf-y-distribucion.md); ante cualquier documento, página, anexo o edición que no pueda leerse íntegramente (bloqueo), leer íntegro [Desbloqueo](references/desbloqueo.md) antes de pedir archivos a Emi. Lo movido a esas referencias conserva su fuerza obligatoria y sus reglas de precedencia («prevalece sobre toda referencia anterior…»), y la lectura exhaustiva prevalece sobre cualquier simplificación de este resumen.
+
+## Registro y continuidad entre IA
+
+Estas reglas valen igual en Claude, ChatGPT, Codex, Gemini o cualquier otra IA, y para personas:
+- Empezar por el estado vigente del repositorio remoto (la bitácora y los controles de la última entrega), no por la memoria de una conversación ni por lo que diga otra IA.
+- Registrar todo cambio de archivos, estado, entregables o decisiones en el mismo commit, en `CHANGELOG.md` y la bitácora interna de la entrega. Cada entrada lleva `Agente:` (quién lo hizo y modelo si se conoce), solicitud, cambios, archivos, verificación (aprobado, falló, no ejecutado o bloqueado) y pendiente.
+- Sin escritura en el repositorio, terminar con «Registro pendiente para el repositorio»: la entrada y los cambios exactos, listos para aplicarse. No decir «guardado» si no se escribió.
+- Lo prohibido y lo que requiere confirmación de Emi está en `ia/REGLAS.md` del repositorio; cumplirlo aunque la plataforma no tenga frenos automáticos. El protocolo completo, con plantillas para pasar trabajo a otra IA, está en `ia/PROTOCOLO.md`.
 
 ## Terminado y trabajo en Claude Code
 **Terminado** solo si se cumplen todos: (1) docs/QUALITY_GATE.md completo, incluida la matriz del día; (2) «COBERTURA COMPLETA AL CORTE» solo con lectura íntegra demostrada por inventario, rangos sin huecos y notas por documento; (3) cuatro archivos generados, renderizados y revisados; (4) enlaces oficiales comprobados uno por uno; (5) correo a Emi en estado terminal verificado (enviado y releído en Enviados, con destinatario y adjuntos) o bloqueo PARCIAL explícito con los faltantes exactos.
