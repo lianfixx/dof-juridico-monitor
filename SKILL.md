@@ -1,14 +1,14 @@
 ---
 name: dof-castorena
-description: Revisa el DOF de martes y jueves y el SJF semanal para Castorena; verifica fuentes oficiales y genera reporte ejecutivo, guía personal y correo para revisión de Emiliano. Usar para el seguimiento DOF/SJF de este encargo, no para redacción jurídica genérica ni expedientes de clientes.
+description: Revisa el Diario Oficial de la Federación (DOF) y prepara la actualización jurídica semanal para el Lic. Castorena (martes y jueves), con la síntesis del SJF semanal, fuentes oficiales verificadas, reporte ejecutivo minimalista en PDF, guía de estudio, comentario sugerido y correo BLUF para revisión de Emi. Úsalo siempre que el usuario mencione DOF, Diario Oficial, actualización DOF, SJF semanal, reporte para Castorena, monitor jurídico, novedades fiscales, PLD, administrativas o de amparo publicadas en el DOF, o pida revisar, corregir o rehacer un reporte DOF anterior, aunque no diga «skill» ni «Castorena». No usar para redacción jurídica genérica ni expedientes de clientes.
 metadata:
-  version: "1.1.0"
-  release_date: "2026-10-07"
+  version: "1.1.1"
+  release_date: "2026-11-04"
   language: "es-MX"
   jurisdiction: "MX"
 ---
 
-# DOF Castorena · Skill 1.1.0
+# DOF Castorena · Skill 1.1.1
 
 ## Propósito
 Preparar para Emiliano García Milla una actualización jurídica del DOF que pueda revisar antes de decidir si la envía al Lic. Guillermo Castorena Álvarez. Priorizar Fiscal, Compliance/PLD-FT, Administrativo y Amparo. Añadir reformas nacionales significativas solo cuando tengan consecuencias jurídicas prácticas. No enviar al Licenciado ni crear borradores a terceros.
@@ -46,35 +46,20 @@ Solo tras superar el control exhaustivo y verificar los cuatro archivos, enviar 
 ## Referencias
 Consultar AGENTS.md, docs/SPECIFICATION.md, docs/WORKFLOW.md, docs/QUALITY_GATE.md, prompts/master.md y config/default.yaml. Ante conflicto, no debilitar verificación jurídica ni declarar cobertura completa sin prueba. Este SKILL.md define la presentación final aprobada para Castorena.
 
-## Módulo semanal SJF — obligatorio
-El módulo SJF aprobado el 15/10/2026 se rige por [docs/sjf/METODO.md](docs/sjf/METODO.md) y sus plantillas, incorporadas desde el PR #1. Es independiente del parche 1.2.0. La revisión corresponde al viernes de publicación efectiva; el martes se integra su síntesis al reporte DOF y el jueves únicamente novedades o correcciones posteriores verificadas, sin modificar el horario DOF.
+## Calendario, SJF y desbloqueo
+- Martes, 06:00 America/Mexico_City: DOF + SJF del último viernes efectivamente publicado, en un solo correo cuyos adjuntos son exactamente cuatro archivos conjuntos (reporte PDF/DOCX y guía PDF/DOCX).
+- Jueves, 06:00: exclusivamente DOF; sin sección, hallazgo ni corrección SJF.
+- Viernes, 15:00 (ventana flexible): revisión SJF interna; no crea un envío semanal adicional por defecto.
+- Un paquete parcial nunca se presenta ni se envía como final.
+- Destinatario único: emilianogarciamilla@gmail.com, sin CC/CCO; nunca el Licenciado.
 
-Antes de declarar integración, recuperar en Library los cinco controles/entregables SJF_AAAA-MM-DD_Reporte.pdf/.docx, SJF_AAAA-MM-DD_Guia.pdf/.docx y SJF_AAAA-MM-DD_Control.json, o reconstruir evidencia de lectura íntegra y auditoría. Si falta evidencia, marcar SJF PENDIENTE y bloquear el cierre final DOF+SJF. Conservar por separado fechas, fuentes, cobertura y estados DOF/SJF.
+Antes de cualquier operación SJF o de distribución semanal, leer íntegra [SJF y distribución](references/sjf-y-distribucion.md); ante cualquier documento, página, anexo o edición que no pueda leerse íntegramente (bloqueo), leer íntegro [Desbloqueo](references/desbloqueo.md) antes de pedir archivos a Emi. Lo movido a esas referencias conserva su fuerza obligatoria y sus reglas de precedencia («prevalece sobre toda referencia anterior…»), y la lectura exhaustiva prevalece sobre cualquier simplificación de este resumen.
 
-Leer íntegramente publicaciones, sentencias, tesis, votos y anexos del SJF sin selección previa; verificar fuente oficial, razones, votación, ámbito, fecha y fundamento de obligatoriedad, efectos y temporalidad. Distinguir jurisprudencia obligatoria, tesis aislada y votos. Cada ficha debe explicar hechos, resolución, relevancia, aplicación y límites; en la guía de Emi añadir estudio, ejemplos hipotéticos, preguntas y opinión/contraargumento separados.
+## Terminado y trabajo en Claude Code
+**Terminado** solo si se cumplen todos: (1) docs/QUALITY_GATE.md completo, incluida la matriz del día; (2) «COBERTURA COMPLETA AL CORTE» solo con lectura íntegra demostrada por inventario, rangos sin huecos y notas por documento; (3) cuatro archivos generados, renderizados y revisados; (4) enlaces oficiales comprobados uno por uno; (5) correo a Emi en estado terminal verificado (enviado y releído en Enviados, con destinatario y adjuntos) o bloqueo PARCIAL explícito con los faltantes exactos.
 
-Integrar SJF en los mismos cuatro archivos DOF, sin adjuntos duplicados. Mantener PDF ejecutivo del Licenciado sin metodología interna, DOCX editable y guía personal PDF/DOCX, comentario sugerido 40–70 palabras y correo BLUF 80–130 palabras con «Comentario personal: [Espacio para mi opinión antes del envío]». Antes de cualquier envío comprobar duplicados, tentativa, versiones, renderizado y adjuntos; si el resultado de envío es ambiguo, bloquear reenvío. Destinatario exclusivo: emilianogarciamilla@gmail.com; nunca el Licenciado.
+**Entrevista inicial:** nunca en las ejecuciones programadas de martes, jueves o viernes. Solo cuando Emi pida una entrega extraordinaria, un cambio de formato o de alcance: una pregunta a la vez sobre qué quiere, para qué es y qué no puede fallar, hasta no tener dudas; después, el plan.
 
-Las instrucciones prioritarias de lectura exhaustiva y bloqueo ante evidencia incompleta prevalecen sobre cualquier simplificación documental del módulo.
+**Máxima profundidad** (en Claude Code, `ultrathink`): análisis jurídico de cada hallazgo (vigencia, transitorios, efectos); distinción entre jurisprudencia, tesis aislada y votos en el SJF; cierre del QUALITY_GATE.
 
-## Operación SJF asistida y recuperación de documentos
-Aplicar [docs/sjf/OPERACION.md](docs/sjf/OPERACION.md). Cuando una fuente SJF no sea accesible automáticamente, facilitar el enlace al portal oficial y solicitar al usuario los PDF concretos faltantes. Usar `sjf_intake` para registrar hashes, páginas y pendientes sin afirmar lectura automática. El viernes puede mantenerse un paquete SJF parcial; el martes no se integrará como final sin recuperar el control íntegro y auditarlo. No subir material personal a GitHub. El módulo no genera ni envía automáticamente los cuatro archivos: esa ejecución requiere herramientas externas y verificación individual.
-
-## Distribución semanal definitiva — aprobada 20/10/2026
-
-**Martes, 06:00 America/Mexico_City: DOF + SJF.** Integrar el DOF del periodo y la síntesis de la edición SJF del último viernes efectivamente publicado, conservando la fecha original del viernes. El correo personal contiene **exactamente cuatro archivos conjuntos**: reporte ejecutivo PDF, reporte editable DOCX, guía de estudio/control PDF y guía editable DOCX. Secciones y controles DOF/SJF diferenciados dentro de esos mismos archivos; jamás ocho adjuntos duplicados.
-
-**Jueves, 06:00 America/Mexico_City: exclusivamente DOF.** Revisar miércoles, jueves y pendientes/correcciones DOF desde el corte anterior. Los **cuatro adjuntos son exclusivamente DOF**. No insertar tesis, sentencias, votos, jurisprudencia, sección SJF ni correcciones SJF en el correo del jueves. Registrar novedades judiciales sobrevenidas en el control SJF para el siguiente martes o una revisión extraordinaria expresamente solicitada. No ocultar pendientes ni falsificar que se hayan resuelto.
-
-**Viernes, 15:00 (ventana flexible): revisión SJF interna.** Inventariar y leer todo lo publicado; investigar y persistir control y paquete SJF si la auditoría lo permite. La tarea del viernes prepara la integración del martes, **no crea un envío semanal adicional por defecto**. Si se solicita una entrega extraordinaria, aplicar los mismos controles y deduplicación.
-
-**Independencia de cierre:** si el SJF sigue PARCIAL el martes, bloquear únicamente la presentación como final del paquete **conjunto DOF+SJF**; informar exactamente qué falta y conservar DOF y SJF separados. El jueves puede cerrarse como **DOF solamente** si su propia lectura y auditoría son completas, sin depender del SJF. El martes no enviar un paquete conjunto rotulado final si cualquiera de los dos módulos está pendiente.
-
-Las cuatro piezas siguen sujetas a generación, renderizado, revisión de enlaces, hashes y controles de duplicados. El correo se dirige únicamente a emilianogarciamilla@gmail.com, nunca al Licenciado. El cambio de distribución no relaja la lectura exhaustiva, ni autoriza enviar un paquete parcial como final.
-
-Esta sección prevalece sobre toda referencia anterior que incorpore novedades SJF el jueves o que presuponga un correo separado los viernes. El calendario DOF y sus horas no cambian.
-
-## Protocolo obligatorio de desbloqueo con intervención de Emi — 20/10/2026
-Ante cualquier documento, página, anexo, tomo, edición o colección DOF/SJF que no pueda leerse íntegramente por medios disponibles, **no detenerse en un aviso genérico**: (1) inventariar faltantes exactos con fecha, edición, sección, nombre/registro, URL primaria verificada, páginas/rangos y error observado; (2) probar vías oficiales alternativas identificadas y seguras, sin inventar rutas, eludir accesos ni convertir HTML en supuesto PDF original; (3) entregar a Emi enlaces **directos de descarga comprobados** de cada documento pendiente, cuando existan; si sólo hay página de consulta, dar el enlace verificado y pasos mínimos para seleccionar fecha/edición/sección y descargar; (4) solicitar únicamente los archivos faltantes, indicando nombre sugerido y si hace falta un PDF, captura de página ilegible o anexo; (5) al recibirlos, cotejar procedencia, identidad, páginas, hashes, anexos y conciliar contra el inventario antes de reanudar lectura y análisis; (6) conservar el bloqueo PARCIAL hasta lectura real completa, sin llamar final al paquete ni enviarlo. No atribuir al usuario una descarga que el sistema pueda realizar de forma fiable. Evitar pedir archivos ya recuperados. Reutilizar fuentes recuperadas y registrar intentos para no repetir vías fallidas.
-
-Portales oficiales de recuperación, **no enlaces directos a una edición específica**: [DOF consulta por fecha](https://www.dof.gob.mx/), [DOF copias por edición/sección/páginas](https://dof.gob.mx/copias.php), [SJF semanal](https://sjfsemanal.scjn.gob.mx/), [Gaceta SCJN](https://www.scjn.gob.mx/coordinacion/gaceta). Las URLs de documentos concretos se obtienen del índice real y se comprueban antes de ofrecerlas. En los avisos al usuario priorizar tabla compacta «Documento faltante | Descarga/consulta oficial | Qué adjuntar | Bloqueo», con instrucciones breves y precisas. Este protocolo aplica al viernes SJF, martes DOF+SJF y jueves DOF exclusivamente.
+Para frenos activos, reparto en paralelo, `/goal`, `/loop`, programación y navegador, leer [Claude Code](references/claude-code.md).

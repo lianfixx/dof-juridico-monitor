@@ -1,0 +1,120 @@
+{
+  "_doc": "Política de frenos (PreToolUse) para Claude Code. Ver guard.py para los tipos de regla. 'tests' son casos que comprueba test_guard.py.",
+  "rules": [
+    {
+      "type": "recipients",
+      "tool": "mcp__.*[Gg]mail.*__.*(send|reply|forward|create_draft|update_draft).*",
+      "allow": [
+        "emilianogarciamilla@gmail.com"
+      ],
+      "forbid_cc": true,
+      "reason": "El DOF se envía solo a emilianogarciamilla@gmail.com, sin CC/CCO; nunca al Licenciado ni a terceros."
+    },
+    {
+      "type": "pattern",
+      "tool": "Bash",
+      "field": "command",
+      "input": "git\\s+(-C\\s+\\S+\\s+)?push\\b[^\\n;&|]*(\\s--force\\b|\\s--force-with-lease\\b|\\s-f\\b|\\s\\+\\S)",
+      "decision": "deny",
+      "reason": "No se permite `git push --force`: puede borrar historial ajeno."
+    },
+    {
+      "type": "pattern",
+      "tool": "Bash",
+      "field": "command",
+      "input": "(^|[;&|(]\\s*|\\s)git\\s+(-[Cc]\\s+\\S+\\s+)*push\\b",
+      "decision": "ask",
+      "reason": "Vas a publicar en GitHub. Confirma que la tarea actual autoriza este push."
+    },
+    {
+      "type": "before_git",
+      "git": "commit",
+      "staged_regex": "^(src|tests|schemas|config|templates)/",
+      "requires": "python3 -m pytest --version",
+      "run": "python3 -m pytest -q",
+      "reason": "Las pruebas del monitor no pasan."
+    },
+    {
+      "type": "secrets",
+      "git": "commit",
+      "pii": true,
+      "reason": "El cambio contiene posibles secretos o datos personales."
+    },
+    {
+      "type": "before_git",
+      "git": "commit",
+      "staged_regex": "(^|/)SKILL\\.md$",
+      "run": "python3 .claude/hooks/check_skill.py .",
+      "reason": "El SKILL.md dejaría de ser compatible con claude.ai."
+    },
+    {
+      "type": "before_git",
+      "git": "commit",
+      "staged_regex": "^\\.claude/hooks/",
+      "run": "python3 .claude/hooks/test_guard.py",
+      "reason": "Las pruebas de los frenos fallaron."
+    }
+  ],
+  "tests": [
+    {
+      "name": "push forzado",
+      "tool": "Bash",
+      "input": {
+        "command": "git push --force origin main"
+      },
+      "expect": "deny"
+    },
+    {
+      "name": "comando inocuo",
+      "tool": "Bash",
+      "input": {
+        "command": "ls -la"
+      },
+      "expect": "none"
+    },
+    {
+      "name": "correo a Emi",
+      "tool": "mcp__Gmail__send_message",
+      "input": {
+        "to": [
+          "emilianogarciamilla@gmail.com"
+        ],
+        "subject": "Actualización DOF"
+      },
+      "expect": "none"
+    },
+    {
+      "name": "correo al Licenciado",
+      "tool": "mcp__Gmail__send_message",
+      "input": {
+        "to": [
+          "gcastorena@ejemplo.mx"
+        ]
+      },
+      "expect": "deny"
+    },
+    {
+      "name": "borrador a tercero",
+      "tool": "mcp__Gmail__create_draft",
+      "input": {
+        "to": [
+          "gcastorena@ejemplo.mx"
+        ]
+      },
+      "expect": "deny"
+    },
+    {
+      "name": "CCO prohibido",
+      "tool": "mcp__Gmail__send_message",
+      "input": {
+        "to": [
+          "emilianogarciamilla@gmail.com"
+        ],
+        "bcc": [
+          "x@y.mx"
+        ]
+      },
+      "expect": "deny"
+    }
+  ]
+}

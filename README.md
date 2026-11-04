@@ -39,6 +39,7 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 ## Skill portable y estilo Castorena
 
 - [SKILL.md](SKILL.md): instrucciones operativas y formato final aprobado, compatible con agentes que admitan skills de Markdown.
+- [references/](references/): texto que SKILL.md manda leer íntegro según la tarea: [SJF y distribución](references/sjf-y-distribucion.md), [desbloqueo](references/desbloqueo.md) y [Claude Code](references/claude-code.md) (frenos, reparto, `/goal`, `/loop`, [ejecución programada](scripts/headless.sh) y navegador).
 - Reporte blanco/negro/grises, fuentes directas dentro de cada fila, sin leyendas operativas, con «Lo relevante» y tabla ejecutiva.
 - Paquete completo para Emi: PDF del Licenciado, editable DOCX, guía PDF/DOCX, comentario sugerido separado y correo HTML BLUF.
 - Revisión profesional proporcional al encargo: distinguirla expresamente de la certificación exhaustiva de cobertura. Los requisitos estrictos de cobertura completa no cambian.
@@ -52,7 +53,7 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 6. prompts/master.md
 7. config/default.yaml
 
-Versión: **1.1.0**.
+Versión: **1.1.1**.
 
 Validación local reproducible con Python 3.10 o posterior:
 
@@ -66,7 +67,7 @@ sido leída, que los entregables se hayan renderizado ni que un correo se enviar
 
 
 ## Estado de implementación y límites (2026-10-20)
-El módulo SJF está documentado en `main`. Los controles de evidencia estructurada propuestos en el PR #2 requieren integración adicional con el motor de generación, persistencia y Gmail; no se debe interpretar una ejecución exitosa de `pytest` como prueba de lectura jurídica completa. La versión de la skill (1.1.0) y la versión del paquete Python (1.0.0) son independientes. El parche 1.2.0 no se ha aplicado.
+El módulo SJF está documentado en `main`. Los controles de evidencia estructurada propuestos en el PR #2 requieren integración adicional con el motor de generación, persistencia y Gmail; no se debe interpretar una ejecución exitosa de `pytest` como prueba de lectura jurídica completa. La versión de la skill (1.1.1) y la versión del paquete Python (1.0.0) son independientes. El parche 1.2.0 no se ha aplicado.
 
 ### Flujo práctico SJF con PDF adjuntos
 Ver [operación asistida y enlaces oficiales](docs/sjf/OPERACION.md). El comando local `python -m src.dof_monitor.sjf_intake` crea un control privado, incorpora PDF adjuntos con hash y bloquea el cierre cuando falta lectura o investigación. No equivale a un servicio autónomo de publicación, generación de cuatro documentos o envío Gmail.
