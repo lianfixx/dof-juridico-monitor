@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-06 · preparación SJF bloqueada
+- Agente: Codex (modelo no disponible).
+- Solicitud: Emi, preparación interna SJF y auditoría documentada, sin correo.
+- Cambios: registra fuentes comprobadas, PDF mensual idéntico, faltantes y pausa de la preparación SJF por bloqueo persistente. DOF sin cambios.
+- Archivos: docs/sjf/AUDITORIA_FUENTES_2026-11-06.md y CHANGELOG.md. Control de entrega en almacenamiento privado, fuera del repositorio.
+- Verificación: python3 -m pytest -q → aprobado (45); python3 ia/check_skill.py . .claude/skills/dof-castorena .agents/skills/dof-castorena → aprobado; python3 ia/test_guard.py → aprobado (33). Descarga PDF y SHA-256 → aprobado. Cobertura y auditoría jurídica → bloqueadas.
+- Pendiente: índice íntegro y documentos del 6 de noviembre, lectura e investigación completas; después cuatro entregables. No se declara reporte realizado.
+
 ### 2026-11-04 · corrección: puentes de skill con YAML válido
 
 - Agente: Claude Code (sesión en la nube)
