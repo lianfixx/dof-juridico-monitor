@@ -27,7 +27,7 @@ fuentes/<entrega>/   dof/raw, dof/anexos, dof/inventario.json, sjf/raw, sjf/txt,
 entregas/<fecha>/    los cuatro archivos, el correo HTML, la bitácora y el control SJF de cada entrega
 ```
 
-Las copias canónicas de los scripts están en [scripts/box/](../scripts/box/) de este repositorio; si el box las pierde, se vuelven a escribir desde ahí con `write_file`.
+El paquete (cuatro archivos y correo HTML) se arma en la sesión con [scripts/paquete/](../scripts/paquete/README.md) a partir de `content.js` y `guia.js`. Las copias canónicas de los scripts del box están en [scripts/box/](../scripts/box/) de este repositorio; si el box las pierde, se vuelven a escribir desde ahí con `write_file`.
 
 ### Hechos comprobados sobre los portales (8/11/2026)
 - `https://dof.gob.mx/index.php?year=A&month=M&day=D` muestra **la última edición del día** (si hubo vespertina, muestra la vespertina) y ofrece enlaces `edicion=MAT|VES|EXT` a las demás; un enlace vacío responde «No hay datos para la fecha seleccionada». Un día sin publicación responde lo mismo en la página principal.
