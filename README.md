@@ -19,7 +19,7 @@ No depende de ChatGPT, de una conversación previa ni de servidores privados de 
 ## Calendario
 - Martes: viernes anterior + lunes + martes.
 - Jueves: miércoles + jueves.
-- Complemento: fines de semana, publicaciones posteriores al corte, fes de erratas/correcciones/republicaciones.
+- Complemento: fines de semana, publicaciones posteriores al corte (vespertinas y extraordinarias del día del cierre anterior), fes de erratas/correcciones/republicaciones. Ver «Periodo y corte anterior» en [references/box.md](references/box.md).
 - Zona: America/Mexico_City.
 
 ## Entregables
@@ -34,12 +34,14 @@ El [módulo SJF](docs/sjf/METODO.md) añade criterios judiciales, estudio y opin
 - [Prompt de ejecución](prompts/sjf.md) y plantillas de [reporte](templates/sjf-report.md), [guía](templates/sjf-study.md) y [correo](templates/sjf-email.md).
 - [Auditoría del método](docs/sjf/AUDITORIA_2026-10-15.md).
 
-La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-2026. La programación efectiva y el primer reporte requieren comprobación propia. Esta documentación no aplica el parche DOF 1.2.0 ni declara una nueva versión del código.
+La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-2026.
 
 ## Skill portable y estilo Castorena
 
 - [SKILL.md](SKILL.md): instrucciones operativas y formato final aprobado, compatible con agentes que admitan skills de Markdown.
-- [references/](references/): texto que SKILL.md manda leer íntegro según la tarea: [SJF y distribución](references/sjf-y-distribucion.md), [desbloqueo](references/desbloqueo.md) y [Claude Code](references/claude-code.md) (frenos, reparto, `/goal`, `/loop`, [ejecución programada](scripts/headless.sh) y navegador).
+- [references/](references/): texto que SKILL.md manda leer íntegro según la tarea: [fuentes con el box y ejecución automática](references/box.md), [SJF y distribución](references/sjf-y-distribucion.md), [desbloqueo](references/desbloqueo.md) y [Claude Code](references/claude-code.md) (frenos, reparto, `/goal`, `/loop`, [ejecución programada](scripts/headless.sh) y navegador).
+- [scripts/box/](scripts/box/): copias canónicas de los scripts del box «main» de Simular; [scripts/paquete/](scripts/paquete/README.md): armado de los cuatro archivos y del correo; [prompts/tareas/](prompts/tareas/): texto íntegro de las cuatro tareas programadas.
+- Para instalar la skill en claude.ai: `sh scripts/empaquetar_skill.sh` genera un ZIP con un solo SKILL.md (claude.ai rechaza el ZIP del repositorio completo porque los puentes de `.agents/` y `.claude/` cuentan como SKILL.md adicionales).
 - Reporte blanco/negro/grises, fuentes directas dentro de cada fila, sin leyendas operativas, con «Lo relevante» y tabla ejecutiva.
 - Paquete completo para Emi: PDF del Licenciado, editable DOCX, guía PDF/DOCX, comentario sugerido separado y correo HTML BLUF.
 - Revisión profesional proporcional al encargo: distinguirla expresamente de la certificación exhaustiva de cobertura. Los requisitos estrictos de cobertura completa no cambian.
@@ -53,7 +55,7 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 6. prompts/master.md
 7. config/default.yaml
 
-Versión: **1.1.2**.
+Versión de la skill: **1.2.1**.
 
 Validación local reproducible con Python 3.10 o posterior:
 
@@ -66,8 +68,8 @@ Las pruebas comprueban estructura y controles; no acreditan que una edición hay
 sido leída, que los entregables se hayan renderizado ni que un correo se enviara.
 
 
-## Estado de implementación y límites (2026-10-20)
-El módulo SJF está documentado en `main`. Los controles de evidencia estructurada propuestos en el PR #2 requieren integración adicional con el motor de generación, persistencia y Gmail; no se debe interpretar una ejecución exitosa de `pytest` como prueba de lectura jurídica completa. La versión de la skill (1.1.2) y la versión del paquete Python (1.0.0) son independientes. El parche 1.2.0 no se ha aplicado.
+## Estado de implementación y límites (2026-11-09)
+Desde la skill 1.2.0 las fuentes se bajan en el box «main» de Simular y cuatro tareas programadas de Claude hacen el lector nocturno, los cierres de martes y jueves y la revisión SJF del viernes (ver [references/box.md](references/box.md)). No se debe interpretar una ejecución exitosa de `pytest` ni un manifiesto con `compuerta_fuentes.listo` como prueba de lectura jurídica completa: la lectura, la doble lectura y la auditoría siguen siendo de la sesión. La versión de la skill (1.2.1) y la versión del paquete Python (1.0.0) son independientes.
 
 ### Flujo práctico SJF con PDF adjuntos
 Ver [operación asistida y enlaces oficiales](docs/sjf/OPERACION.md). El comando local `python -m src.dof_monitor.sjf_intake` crea un control privado, incorpora PDF adjuntos con hash y bloquea el cierre cuando falta lectura o investigación. No equivale a un servicio autónomo de publicación, generación de cuatro documentos o envío Gmail.
@@ -76,8 +78,8 @@ Ver [operación asistida y enlaces oficiales](docs/sjf/OPERACION.md). El comando
 
 | Día | Trabajo | Correo a Emi | Archivos |
 |---|---|---|---|
-| Viernes 15:00 | Investigación y control SJF interno | No, salvo solicitud extraordinaria | Control y fuentes persistentes; paquete interno si procede |
-| Martes 06:00 | DOF + SJF del viernes publicado | Uno, únicamente tras auditoría completa | Cuatro archivos conjuntos: reporte PDF/DOCX y guía PDF/DOCX |
-| Jueves 06:00 | DOF exclusivamente | Uno, únicamente tras auditoría DOF completa | Cuatro archivos DOF: reporte PDF/DOCX y guía PDF/DOCX |
+| Viernes 15:37 | Investigación y control SJF interno | No, salvo solicitud extraordinaria | Control y fuentes persistentes; paquete interno si procede |
+| Martes 05:50 (lector nocturno el lunes 21:41) | DOF + SJF del viernes publicado | Uno, únicamente tras auditoría completa | Cuatro archivos conjuntos: reporte PDF/DOCX y guía PDF/DOCX |
+| Jueves 06:05 (lector nocturno el miércoles 21:41) | DOF exclusivamente | Uno, únicamente tras auditoría DOF completa | Cuatro archivos DOF: reporte PDF/DOCX y guía PDF/DOCX |
 
-El jueves nunca incluye una sección SJF. Las novedades judiciales sobrevenidas quedan para el martes siguiente; el jueves puede cerrarse aunque SJF tenga pendientes. El martes no se declara completo si DOF o SJF carecen de lectura íntegra. Las tareas programadas deben mantener sus horas actuales; el repositorio documenta la política y no demuestra ejecución automática ni envíos.
+El jueves nunca incluye una sección SJF. Las novedades judiciales sobrevenidas quedan para el martes siguiente; el jueves puede cerrarse aunque SJF tenga pendientes. El martes no se declara completo si DOF o SJF carecen de lectura íntegra. Objetivo: paquete en el correo de Emi alrededor de las 07:30; él revisa y reenvía al Licenciado a las 12:00. El repositorio documenta la política y el texto de las tareas; no demuestra por sí mismo ejecución automática ni envíos.

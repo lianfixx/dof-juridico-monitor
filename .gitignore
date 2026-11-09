@@ -14,3 +14,6 @@ SJF_*_Reporte.pdf
 SJF_*_Reporte.docx
 SJF_*_Guia.pdf
 SJF_*_Guia.docx
+
+# ZIP de la skill para claude.ai (scripts/empaquetar_skill.sh)
+dist/
