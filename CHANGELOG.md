@@ -3,6 +3,13 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.2.0 — 2026-11-08: fuentes con el box y ejecución automática
+- Agente: Claude (sesión en la nube, modelo claude-fable-5-1) — ejecución programada no; solicitud directa de Emi.
+- Solicitud: Emi, 8/11/2026: combinar TinyFish, el box de Simular, la nube de Claude y su Mac con planes A, B y C por paso; velocidad, precisión y cero errores; reportes de martes y jueves automáticos, listos a las 07:30; todo en este repositorio, que sigue público.
+- Cambios: `scripts/box/` (arranque.sh, fuentes.sh, dof_fuentes.py, paginas.py, ocr.py, manifiesto.py, sjf_fuentes.mjs), nueva `references/box.md` (reparto de papeles, hechos comprobados de los portales, calendario de tareas, planes A/B/C, compuertas), SKILL.md 1.2.0 (sección «Fuentes con el box y ejecución automática», horas de cierre 05:50/06:05 y lector nocturno, vía A del PDF por el box), `references/desbloqueo.md` (el box antes de pedir archivos a Emi), `references/claude-code.md` (programación con tareas de Claude).
+- Verificación: regresión contra el periodo del 3/11/2026 en el box: DOF 30/10 MAT 144 pp. (297/2026), 30/10 VES 12 pp. (298), 02/11 156 pp. (299), 03/11 232 pp. (300), 4 anexos aparte localizados (2 en imagen, OCR en español); SJF del 30/10: 31 tesis (17 J, 14 aisladas), 16 ejecutorias, 4 votos, 0 acuerdos, 26 anexos con SHA-256 idénticos al paquete entregado a mano → aprobado. Lector subagente leyendo del box con `read_file` → aprobado. `python3 -m pytest -q`, `ia/check_skill.py` e `ia/test_guard.py`: ver resultado en el commit.
+- Pendiente: crear las cuatro tareas programadas y el monitor; primera semana en modo vigilado; medir créditos del box por corrida.
+
 ### 2026-11-04 · corrección: puentes de skill con YAML válido
 
 - Agente: Claude Code (sesión en la nube)

@@ -40,6 +40,7 @@ Modo plan con Shift+Tab: investiga y propone sin tocar nada; antes de aprobarlo,
 `/loop` dura mientras la sesión esté abierta (hasta 7 días). No envía nada; solo vigila e inventaría.
 
 ## Ejecución programada
+Desde la 1.2.0 la ejecución automática son cuatro tareas programadas de Claude (viernes 15:30 SJF; lunes y miércoles 21:30 lector nocturno; martes 05:50 y jueves 06:05 cierre) más un monitor de TinyFish, descritas en [Fuentes con el box](box.md). Sus sesiones adjuntan este repositorio, el conector `box`, Gmail y TinyFish; leen SKILL.md y `references/box.md` y nunca escriben a nadie más que a Emi. Lo que sigue (`headless.sh`) se conserva como alternativa con `claude -p` en una máquina propia.
 [scripts/headless.sh](../scripts/headless.sh) trae ejemplos de `claude -p` para martes, jueves y viernes con `--permission-mode dontAsk` y herramientas mínimas. **No se activa al instalar**: hay que programarlo (tarea programada de Claude Code, cron con `CRON_TZ=America/Mexico_City` o el programador del sistema). El workflow `.github/workflows/tests.yml` solo corre pruebas; no conviene usarlo para el DOF porque exigiría credenciales de Gmail y material privado en un repositorio público. El prompt programado nunca escribe a terceros: solo a Emi, y el hook lo vigila.
 
 ## Navegador
