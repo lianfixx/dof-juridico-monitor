@@ -268,6 +268,10 @@ def main():
     # entregada se vuelve a procesar como nueva (el PDF ya está en disco: solo rehace OCR y anexos).
     inv["ediciones"] = [e for e in inv["ediciones"]
                         if not (e.get("ya_reportada") and (e["fecha"], e["edicion"]) in pendientes)]
+    for e in inv["ediciones"]:  # la nota y la decisión vigentes son las del registro
+        if (e["fecha"], e["edicion"]) in pendientes:
+            p = pendientes[(e["fecha"], e["edicion"])]
+            e["no_entregada_antes"] = {k: p.get(k) for k in ("numero", "nota_correo", "decidido")}
     done = {(e["fecha"], e["edicion"]) for e in inv["ediciones"]}
     errores_run = []
     for f in fechas:
