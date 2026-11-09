@@ -160,3 +160,36 @@ def test_tareas_programadas_usan_lanzador_y_reglas():
     assert "Sin sección, hallazgo ni corrección SJF" in textos["cierre-jueves.md"]
     for nombre in ("lector-nocturno.md", "sjf-viernes.md"):
         assert "no envía correos" in textos[nombre]
+
+
+def test_no_entregadas_solo_aplican_a_entregas_posteriores(tmp_path):
+    m = load_dof_fuentes()
+    fuentes = tmp_path / "fuentes"; (fuentes / "2026-11-10" / "dof").mkdir(parents=True)
+    (fuentes / "no_entregadas.json").write_text(json.dumps([
+        {"fecha": "2026-11-05", "edicion": "MAT", "numero": "303/2026", "nota_correo": "Nota.", "decidido": "Emi, 9/11/2026"},
+        {"fecha": "2026-11-12", "edicion": "MAT", "numero": "310/2026"},
+        {"fecha": "2026-11-04", "edicion": "MAT", "numero": "301/2026", "reportada_en": "2026-11-12"}]), encoding="utf-8")
+    pend = m.no_entregadas(str(fuentes / "2026-11-10" / "dof"))
+    assert set(pend) == {("2026-11-05", "MAT")}  # ni futuras ni ya reportadas en otra entrega
+
+
+def test_compuerta_acepta_no_entregada_como_referencia(tmp_path):
+    inv = {"corte_anterior": "2026-11-05", "sin_edicion": [], "consultas": [], "errores": [],
+           "ediciones": [_ed("2026-11-05", "MAT", "303/2026", paginas_ocr=[3], ocr=[3], ocr_pendiente=[],
+                             no_entregada_antes={"numero": "303/2026", "nota_correo": "Nota.", "decidido": "Emi"}),
+                         _ed("2026-11-06", "MAT", "304/2026")]}
+    man = _manifiesto(tmp_path, inv)
+    assert man["compuerta_fuentes"]["listo"] is True
+    assert man["dof"]["no_entregadas_incluidas"][0]["numero"] == "303/2026"
+
+
+def test_no_entregada_ya_reportada_en_entrega_anterior_no_se_repite(tmp_path):
+    m = load_dof_fuentes()
+    fuentes = tmp_path / "fuentes"
+    d = fuentes / "2026-11-10" / "dof"; d.mkdir(parents=True)
+    (d / "inventario.json").write_text(json.dumps({"ediciones": [
+        {"fecha": "2026-11-05", "edicion": "MAT", "numero": "303/2026", "no_entregada_antes": {"numero": "303/2026"}}]}), encoding="utf-8")
+    (fuentes / "2026-11-12" / "dof").mkdir(parents=True)
+    (fuentes / "no_entregadas.json").write_text(json.dumps([{"fecha": "2026-11-05", "edicion": "MAT", "numero": "303/2026"}]), encoding="utf-8")
+    assert m.no_entregadas(str(fuentes / "2026-11-12" / "dof")) == {}
+    assert ("2026-11-05", "MAT") in m.no_entregadas(str(fuentes / "2026-11-10" / "dof"))

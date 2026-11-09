@@ -28,6 +28,7 @@ if os.path.exists(inv):
                   "ediciones": [{"fecha": e["fecha"], "edicion": e["edicion"], "numero": e["numero"], "pdf": e["pdf"],
                                  "paginas": e["paginas_reales"], "ok_paginas": e["ok_paginas"], "notas": len(e["notas"]),
                                  "ya_reportada": bool(e.get("ya_reportada")), "motivo": e.get("ya_reportada_motivo"),
+                                 "no_entregada_antes": bool(e.get("no_entregada_antes")),
                                  "paginas_ocr": len(e.get("paginas_ocr", e.get("paginas_sin_texto", []))),
                                  "ocr": len(e.get("ocr", [])), "ocr_pendiente": e.get("ocr_pendiente", []),
                                  "anexos": [{"archivo": a.get("archivo"), "paginas": a.get("paginas"), "ocr": len(a.get("ocr", [])),
@@ -47,7 +48,12 @@ if os.path.exists(inv):
     man["dof"]["huecos"] = huecos
     if huecos:
         faltantes.append("números no consecutivos: " + ", ".join(huecos))
-    if i.get("corte_anterior") and not any(e.get("ya_reportada") for e in eds):
+    incl = [e for e in eds if e.get("no_entregada_antes")]
+    man["dof"]["no_entregadas_incluidas"] = [{"fecha": e["fecha"], "edicion": e["edicion"], "numero": e["numero"],
+                                             **e["no_entregada_antes"]} for e in incl]
+    # La referencia de continuidad es la última edición ya reportada; si la del corte se registró
+    # como no entregada (decisión de Emi en no_entregadas.json), la referencia es esa misma edición.
+    if i.get("corte_anterior") and not any(e.get("ya_reportada") for e in eds) and not incl:
         faltantes.append(f"sin edición de referencia del corte anterior ({i['corte_anterior']}): no se puede probar la continuidad")
     for e in eds:
         if e["ok_paginas"] is False:

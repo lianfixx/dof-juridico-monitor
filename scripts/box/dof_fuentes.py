@@ -21,6 +21,12 @@ se descarga solo para comprobar la continuidad de números y se marca `ya_report
 del box y, si esa entrega no está en el box, la matutina de ese día. Las vespertinas y
 extraordinarias de ese día que no estén en una entrega anterior son nuevas.
 
+Ediciones no entregadas: fuentes/no_entregadas.json (lista de {fecha, edicion, numero,
+nota_correo, decidido}) registra lo que ya se había dado por reportado pero no llegó al
+Licenciado. Esas ediciones nunca se marcan `ya_reportada`: su fecha entra al periodo de la
+entrega y quedan con `no_entregada_antes` para leerse e incorporarse al reporte. Si una
+corrida anterior ya las había marcado `ya_reportada`, se vuelven a procesar.
+
 Un fallo en una fecha o edición no detiene las demás: queda en `errores` del inventario
 y el script termina con código 1. El inventario se guarda tras cada edición.
 Solo biblioteca estándar + poppler-utils (pdftotext, pdfinfo, pdfimages). No adivina URLs.
@@ -206,6 +212,26 @@ def entregas_anteriores(dest):
     return vistos
 
 
+def no_entregadas(dest):
+    """fuentes/no_entregadas.json → {(fecha, edicion): registro}. Decisión de Emi, no del script."""
+    ent_dir = os.path.dirname(os.path.abspath(dest))
+    ruta = os.path.join(os.path.dirname(ent_dir), "no_entregadas.json")
+    if not os.path.exists(ruta):
+        return {}
+    actual = os.path.basename(ent_dir)
+    ya_en = entregas_anteriores(dest)  # una entrega anterior del box ya la tiene como nueva → ya se reportó ahí
+    out = {}
+    for r in json.load(open(ruta)):
+        if (r["fecha"], r["edicion"]) in ya_en:
+            continue
+        # Solo para entregas posteriores a la fecha de la edición y que no la hayan reportado ya.
+        if r.get("reportada_en") and r["reportada_en"] != actual:
+            continue
+        if re.fullmatch(r"\d{4}-\d\d-\d\d", actual) and r["fecha"] < actual:
+            out[(r["fecha"], r["edicion"])] = r
+    return out
+
+
 def save(inv, inv_path):
     inv["ediciones"].sort(key=lambda e: (e["fecha"], e["edicion"]))
     tmp = inv_path + ".tmp"
@@ -226,7 +252,9 @@ def main():
             print(f"fecha inválida: {f}", file=sys.stderr); sys.exit(2)
     if corte and corte not in fechas:
         fechas = [corte] + fechas
-    fechas = sorted(dict.fromkeys(fechas))
+    pendientes = no_entregadas(dest)
+    periodo = set(fechas)
+    fechas = sorted(dict.fromkeys(fechas + [k[0] for k in pendientes]))
     os.makedirs(os.path.join(dest, "raw"), exist_ok=True)
     os.makedirs(os.path.join(dest, "anexos"), exist_ok=True)
     inv_path = os.path.join(dest, "inventario.json")
@@ -236,6 +264,10 @@ def main():
     if corte:
         inv["corte_anterior"] = corte
     previas = entregas_anteriores(dest) if corte else {}
+    # Una edición que quedó `ya_reportada` en una corrida anterior pero que Emi registró como no
+    # entregada se vuelve a procesar como nueva (el PDF ya está en disco: solo rehace OCR y anexos).
+    inv["ediciones"] = [e for e in inv["ediciones"]
+                        if not (e.get("ya_reportada") and (e["fecha"], e["edicion"]) in pendientes)]
     done = {(e["fecha"], e["edicion"]) for e in inv["ediciones"]}
     errores_run = []
     for f in fechas:
@@ -274,7 +306,12 @@ def main():
             if (f, code) in done:
                 log(f, code, "ya inventariada"); continue
             ya = None
-            if corte and f == corte:
+            pend = pendientes.get((f, code))
+            if pend:
+                pass  # no entregada antes: se lee y se reporta
+            elif f not in periodo:
+                ya = "fecha fuera del periodo, incluida solo por una edición no entregada"
+            elif corte and f == corte:
                 if (f, code) in previas:
                     ya = f"en la entrega {previas[(f, code)]['entrega']}"
                 elif code == "MAT" and not any(k[0] == f for k in previas):
@@ -304,6 +341,11 @@ def main():
                  "ok_paginas": (decl == real) if decl else None}
             if ya:
                 e["ya_reportada"] = True; e["ya_reportada_motivo"] = ya
+            if pend:
+                e["no_entregada_antes"] = {k: pend.get(k) for k in ("numero", "nota_correo", "decidido")}
+                if pend.get("numero") and num and pend["numero"] != num:
+                    errores_run.append({"fecha": f, "edicion": code, "paso": "no_entregadas",
+                                        "error": f"no_entregadas.json dice {pend['numero']} y el PDF dice {num}"})
             for a in anexos:
                 if a.get("error"):
                     errores_run.append({"fecha": f, "edicion": code, "paso": "anexo", "url": a["url"], "error": a["error"]})

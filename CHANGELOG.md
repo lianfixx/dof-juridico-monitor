@@ -3,6 +3,13 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-09 · ediciones no entregadas (303/2026 al paquete del martes 10/11)
+- Agente: Claude Code (sesión en la nube, claude-opus-5-5), a petición de Muse con instrucción de Emi (11:06): no consta la entrega del cierre del jueves 5/11 (ni en el box ni en Gmail); darlo por no entregado e incluir la matutina 303/2026 en el paquete del martes 10/11; no enviar nada.
+- Cambios: registro `/workspace/dof/fuentes/no_entregadas.json` (fuera del repositorio) que `dof_fuentes.py` respeta: esas ediciones nunca se marcan `ya_reportada`, su fecha entra al periodo, se vuelven a procesar si una corrida anterior las había marcado, y dejan de incluirse en cuanto una entrega anterior del box las tiene como nuevas o llevan `reportada_en`. Las demás ediciones de una fecha añadida solo por ellas quedan `ya_reportada`. `manifiesto.py` las lista en `dof.no_entregadas_incluidas` y las acepta como referencia de continuidad. Los cierres de martes y jueves ponen su `nota_correo`, tal cual, en el correo al Licenciado y después anotan `reportada_en`; tareas programadas actualizadas. Documentado en `references/box.md`; 3 pruebas nuevas.
+- Archivos: `scripts/box/dof_fuentes.py`, `scripts/box/manifiesto.py`, `prompts/tareas/cierre-martes.md`, `prompts/tareas/cierre-jueves.md`, `references/box.md`, `tests/test_box_scripts.py`, este registro.
+- Verificación: `python3 -m pytest -q` 60 aprobadas; en el box, entrega 2026-11-10 relanzada: 303/2026 nueva con `no_entregada_antes`, 46/46 páginas con OCR; 304, 305 y 306 sin cambios; `compuerta_fuentes.listo` = true → aprobado.
+- Pendiente: Emi decide si las ediciones del miércoles 4/11 (matutina 301/2026 y vespertina 302/2026), que también correspondían al cierre del jueves 5/11, se agregan al registro.
+
 ### Skill 1.2.1 — 2026-11-09: auditoría del sistema automático (box, tareas, vigía)
 - Agente: Claude Code (sesión en la nube, modelo claude-opus-5-5), a petición de Muse (asistente de Emi) con instrucción de Emi: «audita, mejora y deja todo perfecto»; condición: no actualizar la imagen del box a v14 antes del SJF del viernes.
 - Solicitud: auditar y corregir la skill 1.2.0 instalada, los scripts del box «main», las cuatro tareas programadas, la vigía de TinyFish y la prueba del DOF del 06/11/2026; documentar todo aquí.
