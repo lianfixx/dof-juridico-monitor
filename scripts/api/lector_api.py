@@ -4,7 +4,7 @@
 Uso:
   lector_api.py DESTINO [--seco] [--max-usd 8] [--paginas-por-bloque 30] [--hilos 4]
                 [--modelo-lector claude-sonnet-5-5] [--modelo-sintesis claude-opus-5-5]
-                [--sin-lote] [--espera-lote 35]
+                [--sin-lote] [--espera-lote 35] [--modelo-tablas claude-haiku-5-5]
 
 DESTINO = fuentes/<entrega>, ya con dof/inventario.json, dof/raw/*.txt y, si hubo OCR, *.ocr.txt
 (lo dejan scripts/box/dof_fuentes.py, paginas.py y ocr.py, en el box o en un servidor de GitHub).
@@ -31,6 +31,10 @@ Estado final: INTEGRO solo si todos los bloques pasaron sus comprobaciones y nin
 sin texto ni OCR. Cualquier otra cosa es PARCIAL, con los faltantes exactos. Este lector NO
 sustituye el cierre: deja material para que la sesión que cierra lo verifique y decida. No envía
 correos, no escribe URLs que no vengan del índice oficial y no publica nada.
+
+Tablas numéricas: un bloque en el que todas las páginas son casi solo cifras (por ejemplo, los precios
+promedio del INPC), sin palabras normativas ni títulos del índice, lo lee `--modelo-tablas`. Si su nota trae
+algo más que la continuación de una tabla, el bloque se vuelve a leer con el modelo lector.
 
 Es reanudable: un bloque ya leído con el mismo texto no se vuelve a pagar.
 Ningún bloque puede tumbar la corrida: un error queda en su nota y ESTADO_API.json se escribe siempre.
@@ -62,6 +66,13 @@ MAX_SALIDA_LECTOR = 16000
 MAX_SALIDA_SINTESIS = 20000
 MAX_CARACTERES_SINTESIS = 45_000  # por llamada al redactor (medido el 23/11/2026: con 138 000 la respuesta se cortó)
 LINEAS_FINALES = 8
+# Tabla numérica: cada página con al menos esta proporción de dígitos entre dígitos y letras. Medido el 23/11/2026
+# en 1 128 páginas reales: las tablas del INPC dan 0.99 en todas sus páginas; el bloque siguiente más alto, 0.53.
+TABLA_MIN_DIGITOS = 0.90
+TABLA_MIN_CARACTERES = 2000
+PALABRAS_NORMATIVAS = re.compile(
+    r"art[ií]culo|transitori|considerando|acuerd|decret|resoluci[oó]n|resuelve|aviso|edicto|convocatoria|lineamiento|"
+    r"regla|norma|ley\b|reglamento|circular|oficio|sentencia|declaratoria|fe de erratas|vigor|vigencia|deroga|abroga", re.I)
 MAX_DIVISIONES = 3
 # USD por millón de tokens (entrada, salida). Precios oficiales al 20/11/2026.
 PRECIOS = {"claude-haiku-5-5": (0.10, 0.50), "claude-sonnet-5-5": (2.0, 10.0), "claude-opus-5-5": (4.0, 20.0)}
@@ -455,6 +466,28 @@ def coincide_final(dicha: str, texto: str) -> bool:
     return any(len(b) >= 12 and difflib.SequenceMatcher(None, a, b).ratio() >= 0.85 for b in cola)
 
 
+def es_tabla_numerica(doc: dict, blq: dict) -> bool:
+    """¿El bloque es pura tabla de cifras? Exige las tres cosas: todas las páginas casi solo dígitos, ninguna palabra
+    normativa y ningún título del índice oficial. Ante la duda, no lo es (y lo lee el modelo lector)."""
+    paginas = re.split(r"(?m)^<<<PÁGINA \d+>>>\n", blq["texto"])[1:]
+    if not paginas:
+        return False
+    for pag in paginas:
+        digitos, letras = sum(c.isdigit() for c in pag), sum(c.isalpha() for c in pag)
+        if digitos + letras < TABLA_MIN_CARACTERES or digitos / (digitos + letras) < TABLA_MIN_DIGITOS:
+            return False
+    if PALABRAS_NORMATIVAS.search(blq["texto"]):
+        return False
+    cuerpo = norm(blq["texto"])
+    return not any(len(t) >= 25 and t in cuerpo for t in (norm(n["titulo"])[:50] for n in doc["indice"]))
+
+
+def tabla_confirmada(nota: dict) -> bool:
+    """¿La nota de un bloque de tabla dice lo esperado: a lo más dos trozos, ninguno de relevancia alta o media?"""
+    pubs = nota.get("publicaciones", [])
+    return nota.get("estado") == "INTEGRO" and len(pubs) <= 2 and all(p.get("relevancia") in ("baja", "ninguna") for p in pubs)
+
+
 def mensaje_bloque(doc: dict, blq: dict) -> str:
     indice = "\n".join(f"{n['codigo']} | {n['organismo']} | {n['titulo']}" for n in doc["indice"]) or "(sin índice)"
     que = f"Anexo publicado aparte de la edición {doc.get('de', '')}" if doc["tipo"] == "anexo" else "Edición"
@@ -693,7 +726,7 @@ def opcion(argv: list[str], nombre: str, defecto: str) -> str:
 
 
 def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, m_lector: str, m_sintesis: str,
-           lote: bool = False, espera_lote: int = 35 * 60) -> dict:
+           lote: bool = False, espera_lote: int = 35 * 60, m_tablas: str = "") -> dict:
     t0 = time.time()
     docs, problemas = universo(dest)
     por_id = {d["id"]: d for d in docs}
@@ -715,11 +748,18 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
     paginas = sum(b["fin"] - b["ini"] + 1 for b in plan)
     factor_lote = DESCUENTO_LOTE if lote else 1.0
 
-    def previsto(b: dict, factor: float = 1.0) -> float:
-        return costo(m_lector, tokens_aprox(S_LECTOR + mensaje_bloque(por_id[b["doc"]], b)), SALIDA_PREVISTA) * factor
+    tablas = {(b["doc"], b["ini"], b["fin"]) for b in plan if m_tablas and m_tablas != m_lector and es_tabla_numerica(por_id[b["doc"]], b)}
+
+    def modelo_de(b: dict) -> str:
+        return m_tablas if (b["doc"], b["ini"], b["fin"]) in tablas else m_lector
+
+    def previsto(b: dict, factor: float = 1.0, modelo: str = "") -> float:
+        salida = 600 if (modelo or modelo_de(b)) != m_lector else SALIDA_PREVISTA
+        return costo(modelo or modelo_de(b), tokens_aprox(S_LECTOR + mensaje_bloque(por_id[b["doc"]], b)), salida) * factor
 
     estado = {"formato": "dof-lector-api-v2", "entrega": dest.name, "inicio_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-              "modelo_lector": m_lector, "modelo_sintesis": m_sintesis, "documentos": len(docs), "bloques": len(plan),
+              "modelo_lector": m_lector, "modelo_sintesis": m_sintesis, "modelo_tablas": m_tablas or m_lector,
+              "documentos": len(docs), "bloques": len(plan), "bloques_tabla_numerica": len(tablas),
               "paginas": paginas, "por_lote": bool(lote),
               "costo_estimado_lectura_usd": round(sum(previsto(b, factor_lote) for b in plan), 2), "tope_usd": max_usd,
               "problemas_de_fuentes": problemas, "paginas_sin_texto_ni_ocr": sin_lectura,
@@ -734,7 +774,8 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
 
     candado = threading.Lock()
     gasto = {"usd": 0.0, "lectura": 0.0, "sintesis": 0.0}
-    usos = {"entrada": 0, "salida": 0, "llamadas": 0, "reutilizados": 0, "por_lote": 0, "directos": 0, "divididos": 0}
+    usos = {"entrada": 0, "salida": 0, "llamadas": 0, "reutilizados": 0, "por_lote": 0, "directos": 0, "divididos": 0,
+            "tablas_releidas": 0}
     hojas: dict[tuple[str, int, int], dict] = {}
 
     def ruta_de(b: dict) -> Path:
@@ -814,7 +855,8 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
             usos["divididos"] += 1
         return mitades
 
-    def directo(b: dict, intentos: int = 2, prof: int = 0, acum: dict | None = None, previa: dict | None = None) -> None:
+    def directo(b: dict, intentos: int = 2, prof: int = 0, acum: dict | None = None, previa: dict | None = None,
+                modelo: str = "") -> None:
         """Lee un bloque con llamadas directas; deja su nota (o las de sus mitades) en `hojas`.
 
         `previa` es la nota que dejó el lote cuando no pasó la comprobación: se conserva si la repetición no sale mejor.
@@ -822,8 +864,9 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
         d, acum = por_id[b["doc"]], dict(acum or {})
         usuario = mensaje_bloque(d, b)
         nota = previa
+        modelo = modelo or modelo_de(b)
         for _ in range(max(1, intentos)):
-            reserva = previsto(b)
+            reserva = previsto(b, modelo=modelo)
             with candado:
                 if gasto["usd"] + reserva > max_usd:
                     if nota is None:
@@ -831,11 +874,13 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
                     break
                 gasto["usd"] += reserva  # reserva; se cambia por el costo real al terminar
             try:
-                resp, uso = llamar(m_lector, S_LECTOR, usuario, E_LECTOR, MAX_SALIDA_LECTOR)
+                resp, uso = llamar(modelo, S_LECTOR, usuario, E_LECTOR, MAX_SALIDA_LECTOR)
             except ErrorAPI as e:
                 with candado:
                     gasto["usd"] -= reserva
                 cobrar(e.uso, "directo", acum)
+                if modelo != m_lector:  # la tabla no salió con el modelo barato: la lee el modelo lector
+                    return releer_tabla(b, acum, nota)
                 if e.corte:
                     mitades = dividir(b, prof, acum)
                     for m in mitades or []:
@@ -850,9 +895,17 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
             cobrar(uso, "directo", acum)
             nota = comprobar(d, b, resp)
             nota["uso"] = dict(acum)
+            if modelo != m_lector and not tabla_confirmada(nota):
+                return releer_tabla(b, acum, nota)
             if nota["estado"] == "INTEGRO":
                 break
         hoja(nota)
+
+    def releer_tabla(b: dict, acum: dict, previa: dict | None) -> None:
+        """Un bloque que parecía tabla numérica y cuya nota dice otra cosa (o falló) lo lee el modelo lector."""
+        with candado:
+            usos["tablas_releidas"] += 1
+        directo(b, 2, 0, acum, previa if previa and previa.get("publicaciones") else None, modelo=m_lector)
 
     def seguro(b: dict, **kw) -> None:
         """Ningún bloque tumba la corrida: un error inesperado queda en su nota."""
@@ -888,7 +941,7 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
             caben.append(b)
         marca = sha(f"{dest.name}{time.time()}{os.getpid()}")[:8]
         ids = {f"{marca}-{k:04d}": b for k, b in enumerate(caben)}
-        peticiones = [{"custom_id": cid, "params": cuerpo_de(m_lector, S_LECTOR, mensaje_bloque(por_id[b["doc"]], b), E_LECTOR, MAX_SALIDA_LECTOR)}
+        peticiones = [{"custom_id": cid, "params": cuerpo_de(modelo_de(b), S_LECTOR, mensaje_bloque(por_id[b["doc"]], b), E_LECTOR, MAX_SALIDA_LECTOR)}
                       for cid, b in ids.items()]
         try:
             resultados, info_lote = leer_por_lote(peticiones, espera_lote) if peticiones else ({}, {"estado": "no usado"})
@@ -906,10 +959,12 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
                     hoja(fallida(b, "LOTE_SIN_TERMINAR", f"el lote quedó «{est_lote[:80]}»; no se repite para no pagar dos veces"))
                 continue
             try:
-                resp, uso = interpretar(r.get("message") or {}, m_lector, E_LECTOR, DESCUENTO_LOTE)
+                resp, uso = interpretar(r.get("message") or {}, modelo_de(b), E_LECTOR, DESCUENTO_LOTE)
             except ErrorAPI as e:
                 cobrar(e.uso, "lote", acum)
-                if e.corte:
+                if modelo_de(b) != m_lector:
+                    cola.append((b, {"intentos": 2, "acum": acum, "modelo": m_lector}))
+                elif e.corte:
                     cola += [(m, {"intentos": 2, "prof": 1}) for m in dividir(b, 0, acum) or []]
                 else:
                     cola.append((b, {"intentos": 1, "acum": acum}))
@@ -922,7 +977,10 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
                 hoja(fallida(b, "ERROR_INTERNO", type(e).__name__, acum))
                 continue
             nota["uso"] = dict(acum)
-            if nota["estado"] == "INTEGRO":
+            if modelo_de(b) != m_lector and not tabla_confirmada(nota):
+                usos["tablas_releidas"] += 1
+                cola.append((b, {"intentos": 2, "acum": acum, "modelo": m_lector}))
+            elif nota["estado"] == "INTEGRO":
                 hoja(nota)
             else:
                 cola.append((b, {"intentos": 1, "acum": acum, "previa": nota}))
@@ -1041,7 +1099,8 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
                    "publicaciones_anotadas": sum(len(n.get("publicaciones", [])) for n in notas),
                    "tokens_entrada": usos["entrada"], "tokens_salida": usos["salida"], "llamadas": usos["llamadas"],
                    "bloques_reutilizados": usos["reutilizados"], "bloques_por_lote": usos["por_lote"],
-                   "bloques_directos": usos["directos"], "bloques_divididos": usos["divididos"], "lote": info_lote,
+                   "bloques_directos": usos["directos"], "bloques_divididos": usos["divididos"],
+                   "tablas_releidas_con_el_lector": usos["tablas_releidas"], "lote": info_lote,
                    "costo_usd": round(gasto["usd"], 4), "costo_lectura_usd": round(gasto["lectura"], 4),
                    "costo_sintesis_usd": round(gasto["sintesis"], 4),
                    "segundos": int(time.time() - t0), "fin_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -1065,7 +1124,8 @@ def main(argv: list[str]) -> int:
         estado = correr(dest, "--seco" in argv, float(opcion(argv, "--max-usd", "8")),
                         int(opcion(argv, "--paginas-por-bloque", "30")), int(opcion(argv, "--hilos", "4")),
                         opcion(argv, "--modelo-lector", "claude-sonnet-5-5"), opcion(argv, "--modelo-sintesis", "claude-opus-5-5"),
-                        lote="--sin-lote" not in argv, espera_lote=int(float(opcion(argv, "--espera-lote", "35")) * 60))
+                        lote="--sin-lote" not in argv, espera_lote=int(float(opcion(argv, "--espera-lote", "35")) * 60),
+                        m_tablas=opcion(argv, "--modelo-tablas", "claude-haiku-5-5"))
     except Exception as e:  # noqa: BLE001 - el estado se escribe siempre; el detalle no sale a la consola
         estado = {"formato": "dof-lector-api-v2", "entrega": dest.name, "estado": "ERROR_INTERNO", "error": type(e).__name__,
                   "fin_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "run_id": os.environ.get("GITHUB_RUN_ID", "")}

@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · lector por API: las tablas de pura cifra las lee el modelo barato
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: «si de manera segura y sólida observas que no afecta en lo absoluto la mejora que propones, implementa».
+- Cambios: `lector_api.py` manda a `--modelo-tablas` (Haiku 5.5) los bloques que el código reconoce como tabla numérica: todas sus páginas con al menos 90 % de dígitos, sin palabras normativas y sin títulos del índice oficial. Auditoría previa con las 1 128 páginas reales de la entrega 2026-11-24: la regla marca los 24 bloques de precios promedio del INPC (0.99 en todas sus páginas) y ninguno más (el siguiente más alto, 0.53; y trae palabras normativas). Doble seguro: una nota con más de dos trozos, con relevancia alta o media, o una falla del modelo barato, hacen que el bloque lo relea el modelo lector. Estimado de lectura de esa entrega, por lote: de 4.34 a 2.99 USD. `ESTADO_API.json` anota `bloques_tabla_numerica` y `tablas_releidas_con_el_lector`.
+- Archivos: `scripts/api/lector_api.py`, `tests/test_lector_api.py`, `references/api.md`, `docs/adr/0006-lector-por-api.md`, este registro.
+- Verificación: `python3 -m pytest -q` 98 aprobadas (4 nuevas; 5 mutaciones de la regla detectadas).
+- Pendiente: comprobación real con dos bloques de tabla en el repositorio privado.
+
 ### 2026-11-23 · lector por API: corrida real completa, en sombra desde hoy
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: que la API funcione para el DOF, medir y cuidar los costos.

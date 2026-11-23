@@ -21,7 +21,7 @@ Un lector previo determinista (`scripts/api/lector_api.py`) corre en un servidor
 
 La primera corrida real costó 9.07 USD por 71 de 75 bloques con llamadas directas: dos entregas por semana a ese precio agotan el espacio de trabajo (60 USD al mes). Se decide leer por lote (Message Batches, 50 % de descuento) con un plazo: si el lote no termina en 35 minutos se cancela y lo que falte se lee con llamadas directas, de modo que el lector siempre termina antes que la tarea de la suscripción. Ante la duda de si un lote cobró, no se repite. El inventario y los pendientes pasan a armarse con código; el modelo de síntesis solo redacta candidatas y secundarios.
 
-Descartado por ahora: mandar las tablas numéricas densas a un modelo más barato. Ahorraría cerca de 1 USD en las entregas que traen el INPC, a cambio de una regla más que puede clasificar mal una página; se revisa con los datos de la sombra.
+Tablas numéricas (decidido el mismo día, a petición de Emi «si de manera segura y sólida no afecta en lo absoluto»): los bloques de pura cifra los lee Haiku 5.5. La regla es del código y exige tres condiciones a la vez (90 % de dígitos en todas las páginas, ninguna palabra normativa, ningún título del índice); en los datos reales separa los 24 bloques del INPC con margen amplio (0.99 contra 0.53) y nada más. Si la nota del modelo barato trae algo distinto de la continuación de una tabla, o falla, el bloque lo relee el modelo lector. El contenido jurídico no cambia de modelo.
 
 ## Consecuencias
 
