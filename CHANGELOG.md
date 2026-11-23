@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · prueba de fuentes desde GitHub: el DOF coincide byte por byte; se agrega el Semanario
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: llevar el lector nocturno a la API; prueba de factibilidad.
+- Cambios: resultado de la primera corrida: un servidor de GitHub bajó en 50 s el periodo del 3 de noviembre (ediciones 297 a 300, 544 páginas, 4 anexos aparte, 0 errores) y los SHA-256 de los cuatro PDF y de los cuatro anexos son idénticos a los del inventario del box (`fuentes/2026-11-03`). Se agrega al mismo workflow la prueba del Semanario con `sjf_fuentes.mjs` y Chrome.
+- Archivos: `.github/workflows/prueba-fuentes.yml`, este registro.
+- Verificación: aprobado para el DOF (corrida 23/11/2026); Semanario, en la corrida siguiente.
+- Pendiente: repositorio privado para las notas del lector por API (lo crea Emi).
+
 ### 2026-11-23 · prueba de fuentes desde un servidor de GitHub
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: llevar el lector nocturno a la API con créditos de Claude; autorizó crear workflows. Primer paso: prueba de factibilidad.
