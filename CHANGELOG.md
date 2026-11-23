@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.3.0 — 2026-11-23: lector previo por la API de Claude (en sombra)
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: «tratemos de utilizar la API para el DOF y que funcione todo perfecto»; que corra antes y que, si un día falla, su suscripción lo haga de manera normal. Autorizó workflows, fusión y el repositorio privado `lianfixx/dof-trabajo`, que él mismo creó.
+- Cambios: `scripts/api/lector_api.py` (lector por bloques con comprobación de última línea, citas literales, códigos del índice y cruce con el índice oficial; tope de gasto; reanudable) y `scripts/api/fuentes_api.sh` (mismo periodo del box, sin Semanario). `references/api.md` y ADR 0006. SKILL.md 1.3.0 con la sección «Lector por API (en prueba)». Resultado de la prueba del Semanario desde GitHub: el portal dejó colgada la conexión los 15 minutos del tope y la Corte no ofrece vía oficial para programas; el Semanario sigue en el box. Las tareas programadas, sus textos y el box no cambian.
+- Archivos: `scripts/api/lector_api.py`, `scripts/api/fuentes_api.sh`, `tests/test_lector_api.py`, `references/api.md`, `docs/adr/0006-lector-por-api.md`, `SKILL.md`, este registro.
+- Verificación: `python3 -m pytest -q` 72 aprobadas (12 nuevas, sin llamadas reales). Primera corrida real, en el repositorio privado.
+- Pendiente: cuatro entregas en sombra y decisión de Emi sobre el relevo; guardar la skill 1.3.0 en Claude.
+
 ### 2026-11-23 · sjf_fuentes.mjs: el proxy del box pasa a ser configurable
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: llevar el lector nocturno a la API; prueba de factibilidad.
