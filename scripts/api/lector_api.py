@@ -5,6 +5,7 @@ Uso:
   lector_api.py DESTINO [--seco] [--max-usd 8] [--paginas-por-bloque 30] [--hilos 4]
                 [--modelo-lector claude-sonnet-5-5] [--modelo-sintesis claude-opus-5-5]
                 [--sin-lote] [--espera-lote 35] [--modelo-tablas claude-haiku-5-5]
+                [--releer-tablas N]
 
 DESTINO = fuentes/<entrega>, ya con dof/inventario.json, dof/raw/*.txt y, si hubo OCR, *.ocr.txt
 (lo dejan scripts/box/dof_fuentes.py, paginas.py y ocr.py, en el box o en un servidor de GitHub).
@@ -35,6 +36,8 @@ correos, no escribe URLs que no vengan del índice oficial y no publica nada.
 Tablas numéricas: un bloque en el que todas las páginas son casi solo cifras (por ejemplo, los precios
 promedio del INPC), sin palabras normativas ni títulos del índice, lo lee `--modelo-tablas`. Si su nota trae
 algo más que la continuación de una tabla, el bloque se vuelve a leer con el modelo lector.
+`--releer-tablas N` vuelve a leer N de esos bloques aunque ya tengan nota: sirve para comprobar el camino
+del modelo barato sin tocar las notas a mano (cuesta centavos).
 
 Es reanudable: un bloque ya leído con el mismo texto no se vuelve a pagar.
 Ningún bloque puede tumbar la corrida: un error queda en su nota y ESTADO_API.json se escribe siempre.
@@ -726,7 +729,8 @@ def opcion(argv: list[str], nombre: str, defecto: str) -> str:
 
 
 def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, m_lector: str, m_sintesis: str,
-           lote: bool = False, espera_lote: int = 35 * 60, m_tablas: str = "") -> dict:
+           lote: bool = False, espera_lote: int = 35 * 60, m_tablas: str = "",
+           releer_tablas: int = 0) -> dict:
     t0 = time.time()
     docs, problemas = universo(dest)
     por_id = {d["id"]: d for d in docs}
@@ -920,7 +924,11 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
 
     # 1. Lo que ya está leído
     pendientes: list[dict] = []
+    forzados = sorted(tablas)[:max(0, releer_tablas)]
     for b in plan:
+        if (b["doc"], b["ini"], b["fin"]) in forzados:
+            pendientes.append(b)
+            continue
         hechas, faltan = resolver(b)
         for n in hechas:
             hoja(n, escribir=False)
@@ -1125,7 +1133,8 @@ def main(argv: list[str]) -> int:
                         int(opcion(argv, "--paginas-por-bloque", "30")), int(opcion(argv, "--hilos", "4")),
                         opcion(argv, "--modelo-lector", "claude-sonnet-5-5"), opcion(argv, "--modelo-sintesis", "claude-opus-5-5"),
                         lote="--sin-lote" not in argv, espera_lote=int(float(opcion(argv, "--espera-lote", "35")) * 60),
-                        m_tablas=opcion(argv, "--modelo-tablas", "claude-haiku-5-5"))
+                        m_tablas=opcion(argv, "--modelo-tablas", "claude-haiku-5-5"),
+                        releer_tablas=int(opcion(argv, "--releer-tablas", "0")))
     except Exception as e:  # noqa: BLE001 - el estado se escribe siempre; el detalle no sale a la consola
         estado = {"formato": "dof-lector-api-v2", "entrega": dest.name, "estado": "ERROR_INTERNO", "error": type(e).__name__,
                   "fin_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "run_id": os.environ.get("GITHUB_RUN_ID", "")}
