@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · lector por API: síntesis por grupos y nota mínima para edictos (tras la corrida real de la versión 2)
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: auditar de fondo cada paso y arreglar; cuidar los costos.
+- Cambios: la corrida real de la versión 2 (45276910098 del repositorio privado, entrega 2026-11-24) quedó `INTEGRO`: 78 bloques íntegros (69 reutilizados sin costo, 4 por lote, 5 directos tras 3 divisiones), lote terminado en 142 s, 0 títulos del índice sin nota, 2.07 USD. Dejó dos ajustes: (1) la síntesis se cortó por longitud con 138 000 caracteres de notas; ahora el redactor recibe una unidad por publicación, en grupos de 45 000 caracteres, el programa une los resultados en «Candidatas» y «Avisos secundarios» y un grupo cortado se rehace en mitades; (2) las páginas de edictos y convocatorias producían respuestas de hasta 14 000 tokens por seis páginas y cortes; ahora llevan nota mínima cuando su relevancia es baja o ninguna.
+- Archivos: `scripts/api/lector_api.py`, `tests/test_lector_api.py`, `references/api.md`, este registro.
+- Verificación: `python3 -m pytest -q` 94 aprobadas (3 nuevas). Repetición sobre las notas reales, sin llamar a la API: 5 grupos para el redactor, 78 bloques reutilizados.
+- Pendiente: corrida real para confirmar la síntesis completa; cuatro entregas en sombra.
+
 ### Skill 1.3.1 — 2026-11-23: lector por API, versión 2 (lo que enseñó la primera corrida real)
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: «cada paso que hagas audita de fondo y arregla sí o sí»; cuidar los costos; que la API funcione perfecto para el DOF.

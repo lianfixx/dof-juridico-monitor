@@ -47,7 +47,7 @@ def pub(codigo, ini, fin, citas):
 def lector_bueno(codigos=("5700001", "5700002")):
     def f(modelo, sistema, usuario, esquema, max_tokens):
         if esquema is None:
-            return "## Inventario por edición\n\n- 5700001 ACUERDO de prueba.", USO
+            return "## Candidatas a la tabla del reporte\n\n### 5700001 · ACUERDO de prueba.", USO
         cuerpo = usuario.split("Bloque:\n", 1)[1]
         nums = [int(x) for x in __import__("re").findall(r"<<<PÁGINA (\d+)>>>", cuerpo)]
         return {"ultima_linea": la.ultima_linea_real(cuerpo),
@@ -478,3 +478,45 @@ def test_trozo_de_continuacion_hereda_el_codigo_del_bloque_anterior():
     # Si el bloque anterior cerró su última publicación, o hay un hueco de páginas, nadie hereda.
     assert la.heredar_codigos([nota(1, 3, [pub("5700001", 1, 3, [])]), nota(4, 6, [sigue])])[1] == 0
     assert la.heredar_codigos([nota(1, 3, [abierta]), nota(5, 6, [dict(sigue, pagina_inicio=5)])])[1] == 0
+
+
+def test_sintesis_por_grupos_se_une_en_dos_secciones():
+    partes = ["## Candidatas a la tabla del reporte\n\n### 5700001 · Uno\nTexto uno.\n\n## Avisos secundarios para la guía\n- 5700002: tipo de cambio.",
+              "## Candidatas a la tabla del reporte\n\n### 5700003 · Tres\nTexto tres.",
+              "## Avisos secundarios para la guía\n- 5700004: tasas."]
+    texto = la.unir_sintesis(partes)
+    assert texto.count("## Candidatas a la tabla del reporte") == 1 and texto.count("## Avisos secundarios para la guía") == 1
+    assert texto.index("### 5700001") < texto.index("### 5700003") < texto.index("## Avisos secundarios") < texto.index("5700002") < texto.index("5700004")
+    assert la.unir_sintesis([]) == ""
+
+
+def test_material_va_por_publicacion_y_en_grupos_pequenos():
+    def nota(ini, fin, pubs):
+        return {"doc": "05012026-MAT", "ini": ini, "fin": fin, "estado": "INTEGRO", "publicaciones": pubs}
+    doc = {"id": "05012026-MAT", "tipo": "edicion", "fecha": "2026-01-05", "edicion": "MAT", "numero": "3/2026"}
+    notas = [nota(1, 3, [dict(pub("5700001", 1, 3, ["cita uno"]), completa_en_bloque=False)]),
+             nota(4, 6, [pub("5700001", 4, 5, []), dict(pub("5700002", 6, 6, []), relevancia="baja"),
+                         dict(pub("", 6, 6, []), relevancia="ninguna")])]
+    unidades = la.material_sintesis([doc], {"05012026-MAT": notas})
+    assert [(u["codigo"], len(u["trozos"])) for u in unidades] == [("5700001", 2), ("5700002", 1)]   # los trozos de una nota viajan juntos
+    assert "citas" in unidades[0]["trozos"][0] and "citas" not in unidades[1]["trozos"][0]             # lo «baja» va abreviado
+    assert [len(g) for g in la.en_grupos(unidades, maximo=10)] == [1, 1] and len(la.en_grupos(unidades)) == 1
+
+
+def test_sintesis_cortada_se_redacta_en_mitades(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    bueno, tamanos = lector_bueno(), []
+
+    def redactor(modelo, sistema, usuario, esquema, max_tokens):
+        if esquema is not None:
+            return bueno(modelo, sistema, usuario, esquema, max_tokens)
+        n = len(json.loads(usuario.split("\n", 1)[1]))
+        tamanos.append(n)
+        if n > 1:
+            raise la.ErrorAPI("respuesta cortada por max_tokens", uso=dict(USO), corte=True, parcial="## Candidatas a la tabla del reporte\n\nA medias")
+        return "## Candidatas a la tabla del reporte\n\n### 570000%d · completa" % len(tamanos), USO
+    monkeypatch.setattr(la, "llamar", redactor)
+    est = la.correr(dest, False, 8, 10, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    pre = (dest / "notas" / "PRELIMINAR_API.md").read_text()
+    assert tamanos == [2, 1, 1] and est["sintesis"] == "ok" and "A medias" not in pre and pre.count("· completa") == 2
+    assert est["costo_sintesis_usd"] == 0.012  # la respuesta cortada también se cobró
