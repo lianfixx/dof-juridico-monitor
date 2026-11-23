@@ -18,7 +18,8 @@ El material (fuentes, notas, preliminar) vive en el repositorio **privado**; en 
 
 - `scripts/api/fuentes_api.sh`: mismo periodo que `fuentes.sh` del box, con `dof_fuentes.py`, `paginas.py` y `ocr.py`. Comprobado el 23/11/2026: un servidor de GitHub bajó el periodo del 3 de noviembre (ediciones 297 a 300, 544 páginas, 4 anexos) con SHA-256 idénticos a los del box.
 - `scripts/api/lector_api.py`: el lector. Pruebas en `tests/test_lector_api.py`.
-- Workflow `lector-api.yml` del repositorio privado: lunes y miércoles a las 20:00 (hora del centro de México) y a mano.
+- Workflow `lector-api.yml` del repositorio privado: lunes y miércoles a las 19:17, con reintento automático a las 20:37 (hora del centro de México), y a mano. Minutos sueltos porque GitHub retrasa las corridas programadas a la hora en punto; el reintento no vuelve a pagar lo ya leído. Si una corrida no queda íntegra abre el issue «Lector del DOF por API: la corrida no quedó íntegra», que se cierra solo cuando otra sale bien.
+- Tarea programada de Claude «DOF · guardia del lector por API» (martes y jueves 11:23, Opus 5.5): revisa las corridas de la víspera; si hubo una falla del código la repara de fondo (prueba que falla, corrección, pull request; para reparar usa un subagente con Fable y, si no está disponible, Opus), y durante la sombra compara la entrega con la lectura de la suscripción en `sombra/` del repositorio privado. No toca tareas programadas ni el box, y no envía correos.
 
 ## Cómo garantiza la lectura
 
@@ -63,7 +64,7 @@ ESTADO_API.json                           estado, páginas, bloques, lote, token
 
 ## Relevo con la sesión de la suscripción
 
-Fase de sombra (vigente): el lector por API corre a las 20:00 y la tarea «lector nocturno» de la suscripción corre a las 21:41 **sin cambios**, como si el lector por API no existiera. Se comparan las dos lecturas en al menos cuatro entregas.
+Fase de sombra (vigente): el lector por API corre a las 19:17 y a las 20:37, y la tarea «lector nocturno» de la suscripción corre a las 21:41 **sin cambios**, como si el lector por API no existiera. Se comparan las dos lecturas en al menos cuatro entregas.
 
 Después de la sombra, y solo con aprobación de Emi, la tarea de las 21:41 empezará por leer `ESTADO_API.json` y el preliminar: con `INTEGRO` y los mismos SHA-256 que el inventario del box, verifica por muestreo, lee los títulos «por verificar» y continúa; con `PARCIAL`, sin archivo o con SHA-256 distintos, hace la lectura completa como hoy. La tarea de la suscripción nunca se apaga.
 
