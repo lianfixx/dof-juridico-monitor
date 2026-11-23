@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: dof-juridico-monitor
+Version: 1.0.0
+Summary: Vendor-neutral legal monitoring protocol for Mexico's Diario Oficial de la Federación
+Requires-Python: >=3.10
+Provides-Extra: test
+Requires-Dist: pytest<10,>=8; extra == "test"
+Provides-Extra: pdf
+Requires-Dist: pypdf<7,>=5; extra == "pdf"
+Provides-Extra: artifacts
+Requires-Dist: reportlab<5,>=4; extra == "artifacts"
+Requires-Dist: python-docx<2,>=1.1; extra == "artifacts"
