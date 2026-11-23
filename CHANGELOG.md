@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · lector por API: corrida real completa, en sombra desde hoy
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: que la API funcione para el DOF, medir y cuidar los costos.
+- Cambios: solo este registro y la medición en `references/api.md`. Corrida 45279097570 del repositorio privado (entrega 2026-11-24): `INTEGRO`, 78 de 78 bloques íntegros y ya leídos (0 USD de lectura), síntesis completa en 5 grupos (18 candidatas, 37 avisos secundarios, 31 enlaces del índice oficial), 0.96 USD. Gasto total del día en el espacio `castorena-dof`: 12.10 USD (9.07 de la primera corrida con llamadas directas, 2.07 y 0.96 de las dos siguientes). Estimado de una entrega de lunes como esta, ya por lote: 4.3 USD de lectura más cerca de 1 USD de síntesis. Se eliminó en Claude Console la llave `dof-github-actions`; el secreto de este repositorio público quedó con una llave muerta y lo borra Emi (GitHub pide su passkey).
+- Archivos: `references/api.md`, este registro.
+- Verificación: `ESTADO_API.json`, `bitacora/2026-11.md` y `notas/PRELIMINAR_API.md` del repositorio privado.
+- Pendiente: cuatro entregas en sombra (24 y 26 de noviembre, 1 y 3 de diciembre) comparadas con la lectura de la suscripción; después, decisión de Emi sobre el relevo. La tarea «lector nocturno» no cambió.
+
 ### 2026-11-23 · lector por API: síntesis por grupos y nota mínima para edictos (tras la corrida real de la versión 2)
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: auditar de fondo cada paso y arreglar; cuidar los costos.
