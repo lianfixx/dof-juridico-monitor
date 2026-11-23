@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.3.1 — 2026-11-23: lector por API, versión 2 (lo que enseñó la primera corrida real)
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: «cada paso que hagas audita de fondo y arregla sí o sí»; cuidar los costos; que la API funcione perfecto para el DOF.
+- Cambios: la primera corrida real (periodo del 20 al 23 de noviembre: 9 documentos, 1 128 páginas, 75 bloques) leyó 71 bloques, costó 9.07 USD y se cayó antes de escribir `ESTADO_API.json` por una nota sin lectura; terminó en rojo, como debe, y la suscripción trabajó normal. `lector_api.py` versión 2: (1) ningún bloque tumba la corrida y el estado se escribe siempre; (2) una respuesta cortada parte el bloque en mitades en vez de repetirse igual, y todo lo cobrado cuenta en el tope; (3) la «última línea» se busca entre las líneas finales (número de página, OCR) y las notas anteriores se revalidan sin nueva llamada; (4) lectura por lote a mitad de precio con plazo de 35 minutos, cancelación y relevo por llamadas directas, sin repetir cuando no se sabe si el lote cobró; (5) el inventario y «por verificar» los arma el código, la síntesis solo redacta candidatas y secundarios y se reutiliza si las notas no cambiaron; (6) los trozos de continuación sin título heredan el código de la publicación abierta; (7) comprobación de que las notas cubren todas las páginas y de bloques con texto sin publicaciones; (8) cada nota guarda su uso y su costo.
+- Archivos: `scripts/api/lector_api.py`, `tests/test_lector_api.py`, `references/api.md`, `docs/adr/0006-lector-por-api.md`, `SKILL.md`, `README.md`, este registro.
+- Verificación: `python3 -m pytest -q` 91 aprobadas (19 nuevas; siete mutaciones del código detectadas por las pruebas). Repetición sobre los datos reales de la corrida, sin llamar a la API: 69 de 75 bloques íntegros (65 más 4 revalidados), 0 títulos del índice sin nota, 29 códigos heredados, estimado en lote 4.33 USD.
+- Pendiente: corrida real de la versión 2; cuatro entregas en sombra; guardar la skill 1.3.1 en Claude.
+
 ### Skill 1.3.0 — 2026-11-23: lector previo por la API de Claude (en sombra)
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: «tratemos de utilizar la API para el DOF y que funcione todo perfecto»; que corra antes y que, si un día falla, su suscripción lo haga de manera normal. Autorizó workflows, fusión y el repositorio privado `lianfixx/dof-trabajo`, que él mismo creó.
