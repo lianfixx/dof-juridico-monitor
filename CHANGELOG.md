@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.3.2 — 2026-11-23: horario 19:17 con reintento, aviso por issue, guardia y comprobación real de las tablas
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: «revisa que esté bien sincronizado, ajustado y programado por si un día falla, entres para arreglar de fondo con Fable alto o medio o con Opus alto dependiendo que esté disponible y si no se puede continúe en mi suscripción»; hacer la comparación de la sombra en automático.
+- Cambios: SKILL.md 1.3.2 (sección «Lector por API (en sombra)») y `references/api.md` con el horario nuevo del workflow privado (19:17 y reintento 20:37, en vez de 20:00 en punto), el issue de aviso que se cierra solo y la tarea programada «DOF · guardia del lector por API» (martes y jueves 11:23, Opus 5.5; repara con subagente Fable u Opus; compara la sombra). Comprobación real de las tablas numéricas (corrida 45286205364 del repositorio privado, `releer_tablas=2`): dos bloques de tabla leídos por lote con Haiku 5.5, `INTEGRO`, 0.0056 USD en total, ninguna relectura, síntesis reutilizada.
+- Archivos: `SKILL.md`, `README.md`, `references/api.md`, este registro.
+- Verificación: `python3 -m pytest -q` 99 aprobadas; corrida citada.
+- Pendiente: cuatro comparaciones en sombra; guardar la skill 1.3.2 en Claude (tarjeta enviada a Emi).
+
 ### 2026-11-23 · lector por API: `--releer-tablas N` para comprobar el modelo barato sin tocar notas a mano
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: auditar de fondo y dejar todo verificado.
