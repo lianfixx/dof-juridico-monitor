@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · prueba de fuentes desde un servidor de GitHub
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: llevar el lector nocturno a la API con créditos de Claude; autorizó crear workflows. Primer paso: prueba de factibilidad.
+- Cambios: workflow manual `prueba-fuentes.yml`: corre `scripts/box/dof_fuentes.py` y `paginas.py` en un servidor de GitHub sobre las fechas que se le den y deja en el registro solo edición, número, páginas y SHA-256, para cotejar con el manifiesto del box. No guarda nada, no usa llaves, no lee ni redacta. No cambia la skill, las tareas programadas ni el box.
+- Archivos: `.github/workflows/prueba-fuentes.yml`, este registro.
+- Verificación: corrida manual después de fusionar; resultado en la entrada que siga.
+- Pendiente: según el resultado, decidir si las fuentes del lector por API salen de GitHub.
+
 ### 2026-11-09 · 301/2026 y 302/2026 también al paquete del martes 10/11
 - Agente: Claude Code (sesión en la nube, claude-opus-5-5), a petición de Muse con instrucción de Emi (11:16): tampoco consta la entrega de la matutina 301/2026 y la vespertina 302/2026 del miércoles 4/11; darlas por no entregadas e incluirlas con la 303/2026; una sola nota en el correo al Licenciado para las tres; no enviar nada.
 - Cambios: `no_entregadas.json` del box con 301, 302 y 303 y una nota común; `dof_fuentes.py` toma siempre la nota y la decisión vigentes del registro, también para ediciones ya inventariadas; los cierres incluyen cada `nota_correo` distinta una sola vez (tareas programadas actualizadas).

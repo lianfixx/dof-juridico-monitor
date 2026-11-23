@@ -1,0 +1,10 @@
+
+[artifacts]
+reportlab<5,>=4
+python-docx<2,>=1.1
+
+[pdf]
+pypdf<7,>=5
+
+[test]
+pytest<10,>=8

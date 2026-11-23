@@ -1,0 +1,59 @@
+name: Prueba de fuentes desde GitHub
+
+# Prueba de factibilidad, a mano: comprueba si un servidor de GitHub puede bajar el DOF con los
+# mismos scripts del box (scripts/box/dof_fuentes.py y paginas.py). Solo descarga publicaciones
+# oficiales y públicas a una carpeta temporal que se borra al terminar; no guarda nada en el
+# repositorio ni como artefacto, no usa ninguna llave y no lee ni redacta. En el registro solo
+# quedan edición, número, páginas y SHA-256 de cada PDF, para cotejarlos con el manifiesto del box.
+on:
+  workflow_dispatch:
+    inputs:
+      fechas:
+        description: "Fechas AAAA-MM-DD separadas por espacio"
+        required: true
+        default: "2026-10-30 2026-10-31 2026-11-01 2026-11-02 2026-11-03"
+
+permissions:
+  contents: read
+
+jobs:
+  fuentes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Herramientas
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils qpdf > /dev/null
+      - name: Descargar y verificar
+        env:
+          FECHAS: ${{ inputs.fechas }}
+          TZ: America/Mexico_City
+        run: |
+          set -uo pipefail
+          D="$RUNNER_TEMP/fuentes/prueba/dof"; mkdir -p "$D"
+          t0=$(date +%s)
+          python3 scripts/box/dof_fuentes.py "$D" $FECHAS > "$RUNNER_TEMP/dof.log" 2>&1; rc=$?
+          python3 scripts/box/paginas.py "$D" > /dev/null 2>&1 || true
+          python3 - "$D" "$rc" "$(( $(date +%s) - t0 ))" <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json, os, sys
+          d, rc, seg = sys.argv[1], sys.argv[2], sys.argv[3]
+          p = os.path.join(d, "inventario.json")
+          if not os.path.exists(p):
+              print("SIN INVENTARIO: la descarga no produjo nada. Código", rc)
+              sys.exit(1)
+          inv = json.load(open(p))
+          print("código", rc, "· segundos", seg, "· sin edición:", inv.get("sin_edicion"))
+          total = 0
+          for e in inv["ediciones"]:
+              total += e.get("paginas_reales") or 0
+              print(e["fecha"], e["edicion"], "núm.", e["numero"], "páginas", e["paginas_reales"], "declaradas", e["paginas_declaradas"],
+                    "ok" if e["ok_paginas"] else "REVISAR", "ocr", len(e.get("paginas_ocr", [])), "anexos", len(e.get("anexos", [])), "sha256", e["sha256"])
+              for a in e.get("anexos", []):
+                  print("   anexo", a.get("sha256", a.get("error", "?")), a.get("paginas", ""))
+          print("total de páginas:", total, "· errores:", len(inv.get("errores", [])))
+          for x in inv.get("errores", []):
+              print("   error", x.get("fecha"), x.get("edicion", ""), x.get("paso"), str(x.get("error"))[:160])
+          sys.exit(1 if inv.get("errores") or not inv["ediciones"] else 0)
+          PY
