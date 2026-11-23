@@ -12,6 +12,10 @@ on:
         description: "Fechas AAAA-MM-DD separadas por espacio"
         required: true
         default: "2026-10-30 2026-10-31 2026-11-01 2026-11-02 2026-11-03"
+      sjf:
+        description: "Viernes del Semanario a probar (AAAA-MM-DD); vacío para no probarlo"
+        required: false
+        default: "2026-10-30"
 
 permissions:
   contents: read
@@ -57,3 +61,28 @@ jobs:
               print("   error", x.get("fecha"), x.get("edicion", ""), x.get("paso"), str(x.get("error"))[:160])
           sys.exit(1 if inv.get("errores") or not inv["ediciones"] else 0)
           PY
+      - name: Semanario Judicial (misma vía del box, con Chrome)
+        if: ${{ always() && inputs.sjf != '' }}
+        env:
+          SJF: ${{ inputs.sjf }}
+          TZ: America/Mexico_City
+        run: |
+          set -uo pipefail
+          W="$RUNNER_TEMP/sjf-prueba"; mkdir -p "$W" && cp scripts/box/sjf_fuentes.mjs "$W/" && cd "$W"
+          npm init -y > /dev/null && npm install --silent puppeteer-core@24 > /dev/null 2>&1
+          t0=$(date +%s)
+          timeout 900 node sjf_fuentes.mjs "$W/sjf" "$SJF" > "$RUNNER_TEMP/sjf.log" 2>&1; rc=$?
+          python3 - "$W/sjf/control.json" "$rc" "$(( $(date +%s) - t0 ))" <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json, os, sys
+          p, rc, seg = sys.argv[1], sys.argv[2], sys.argv[3]
+          if not os.path.exists(p):
+              print("SJF: sin control.json. Código", rc)
+              sys.exit(1)
+          c = json.load(open(p))
+          print("SJF", c.get("fecha"), "· estado", c.get("estado"), "· código", rc, "· segundos", seg)
+          print("resumen:", json.dumps(c.get("resumen"), ensure_ascii=False))
+          for x in (c.get("errores") or [])[:8]:
+              print("   error", x.get("tipo"), x.get("paso"), str(x.get("error"))[:160])
+          sys.exit(0 if c.get("estado") not in ("EN_CURSO", None) and not c.get("errores") else 1)
+          PY
+          tail -5 "$RUNNER_TEMP/sjf.log" | cut -c1-200
