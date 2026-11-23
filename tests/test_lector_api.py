@@ -102,11 +102,13 @@ def test_ultima_linea_falsa_deja_parcial(tmp_path, monkeypatch):
     def malo(modelo, sistema, usuario, esquema, max_tokens):
         if esquema is None:
             return "texto", USO
-        return {"ultima_linea": "Esta línea no existe en el bloque de ninguna manera.", "publicaciones": []}, USO
+        return {"ultima_linea": "Esta línea no existe en el bloque de ninguna manera.",
+                "publicaciones": [pub("5700001", 1, 7, ["El plazo vence el día 1 del mes."])]}, USO
     monkeypatch.setattr(la, "llamar", malo)
     est = la.correr(dest, False, 8, 10, 1, "claude-sonnet-5-5", "claude-opus-5-5")
     assert est["estado"] == "PARCIAL" and "ULTIMA_LINEA_NO_COINCIDE" in est["bloques_con_problema"][0]
     assert est["llamadas"] == 3  # dos intentos de lectura y la síntesis
+    assert est["costo_lectura_usd"] == 0.008  # los dos intentos se cobran
     assert "Estado: PARCIAL" in (dest / "notas" / "PRELIMINAR_API.md").read_text()
 
 
@@ -134,7 +136,8 @@ def test_tope_de_gasto_detiene_y_deja_parcial(tmp_path, monkeypatch):
     dest = montar(tmp_path)
     monkeypatch.setattr(la, "llamar", lector_bueno())
     est = la.correr(dest, False, 0.0001, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5")
-    assert est["estado"] == "PARCIAL" and est["llamadas"] == 0 and "tope" in est["sintesis"]
+    assert est["estado"] == "PARCIAL" and est["llamadas"] == 0 and est["costo_usd"] == 0
+    assert all("SIN_LEER_TOPE_DE_GASTO" in m for m in est["bloques_con_problema"])
 
 
 def test_reanudar_no_vuelve_a_pagar(tmp_path, monkeypatch):
@@ -142,7 +145,9 @@ def test_reanudar_no_vuelve_a_pagar(tmp_path, monkeypatch):
     monkeypatch.setattr(la, "llamar", lector_bueno())
     la.correr(dest, False, 8, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5")
     est = la.correr(dest, False, 8, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5")
-    assert est["bloques_reutilizados"] == 3 and est["llamadas"] == 1  # solo la síntesis
+    assert est["bloques_reutilizados"] == 3 and est["llamadas"] == 0 and est["costo_usd"] == 0  # ni lectura ni síntesis
+    assert est["sintesis"].startswith("ok (la de la corrida anterior") and est["estado"] == "INTEGRO"
+    assert "## Inventario por edición" in (dest / "notas" / "PRELIMINAR_API.md").read_text()
 
 
 def test_seco_no_llama(tmp_path, monkeypatch):
@@ -162,3 +167,314 @@ def test_error_de_fuentes_impide_integro(tmp_path, monkeypatch):
     (dest / "dof" / "inventario.json").write_text(json.dumps(inv))
     monkeypatch.setattr(la, "llamar", lector_bueno())
     assert la.correr(dest, False, 8, 10, 1, "claude-sonnet-5-5", "claude-opus-5-5")["estado"] == "PARCIAL"
+
+
+# ---------------------------------------------------------------- segunda versión: lo que enseñó la primera corrida real
+
+def test_lineas_finales_toleran_numero_de_pagina_y_ocr():
+    texto = "<<<PÁGINA 17>>>\nARTÍCULO 9. Texto final del lineamiento de prueba.\nLic. Nombre Ficticio Maza\n17\n"
+    assert la.coincide_final("17", texto)                                   # el número de página es la última línea
+    assert la.coincide_final("Lic. Nombre Ficticio Maza", texto)            # la última línea «con letras»
+    assert la.coincide_final("ARTICULO 9. Texto final del lineamiento de prueba", texto)   # OCR corregido al copiar
+    assert not la.coincide_final("18", texto)                               # una línea corta debe ser idéntica
+    assert not la.coincide_final("7", texto)                                # «7» está dentro de «17», pero no es la línea
+    assert not la.coincide_final("Una línea que no está en el final del bloque.", texto)
+    assert not la.coincide_final("", texto) and la.coincide_final("", "<<<PÁGINA 1>>>\n")
+
+
+def test_un_bloque_con_error_no_tumba_la_corrida(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    bueno = lector_bueno()
+
+    def a_veces(modelo, sistema, usuario, esquema, max_tokens):
+        if esquema is not None and "Páginas 4 a 6" in usuario:
+            raise la.ErrorAPI("HTTP 500 api_error", uso=None)
+        return bueno(modelo, sistema, usuario, esquema, max_tokens)
+    monkeypatch.setattr(la, "llamar", a_veces)
+    est = la.correr(dest, False, 8, 3, 2, "claude-sonnet-5-5", "claude-opus-5-5")
+    assert est["estado"] == "PARCIAL" and est["bloques_con_problema"] == ["05012026-MAT p. 4-6: ERROR_API"]
+    assert json.loads((dest / "ESTADO_API.json").read_text())["bloques_integros"] == 2
+    assert "ERROR_API" in (dest / "notas" / "05012026-MAT_p0004-0006.md").read_text()
+    assert "Bloque con problema: 05012026-MAT p. 4-6" in (dest / "notas" / "PRELIMINAR_API.md").read_text()
+
+
+def test_respuesta_cortada_parte_el_bloque_y_cobra(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    bueno, vistos = lector_bueno(), []
+
+    def corta(modelo, sistema, usuario, esquema, max_tokens):
+        if esquema is not None:
+            vistos.append(usuario.split("Páginas ", 1)[1].split(" de ", 1)[0])
+            if "Páginas 1 a 7" in usuario:
+                raise la.ErrorAPI("respuesta cortada por max_tokens", uso=dict(USO), corte=True)
+        return bueno(modelo, sistema, usuario, esquema, max_tokens)
+    monkeypatch.setattr(la, "llamar", corta)
+    est = la.correr(dest, False, 8, 10, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    assert est["estado"] == "INTEGRO" and est["bloques"] == 1 and est["bloques_leidos"] == 2 and est["bloques_divididos"] == 1
+    assert vistos == ["1 a 7", "1 a 3", "4 a 7"]
+    assert est["costo_lectura_usd"] == 0.012  # la respuesta cortada también se cobró
+    assert json.loads((dest / "notas" / "05012026-MAT_p0001-0007.json").read_text())["estado"] == "DIVIDIDO"
+    # Al reanudar no se vuelve a pagar ni el bloque cortado ni sus mitades.
+    vistos.clear()
+    est = la.correr(dest, False, 8, 10, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    assert vistos == [] and est["bloques_reutilizados"] == 2 and est["estado"] == "INTEGRO"
+
+
+def test_bloque_de_una_pagina_cortado_queda_con_problema(tmp_path, monkeypatch):
+    dest = montar(tmp_path, paginas=PAGS[:1])
+
+    def corta(modelo, sistema, usuario, esquema, max_tokens):
+        raise la.ErrorAPI("respuesta cortada por max_tokens", uso=dict(USO), corte=True)
+    monkeypatch.setattr(la, "llamar", corta)
+    est = la.correr(dest, False, 8, 10, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    assert est["estado"] == "PARCIAL" and "ERROR_API" in est["bloques_con_problema"][0]
+
+
+def test_revalida_nota_anterior_sin_volver_a_llamar(tmp_path, monkeypatch):
+    dest = montar(tmp_path, paginas=PAGS[:2] + ["Página 3.\nACUERDO de prueba número 3.\nLic. Nombre Ficticio\n3"])
+    docs, _ = la.universo(dest)
+    blq = la.bloques_de(docs[0], 10)[0][0]
+    vieja = la.comprobar(docs[0], blq, {"ultima_linea": "3", "publicaciones": [pub("5700001", 1, 3, []), pub("5700002", 1, 3, [])]})
+    assert vieja["estado"] == "INTEGRO"
+    vieja.update({"estado": "ULTIMA_LINEA_NO_COINCIDE", "ultima_linea_ok": False})  # como la dejó la primera versión
+    (dest / "notas").mkdir()
+    (dest / "notas" / "05012026-MAT_p0001-0003.json").write_text(json.dumps(vieja))
+    llamadas = []
+
+    def solo_sintesis(modelo, sistema, usuario, esquema, max_tokens):
+        llamadas.append(esquema is None)
+        assert esquema is None, "no debe releer el bloque"
+        return "## Candidatas a la tabla del reporte", USO
+    monkeypatch.setattr(la, "llamar", solo_sintesis)
+    est = la.correr(dest, False, 8, 10, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    assert est["estado"] == "INTEGRO" and est["bloques_reutilizados"] == 1 and llamadas == [True]
+
+
+def test_bloque_con_texto_y_sin_publicaciones_no_es_integro(tmp_path):
+    dest = montar(tmp_path, paginas=["Texto largo de prueba con un acuerdo. " * 20 + "\nÚltima línea real del bloque."])
+    docs, _ = la.universo(dest)
+    blq = la.bloques_de(docs[0], 10)[0][0]
+    nota = la.comprobar(docs[0], blq, {"ultima_linea": "Última línea real del bloque.", "publicaciones": []})
+    assert nota["estado"] == "SIN_PUBLICACIONES" and nota["paginas_sin_nota"] == [1]
+
+
+def test_inventario_y_pendientes_los_arma_el_codigo(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    recibido = []
+
+    def lector(modelo, sistema, usuario, esquema, max_tokens):
+        if esquema is None:
+            recibido.append(usuario)
+            return "## Candidatas a la tabla del reporte\n\n- 5700001: algo.", USO
+        cuerpo = usuario.split("Bloque:\n", 1)[1]
+        nums = [int(x) for x in __import__("re").findall(r"<<<PÁGINA (\d+)>>>", cuerpo)]
+        nada = dict(pub("5700002", nums[-1], nums[-1], []), relevancia="ninguna", titulo="AVISO sin importancia")
+        return {"ultima_linea": la.ultima_linea_real(cuerpo), "publicaciones": [pub("5700001", nums[0], nums[-1], []), nada]}, USO
+    monkeypatch.setattr(la, "llamar", lector)
+    est = la.correr(dest, False, 8, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    pre = (dest / "notas" / "PRELIMINAR_API.md").read_text()
+    assert est["estado"] == "INTEGRO" and len(recibido) == 1
+    assert "AVISO sin importancia" not in recibido[0] and "5700001" in recibido[0]   # lo «ninguna» no viaja al redactor
+    assert "- 5700001 · SECRETARIA DE PRUEBA · ACUERDO de prueba · p. 1-7 · media (fiscal)" in pre   # una nota partida en 3 bloques, unida
+    assert "- 5700002 · SECRETARIA DE PRUEBA · AVISO sin importancia · p. 3-7 · ninguna" in pre
+    assert pre.index("## Por verificar en el cierre") < pre.index("## Candidatas") < pre.index("## Inventario por edición")
+
+
+def lote_falso(responder, estado="terminado"):
+    """Sustituto de leer_por_lote: `responder(custom_id, params)` devuelve el resultado de cada petición (o None)."""
+    def f(peticiones, espera_s):
+        res = {}
+        for q in peticiones:
+            r = responder(q["custom_id"], q["params"])
+            if r is not None:
+                res[q["custom_id"]] = r
+        return res, {"id": "msgbatch_prueba", "estado": estado, "pedidos": len(peticiones), "segundos": 1}
+    return f
+
+
+def mensaje_de(params, **cambios):
+    usuario = params["messages"][0]["content"]
+    obj, _ = lector_bueno()("m", "", usuario, {"x": 1}, 1)
+    obj.update(cambios)
+    return {"type": "succeeded", "message": {"model": "claude-sonnet-5-5", "stop_reason": "end_turn",
+                                             "content": [{"type": "text", "text": json.dumps(obj)}],
+                                             "usage": {"input_tokens": 1000, "output_tokens": 200}}}
+
+
+def solo_sintesis_directa(contador):
+    def f(modelo, sistema, usuario, esquema, max_tokens):
+        contador.append("síntesis" if esquema is None else usuario.split("Páginas ", 1)[1].split(" de ", 1)[0])
+        return lector_bueno()(modelo, sistema, usuario, esquema, max_tokens)
+    return f
+
+
+def test_lote_lee_todo_a_mitad_de_precio(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    directas = []
+    monkeypatch.setattr(la, "leer_por_lote", lote_falso(lambda cid, params: mensaje_de(params)))
+    monkeypatch.setattr(la, "llamar", solo_sintesis_directa(directas))
+    est = la.correr(dest, False, 8, 3, 2, "claude-sonnet-5-5", "claude-opus-5-5", lote=True)
+    assert est["estado"] == "INTEGRO" and est["bloques_por_lote"] == 3 and est["bloques_directos"] == 0
+    assert directas == ["síntesis"] and est["lote"]["estado"] == "terminado"
+    # 1 000 de entrada y 200 de salida con Sonnet (2 y 10 USD por millón) = 0.004; en lote, la mitad.
+    assert est["costo_lectura_usd"] == round(3 * 0.002, 4)
+    assert json.loads((dest / "notas" / "05012026-MAT_p0001-0003.json").read_text())["uso"]["via"] == "lote"
+
+
+def test_lote_lo_que_falla_se_repite_con_llamada_directa(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    directas = []
+
+    def responder(cid, params):
+        usuario = params["messages"][0]["content"]
+        if "Páginas 1 a 3" in usuario:
+            return {"type": "errored", "error": {"type": "api_error"}}
+        if "Páginas 4 a 6" in usuario:
+            return mensaje_de(params, ultima_linea="Una línea que no está en el bloque para nada.")
+        return None  # cancelada: no vino en los resultados
+    monkeypatch.setattr(la, "leer_por_lote", lote_falso(responder, "cancelado_por_tiempo"))
+    monkeypatch.setattr(la, "llamar", solo_sintesis_directa(directas))
+    est = la.correr(dest, False, 8, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5", lote=True)
+    assert est["estado"] == "INTEGRO" and sorted(directas) == ["1 a 3", "4 a 6", "7 a 7", "síntesis"]
+    assert est["bloques_directos"] == 3 and est["bloques_por_lote"] == 1
+    assert json.loads((dest / "notas" / "05012026-MAT_p0004-0006.json").read_text())["uso"]["via"] == "lote y directo"
+
+
+def test_lote_respuesta_cortada_se_parte(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    directas = []
+
+    def responder(cid, params):
+        if "Páginas 1 a 3" in params["messages"][0]["content"]:
+            return {"type": "succeeded", "message": {"stop_reason": "max_tokens", "content": [{"type": "text", "text": "{"}],
+                                                     "usage": {"input_tokens": 1000, "output_tokens": 16000}}}
+        return mensaje_de(params)
+    monkeypatch.setattr(la, "leer_por_lote", lote_falso(responder))
+    monkeypatch.setattr(la, "llamar", solo_sintesis_directa(directas))
+    est = la.correr(dest, False, 8, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5", lote=True)
+    assert est["estado"] == "INTEGRO" and sorted(directas) == ["1 a 1", "2 a 3", "síntesis"]
+    assert est["bloques_leidos"] == 4 and est["bloques_divididos"] == 1
+
+
+def test_lote_incierto_no_se_paga_dos_veces(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    directas = []
+    monkeypatch.setattr(la, "leer_por_lote", lote_falso(lambda cid, params: None, "sin_terminar"))
+    monkeypatch.setattr(la, "llamar", solo_sintesis_directa(directas))
+    est = la.correr(dest, False, 8, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5", lote=True)
+    assert est["estado"] == "PARCIAL" and directas == [] and est["costo_usd"] == 0
+    assert all("LOTE_SIN_TERMINAR" in m for m in est["bloques_con_problema"])
+
+
+def test_lote_no_creado_cae_a_llamadas_directas(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    directas = []
+    monkeypatch.setattr(la, "leer_por_lote", lote_falso(lambda cid, params: None, "no_creado: HTTP 400"))
+    monkeypatch.setattr(la, "llamar", solo_sintesis_directa(directas))
+    est = la.correr(dest, False, 8, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5", lote=True)
+    assert est["estado"] == "INTEGRO" and len(directas) == 4 and est["bloques_directos"] == 3
+
+
+class RedFalsa:
+    """Sustituto de _http para probar leer_por_lote sin red."""
+
+    def __init__(self, estados, crear=None, resultados=""):
+        self.estados, self.crear, self.resultados, self.pedidos = list(estados), crear, resultados, []
+
+    def __call__(self, metodo, url, cuerpo=None, esperas=(0,), reintentar_red=True):
+        self.pedidos.append((metodo, url.replace(la.API_LOTES, "")))
+        if metodo == "POST" and url == la.API_LOTES:
+            if isinstance(self.crear, Exception):
+                raise self.crear
+            return json.dumps({"id": "msgbatch_1", "processing_status": "in_progress"}).encode()
+        if url.endswith("/cancel"):
+            return b"{}"
+        if url.endswith("/results"):
+            return self.resultados.encode()
+        if "?limit=" in url:
+            return json.dumps({"data": []}).encode()
+        est = self.estados.pop(0) if len(self.estados) > 1 else self.estados[0]
+        return json.dumps({"id": "msgbatch_1", "processing_status": est}).encode()
+
+
+def test_leer_por_lote_espera_y_trae_resultados(monkeypatch):
+    red = RedFalsa(["in_progress", "ended"], resultados='{"custom_id":"a-0000","result":{"type":"succeeded","message":{}}}\nbasura\n')
+    monkeypatch.setattr(la, "_http", red)
+    monkeypatch.setattr(la, "PAUSA_LOTE", 0)
+    res, info = la.leer_por_lote([{"custom_id": "a-0000", "params": {}}], 60)
+    assert info["estado"] == "terminado" and info["id"] == "msgbatch_1" and res["a-0000"]["type"] == "succeeded"
+    assert ("POST", "/msgbatch_1/cancel") not in red.pedidos
+
+
+def test_leer_por_lote_cancela_al_vencer_el_plazo(monkeypatch):
+    red = RedFalsa(["in_progress", "canceling", "ended"], resultados='{"custom_id":"a-0000","result":{"type":"canceled"}}')
+    monkeypatch.setattr(la, "_http", red)
+    monkeypatch.setattr(la, "PAUSA_LOTE", 0)
+    res, info = la.leer_por_lote([{"custom_id": "a-0000", "params": {}}], 0)
+    assert info["estado"] == "cancelado_por_tiempo" and ("POST", "/msgbatch_1/cancel") in red.pedidos
+    assert res["a-0000"]["type"] == "canceled"
+
+
+def test_leer_por_lote_rechazo_claro_es_no_creado_y_fallo_ambiguo_no(monkeypatch):
+    monkeypatch.setattr(la, "PAUSA_LOTE", 0)
+    monkeypatch.setattr(la, "_http", RedFalsa(["ended"], crear=la.ErrorAPI("HTTP 400 invalid_request_error", codigo=400)))
+    assert la.leer_por_lote([{"custom_id": "a", "params": {}}], 60)[1]["estado"].startswith("no_creado")
+    # Sin respuesta al crear y sin lote reciente en la lista: tampoco existe.
+    monkeypatch.setattr(la, "_http", RedFalsa(["ended"], crear=la.ErrorAPI("sin respuesta: TimeoutError", codigo=-1)))
+    assert la.leer_por_lote([{"custom_id": "a", "params": {}}], 60)[1]["estado"].startswith("no_creado")
+
+    def sin_red(metodo, url, cuerpo=None, esperas=(0,), reintentar_red=True):
+        raise la.ErrorAPI("sin respuesta: TimeoutError", codigo=-1)
+    monkeypatch.setattr(la, "_http", sin_red)
+    assert la.leer_por_lote([{"custom_id": "a", "params": {}}], 60)[1]["estado"].startswith("incierto")
+
+
+def test_interpretar_cobra_aunque_falle():
+    msg = {"stop_reason": "max_tokens", "content": [{"type": "text", "text": "{"}], "usage": {"input_tokens": 1_000_000, "output_tokens": 0}}
+    try:
+        la.interpretar(msg, "claude-sonnet-5-5", {"x": 1}, la.DESCUENTO_LOTE)
+        raise AssertionError("debió fallar")
+    except la.ErrorAPI as e:
+        assert e.corte and e.uso["costo_usd"] == 1.0  # 2 USD por millón, a mitad de precio
+
+
+def test_error_inesperado_deja_estado_y_no_revienta(tmp_path, monkeypatch, capsys):
+    dest = montar(tmp_path)
+
+    def roto(*a, **k):
+        raise RuntimeError("detalle interno que no debe imprimirse")
+    monkeypatch.setattr(la, "universo", roto)
+    assert la.main(["lector_api.py", str(dest), "--sin-lote"]) == 1
+    assert json.loads((dest / "ESTADO_API.json").read_text())["estado"] == "ERROR_INTERNO"
+    assert "detalle interno" not in capsys.readouterr().out
+
+
+def test_paginas_que_ninguna_nota_cubre_impiden_integro(tmp_path, monkeypatch):
+    dest = montar(tmp_path)
+    partir_real = la.partir
+
+    def corta(modelo, sistema, usuario, esquema, max_tokens):
+        if esquema is not None and "Páginas 1 a 7" in usuario:
+            raise la.ErrorAPI("respuesta cortada por max_tokens", uso=dict(USO), corte=True)
+        return lector_bueno()(modelo, sistema, usuario, esquema, max_tokens)
+    monkeypatch.setattr(la, "llamar", corta)
+    monkeypatch.setattr(la, "partir", lambda b: partir_real(b)[:1])  # defecto simulado: se pierde la segunda mitad
+    est = la.correr(dest, False, 8, 10, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    assert est["estado"] == "PARCIAL" and est["bloques_con_problema"] == ["05012026-MAT p. 4-7: SIN_NOTA"]
+
+
+def test_trozo_de_continuacion_hereda_el_codigo_del_bloque_anterior():
+    def nota(ini, fin, pubs):
+        return {"doc": "05012026-MAT", "ini": ini, "fin": fin, "estado": "INTEGRO", "publicaciones": pubs}
+    abierta = dict(pub("5700001", 1, 3, []), completa_en_bloque=False)
+    sigue = dict(pub("", 4, 6, []), completa_en_bloque=False, titulo="No consta: continuación de una tabla")
+    edicto = dict(pub("", 7, 7, []), titulo="Edicto de prueba")                      # completo y sin código: no hereda
+    originales = [nota(1, 3, [abierta]), nota(4, 6, [sigue]), nota(7, 7, [edicto])]
+    nuevas, cuantos = la.heredar_codigos(originales)
+    assert cuantos == 1 and [p["codigo"] for n in nuevas for p in n["publicaciones"]] == ["5700001", "5700001", ""]
+    assert nuevas[1]["publicaciones"][0]["codigo_heredado"] and sigue["codigo"] == ""   # la nota original no se toca
+    assert [(g["codigo"], g["ini"], g["fin"], g["titulo"]) for g in la.agrupar(nuevas)] == \
+        [("5700001", 1, 6, "ACUERDO de prueba"), ("", 7, 7, "Edicto de prueba")]
+    # Si el bloque anterior cerró su última publicación, o hay un hueco de páginas, nadie hereda.
+    assert la.heredar_codigos([nota(1, 3, [pub("5700001", 1, 3, [])]), nota(4, 6, [sigue])])[1] == 0
+    assert la.heredar_codigos([nota(1, 3, [abierta]), nota(5, 6, [dict(sigue, pagina_inicio=5)])])[1] == 0
