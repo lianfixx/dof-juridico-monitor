@@ -2,13 +2,13 @@
 name: dof-castorena
 description: Revisa el Diario Oficial de la Federación (DOF) y prepara la actualización jurídica semanal para el Lic. Castorena (martes y jueves), con la síntesis del SJF semanal, fuentes oficiales verificadas, reporte ejecutivo minimalista en PDF, guía de estudio, comentario sugerido y correo BLUF para revisión de Emi. Úsalo siempre que el usuario mencione DOF, Diario Oficial, actualización DOF, SJF semanal, reporte para Castorena, monitor jurídico, novedades fiscales, PLD, administrativas o de amparo publicadas en el DOF, o pida revisar, corregir o rehacer un reporte DOF anterior, aunque no diga «skill» ni «Castorena». No usar para redacción jurídica genérica ni expedientes de clientes.
 metadata:
-  version: "1.2.1"
+  version: "1.3.0"
   release_date: "2026-11-09"
   language: "es-MX"
   jurisdiction: "MX"
 ---
 
-# DOF Castorena · Skill 1.2.1
+# DOF Castorena · Skill 1.3.0
 
 ## Propósito
 Preparar para Emiliano García Milla una actualización jurídica del DOF que pueda revisar antes de decidir si la envía al Lic. Guillermo Castorena Álvarez. Priorizar Fiscal, Compliance/PLD-FT, Administrativo y Amparo. Añadir reformas nacionales significativas solo cuando tengan consecuencias jurídicas prácticas. No enviar al Licenciado ni crear borradores a terceros.
@@ -75,3 +75,6 @@ Para frenos activos, reparto en paralelo, `/goal`, `/loop`, programación y nave
 
 ## Fuentes con el box y ejecución automática
 Desde la 1.2.0 las fuentes salen del box «main» de Simular (conector `box`): inventario oficial del DOF, PDFs completos verificados, anexos aparte, OCR en español y Semanario del viernes por la API que usa la propia aplicación del SJF, con Chrome real. Los lectores leen directo del box por rangos de página; la sesión de Claude lee, redacta, audita y entrega; TinyFish coteja títulos y vigila vespertinas; la Mac de Emi es solo plan C y copia local. Cada paso tiene plan A, B y C y ocho compuertas de cierre. Antes de operar con el box o de tocar las tareas programadas, leer íntegra [Fuentes con el box](references/box.md). El material de trabajo (fuentes, notas, entregas) vive en el box y en Drive, nunca en este repositorio público.
+
+## Lector por API (en prueba)
+Desde la 1.3.0 un lector previo corre con los créditos de API de Emi, lunes y miércoles a las 20:00, en el repositorio privado `lianfixx/dof-trabajo`: baja el DOF, lo parte en bloques sin huecos, anota cada publicación y deja `notas/PRELIMINAR_API.md` y `ESTADO_API.json`. Es material de apoyo: no declara cobertura, no lee el Semanario, no envía nada y no sustituye la lectura, la doble lectura ni la auditoría de la sesión que cierra. Mientras dure la fase de sombra, las tareas programadas trabajan como si no existiera. Antes de usar sus notas o de tocar ese lector, leer íntegra [Lector por API](references/api.md).
