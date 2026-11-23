@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · sjf_fuentes.mjs: el proxy del box pasa a ser configurable
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: llevar el lector nocturno a la API; prueba de factibilidad.
+- Cambios: `sjf_fuentes.mjs` tenía fijo el proxy local del box (`127.0.0.1:3128`), que no existe en un servidor de GitHub. Ahora lo toma de `SJF_PROXY` (vacío = salida directa) y Chrome de `SJF_CHROME`; sin esas variables se comporta exactamente igual que antes en el box. La prueba de fuentes corre el Semanario con `SJF_PROXY` vacío y muestra el final del registro.
+- Archivos: `scripts/box/sjf_fuentes.mjs`, `.github/workflows/prueba-fuentes.yml`, este registro.
+- Verificación: `python3 -m pytest -q` aprobadas; corrida de la prueba después de fusionar.
+- Pendiente: el box toma la copia nueva del script en su siguiente arranque (el del repositorio manda).
+
 ### 2026-11-23 · prueba de fuentes desde GitHub: el DOF coincide byte por byte; se agrega el Semanario
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: llevar el lector nocturno a la API; prueba de factibilidad.

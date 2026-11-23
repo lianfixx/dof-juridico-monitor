@@ -28,7 +28,10 @@ const base = { searchTerms: [], bFacet: false, ius: [], idApp: 'SJFAPP2020', lbS
 const strip = (s) => (s == null ? '' : String(s)).replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/\r/g, '').trim();
 const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
 
-const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--proxy-server=http://127.0.0.1:3128'] });
+// En el box la salida a internet pasa por su proxy local. Fuera del box (por ejemplo, un servidor de
+// GitHub) se corre con SJF_PROXY vacío para salir directo, o con otra dirección de proxy.
+const proxy = process.env.SJF_PROXY ?? 'http://127.0.0.1:3128';
+const b = await puppeteer.launch({ executablePath: process.env.SJF_CHROME || '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', ...(proxy ? [`--proxy-server=${proxy}`] : [])] });
 const p = await b.newPage();
 const HOME = 'https://sjf2.scjn.gob.mx/busqueda-principal-tesis';
 await p.goto(HOME, { waitUntil: 'networkidle2', timeout: 90000 });

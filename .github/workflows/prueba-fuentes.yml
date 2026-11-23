@@ -65,6 +65,7 @@ jobs:
         if: ${{ always() && inputs.sjf != '' }}
         env:
           SJF: ${{ inputs.sjf }}
+          SJF_PROXY: "" # el servidor de GitHub sale directo; el box usa su proxy local
           TZ: America/Mexico_City
         run: |
           set -uo pipefail
@@ -72,6 +73,7 @@ jobs:
           npm init -y > /dev/null && npm install --silent puppeteer-core@24 > /dev/null 2>&1
           t0=$(date +%s)
           timeout 900 node sjf_fuentes.mjs "$W/sjf" "$SJF" > "$RUNNER_TEMP/sjf.log" 2>&1; rc=$?
+          tail -6 "$RUNNER_TEMP/sjf.log" | cut -c1-220
           python3 - "$W/sjf/control.json" "$rc" "$(( $(date +%s) - t0 ))" <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
           import json, os, sys
           p, rc, seg = sys.argv[1], sys.argv[2], sys.argv[3]
@@ -85,4 +87,3 @@ jobs:
               print("   error", x.get("tipo"), x.get("paso"), str(x.get("error"))[:160])
           sys.exit(0 if c.get("estado") not in ("EN_CURSO", None) and not c.get("errores") else 1)
           PY
-          tail -5 "$RUNNER_TEMP/sjf.log" | cut -c1-200
