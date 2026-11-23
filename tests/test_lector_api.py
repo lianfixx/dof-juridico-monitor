@@ -520,3 +520,82 @@ def test_sintesis_cortada_se_redacta_en_mitades(tmp_path, monkeypatch):
     pre = (dest / "notas" / "PRELIMINAR_API.md").read_text()
     assert tamanos == [2, 1, 1] and est["sintesis"] == "ok" and "A medias" not in pre and pre.count("· completa") == 2
     assert est["costo_sintesis_usd"] == 0.012  # la respuesta cortada también se cobró
+
+
+# ---------------------------------------------------------------- tablas numéricas con el modelo barato
+
+CIFRAS = "001 002 003 4,512.75 98.10 1,204.33 77.00 5.25\n" * 80   # una página de pura tabla (más de 2 000 cifras)
+
+
+def lector_de_tablas(vistos, relevancia="ninguna"):
+    def f(modelo, sistema, usuario, esquema, max_tokens):
+        if esquema is None:
+            return "## Candidatas a la tabla del reporte", USO
+        cuerpo = usuario.split("Bloque:\n", 1)[1]
+        nums = [int(x) for x in __import__("re").findall(r"<<<PÁGINA (\d+)>>>", cuerpo)]
+        vistos.append((modelo, nums[0], nums[-1]))
+        rel = relevancia if modelo == "claude-haiku-5-5" else "media"
+        trozo = dict(pub("", nums[0], nums[-1], []), completa_en_bloque=False, relevancia=rel, titulo="No consta: continuación de tabla")
+        return {"ultima_linea": la.ultima_linea_real(cuerpo), "publicaciones": [trozo]}, USO
+    return f
+
+
+def test_tabla_numerica_exige_cifras_sin_palabras_normativas_ni_titulos(tmp_path):
+    dest = montar(tmp_path, paginas=[CIFRAS, CIFRAS, PAGS[0], CIFRAS + "ARTÍCULO 5. Texto.", CIFRAS[:1500], CIFRAS + "ACUERDO de prueba uno y lo que sigue"])
+    doc = la.universo(dest)[0][0]
+    bloques = la.bloques_de(doc, 1)[0]
+    assert [la.es_tabla_numerica(doc, b) for b in bloques] == [True, True, False, False, False, False]
+    assert not la.es_tabla_numerica(doc, la.bloques_de(doc, 3)[0][0])   # basta una página de texto en el bloque
+    # Un título del índice oficial dentro del bloque (aunque no traiga palabras normativas) también lo descarta.
+    titulo = "TIPO de cambio para solventar obligaciones denominadas en moneda extranjera"
+    con_indice = dict(doc, indice=[{"codigo": "5700009", "organismo": "BANCO DE PRUEBA", "titulo": titulo, "url": ""}])
+    blq = la._bloque(doc["id"], 1, [CIFRAS * 40 + titulo + " pagaderas en la República"])
+    assert la.es_tabla_numerica(doc, blq) and not la.es_tabla_numerica(con_indice, blq)
+
+
+def test_tablas_van_al_modelo_barato_y_el_texto_al_lector(tmp_path, monkeypatch):
+    dest = montar(tmp_path, paginas=[PAGS[0], CIFRAS, CIFRAS])
+    vistos = []
+    monkeypatch.setattr(la, "llamar", lector_de_tablas(vistos))
+    est = la.correr(dest, False, 8, 1, 1, "claude-sonnet-5-5", "claude-opus-5-5", m_tablas="claude-haiku-5-5")
+    assert vistos == [("claude-sonnet-5-5", 1, 1), ("claude-haiku-5-5", 2, 2), ("claude-haiku-5-5", 3, 3)]
+    assert est["estado"] == "INTEGRO" and est["bloques_tabla_numerica"] == 2 and est["tablas_releidas_con_el_lector"] == 0
+    assert json.loads((dest / "notas" / "05012026-MAT_p0002-0002.json").read_text())["uso"]["modelo"] == "prueba"
+    # Sin modelo de tablas (o igual al lector), todo lo lee el lector.
+    vistos.clear()
+    dest2 = montar(tmp_path / "otra", paginas=[PAGS[0], CIFRAS])
+    la.correr(dest2, False, 8, 1, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    assert {m for m, _, _ in vistos} == {"claude-sonnet-5-5"}
+
+
+def test_tabla_cuya_nota_trae_algo_mas_la_relee_el_lector(tmp_path, monkeypatch):
+    dest = montar(tmp_path, paginas=[CIFRAS])
+    vistos = []
+    monkeypatch.setattr(la, "llamar", lector_de_tablas(vistos, relevancia="media"))   # el modelo barato ve algo relevante
+    est = la.correr(dest, False, 8, 1, 1, "claude-sonnet-5-5", "claude-opus-5-5", m_tablas="claude-haiku-5-5")
+    assert vistos == [("claude-haiku-5-5", 1, 1), ("claude-sonnet-5-5", 1, 1)] and est["tablas_releidas_con_el_lector"] == 1
+    assert est["estado"] == "INTEGRO" and est["costo_lectura_usd"] == 0.008   # las dos lecturas se cobran
+
+
+def test_tabla_en_lote_usa_el_modelo_barato_y_se_repite_si_falla(tmp_path, monkeypatch):
+    dest = montar(tmp_path, paginas=[PAGS[0], CIFRAS, CIFRAS])
+    modelos, vistos = {}, []
+
+    def responder(cid, params):
+        usuario = params["messages"][0]["content"]
+        modelos[usuario.split("Páginas ", 1)[1].split(" de ", 1)[0]] = params["model"]
+        if "Páginas 3 a 3" in usuario:
+            return {"type": "errored", "error": {"type": "api_error"}}
+        r = mensaje_de(params)
+        if params["model"] == "claude-haiku-5-5":
+            obj = json.loads(r["message"]["content"][0]["text"])
+            obj["publicaciones"] = [dict(obj["publicaciones"][0], relevancia="baja")]
+            r["message"]["content"][0]["text"] = json.dumps(obj)
+        return r
+    monkeypatch.setattr(la, "leer_por_lote", lote_falso(responder))
+    monkeypatch.setattr(la, "llamar", lector_de_tablas(vistos))
+    est = la.correr(dest, False, 8, 1, 1, "claude-sonnet-5-5", "claude-opus-5-5", lote=True, m_tablas="claude-haiku-5-5")
+    assert modelos == {"1 a 1": "claude-sonnet-5-5", "2 a 2": "claude-haiku-5-5", "3 a 3": "claude-haiku-5-5"}
+    assert vistos == [("claude-haiku-5-5", 3, 3)] and est["estado"] == "INTEGRO"   # un error de la API se repite con el mismo modelo
+    # 1 000 de entrada y 200 de salida en lote: Sonnet 0.002 y Haiku 0.0001; más la relectura directa de prueba (0.004)
+    assert est["costo_lectura_usd"] == round(0.002 + 0.0001 + 0.004, 4)
