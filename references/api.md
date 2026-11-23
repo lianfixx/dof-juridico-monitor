@@ -38,7 +38,7 @@ El material (fuentes, notas, preliminar) vive en el repositorio **privado**; en 
 
 El preliminar tiene cuatro partes. Tres las arma el programa, sin modelo: el control de cobertura, **«Por verificar en el cierre»** (bloques con problema, páginas sin texto ni OCR, títulos del índice sin nota, citas no localizadas, notas sin código, páginas sin publicación anotada) y el **«Inventario por edición»** (todas las publicaciones anotadas; los trozos de una misma nota partida entre bloques se unen). Un bloque de pura continuación no trae título: su trozo toma el código de la publicación que venía abierta del bloque anterior, se cuenta en `codigos_heredados` y se avisa para confirmarlo; el archivo de la nota conserva lo que respondió el lector.
 
-El modelo de síntesis solo redacta **«Candidatas a la tabla del reporte»** y **«Avisos secundarios para la guía»**, y solo recibe las notas de relevancia alta o media (completas) y baja (abreviadas). Si las notas no cambiaron desde la corrida anterior, se conserva la síntesis de entonces (`notas/SINTESIS_API.md`) y no se paga otra.
+El modelo de síntesis solo redacta **«Candidatas a la tabla del reporte»** y **«Avisos secundarios para la guía»**, y solo recibe las notas de relevancia alta o media (completas) y baja (abreviadas), una unidad por publicación con todos sus trozos. Redacta por grupos pequeños (45 000 caracteres de notas por llamada) y el programa une los resultados en esas dos secciones; si una respuesta se corta, ese grupo se redacta de nuevo en dos mitades. Si las notas no cambiaron desde la corrida anterior, se conserva la síntesis de entonces (`notas/SINTESIS_API.md`) y no se paga otra.
 
 ## Modelos y costo
 
@@ -76,6 +76,8 @@ La primera corrida real leyó 71 de 75 bloques y se cayó antes de escribir el e
 | Cuatro bloques de anexos fallaron la «última línea» porque la última línea era el número de página o texto de OCR | Comprobación contra las líneas finales; las notas anteriores se revalidan sin nueva llamada |
 | Costo cercano al tope (9 USD) | Lote a mitad de precio; el inventario y los pendientes los arma el código; la síntesis se reutiliza |
 | 44 notas sin código: bloques de pura continuación, sin título | El trozo hereda el código de la publicación que venía abierta, con aviso |
+| Segunda corrida (versión 2, `INTEGRO`, 2.07 USD): la síntesis se cortó por longitud con 138 000 caracteres de notas | Síntesis por grupos pequeños, unida por el programa; entradas más breves |
+| Las páginas de edictos y convocatorias producían notas enormes (hasta 14 000 tokens por seis páginas) y cortes | Nota mínima para edictos, convocatorias y avisos de particulares de relevancia baja o ninguna |
 
 ## Lo que este lector nunca hace
 
