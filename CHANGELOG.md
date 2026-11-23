@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · lector por API: `--releer-tablas N` para comprobar el modelo barato sin tocar notas a mano
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, en chat: auditar de fondo y dejar todo verificado.
+- Cambios: `lector_api.py` acepta `--releer-tablas N`: vuelve a leer N bloques de tabla numérica aunque ya tengan nota. Permite comprobar en real el camino del modelo barato (por lote y con salida estructurada) sin editar a mano `fuentes/` del repositorio privado, que solo escribe el workflow.
+- Archivos: `scripts/api/lector_api.py`, `tests/test_lector_api.py`, este registro.
+- Verificación: `python3 -m pytest -q` 99 aprobadas (1 nueva).
+- Pendiente: corrida de comprobación con dos bloques en el repositorio privado.
+
 ### 2026-11-23 · lector por API: las tablas de pura cifra las lee el modelo barato
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: «si de manera segura y sólida observas que no afecta en lo absoluto la mejora que propones, implementa».

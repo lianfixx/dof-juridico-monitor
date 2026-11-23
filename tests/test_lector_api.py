@@ -530,7 +530,7 @@ CIFRAS = "001 002 003 4,512.75 98.10 1,204.33 77.00 5.25\n" * 80   # una página
 def lector_de_tablas(vistos, relevancia="ninguna"):
     def f(modelo, sistema, usuario, esquema, max_tokens):
         if esquema is None:
-            return "## Candidatas a la tabla del reporte", USO
+            return "## Candidatas a la tabla del reporte\n\n### sin código · tabla", USO
         cuerpo = usuario.split("Bloque:\n", 1)[1]
         nums = [int(x) for x in __import__("re").findall(r"<<<PÁGINA (\d+)>>>", cuerpo)]
         vistos.append((modelo, nums[0], nums[-1]))
@@ -599,3 +599,14 @@ def test_tabla_en_lote_usa_el_modelo_barato_y_se_repite_si_falla(tmp_path, monke
     assert vistos == [("claude-haiku-5-5", 3, 3)] and est["estado"] == "INTEGRO"   # un error de la API se repite con el mismo modelo
     # 1 000 de entrada y 200 de salida en lote: Sonnet 0.002 y Haiku 0.0001; más la relectura directa de prueba (0.004)
     assert est["costo_lectura_usd"] == round(0.002 + 0.0001 + 0.004, 4)
+
+
+def test_releer_tablas_vuelve_a_leer_solo_las_pedidas(tmp_path, monkeypatch):
+    dest = montar(tmp_path, paginas=[PAGS[0], CIFRAS, CIFRAS])
+    vistos = []
+    monkeypatch.setattr(la, "llamar", lector_de_tablas(vistos))
+    la.correr(dest, False, 8, 1, 1, "claude-sonnet-5-5", "claude-opus-5-5", m_tablas="claude-haiku-5-5")
+    vistos.clear()
+    est = la.correr(dest, False, 8, 1, 1, "claude-sonnet-5-5", "claude-opus-5-5", m_tablas="claude-haiku-5-5", releer_tablas=1)
+    assert vistos == [("claude-haiku-5-5", 2, 2)] and est["bloques_reutilizados"] == 2 and est["estado"] == "INTEGRO"
+    assert est["sintesis"].startswith("ok (la de la corrida anterior")   # las notas no cambiaron de estado: no se paga otra síntesis
