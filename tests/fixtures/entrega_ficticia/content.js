@@ -9,7 +9,7 @@ module.exports = {
    "emisor": "",
    "efecto": "El Tribunal Federal de Justicia Administrativa no correrá plazos del 22 al 26 de marzo de 2027. En ese lapso no se reciben promociones en las oficialías de partes.\n\nLo presentado en línea esos días se tiene por recibido el 29 de marzo de 2027.",
    "vigencia": "El acuerdo rige desde el día siguiente a su publicación del 1 de marzo de 2027.",
-   "importa": "",
+   "importa": "Sirve para contar los plazos de los juicios y recursos que vencen esa semana.",
    "fuente": [
     [
      "DOF 01/03/2027 · Tribunal",
@@ -22,7 +22,7 @@ module.exports = {
   {
    "asunto": "Notificación por estrados solo tras dos visitas",
    "emisor": "Pleno de la Suprema Corte · P./J. 10/2027 (12a.)",
-   "efecto": "La notificación por estrados solo procede cuando el domicilio no puede localizarse después de dos visitas en días distintos.\n\nContradicción de criterios 1/2027, mayoría de siete votos.",
+   "efecto": "La notificación por estrados solo procede cuando el domicilio no puede localizarse después de dos visitas en días distintos al domicilio señalado por el contribuyente.\n\nContradicción de criterios 1/2027, mayoría de siete votos.",
    "vigencia": "Jurisprudencia del Pleno, obligatoria desde el 1 de marzo de 2027.",
    "importa": "Sirve para impugnar notificaciones hechas sin agotar las dos visitas.",
    "fuente": [

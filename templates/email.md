@@ -6,7 +6,7 @@ Le comparto la actualización del DOF correspondiente a {{period_label}}. {{lead
 
 {{secondary_points}}
 
-Comentario personal: [Espacio para mi opinión antes del envío].
+{{opinion}}  <!-- Opinión de Emi ya escrita, una o dos frases en primera persona (references/redaccion.md). -->
 
 {{coverage_sentence}}
 

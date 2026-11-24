@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.5.1 — 2026-11-24: respuestas de Emi sobre la versión final
+- Agente: claude.ai (sesión en la nube, claude-opus-5-5)
+- Solicitud: Emi, 24/11/2026, 12:10, en chat, a las tres dudas de la 1.5.0: «1.- Cosa de esta semana 2.- Que lo sigas haciendo tú, de manera muy natural, humana y clara por favor 3.- Que siempre lleve frase, solo fue cosa de este reporte».
+- Cambios: (1) Se retira el criterio de selección provisional y el tope de filas: la tabla vuelve a ordenarse por importancia para el despacho (fiscal, prevención de lavado, administrativo, amparo) con las filas que la semana amerite; `estilo.js` solo avisa desde trece filas. (2) El correo al Licenciado lleva la opinión de Emi ya escrita por el cierre, natural y en primera persona, en lugar del espacio «Comentario personal: [Espacio para mi opinión antes del envío]»; `estilo.js` da error si aparece ese espacio y avisa si no se ve una opinión en primera persona; el comentario sugerido la desarrolla para Emi. (3) «Por qué importa» vuelve a ser obligatorio (8 a 45 palabras). Lo demás de la 1.5.0 sigue igual (tabla única, sin párrafos de resumen, correo BLUF).
+- Archivos: `references/redaccion.md`, `scripts/paquete/estilo.js`, `scripts/paquete/content.ejemplo.js`, `tests/fixtures/entrega_ficticia/content.js`, `tests/test_sincronia.py`, `prompts/tareas/cierre-martes.md`, `prompts/tareas/cierre-jueves.md`, `SKILL.md`, `references/sjf-y-distribucion.md`, `docs/sjf/METODO.md`, `templates/email.md`, `templates/sjf-email.md`, este registro.
+- Verificación: `python3 -m pytest -q` 121 aprobadas; contenido ficticio sin errores ni avisos en `estilo.js`. Texto de las cuatro tareas de cierre (dos activas y dos de reemplazo en pausa) actualizado igual.
+- Pendiente: primera entrega con estas reglas, jueves 26/11/2026.
+
 ### Skill 1.5.0 — 2026-11-24: una sola tabla y correo BLUF, con la versión final de Emi
 - Agente: claude.ai (sesión en la nube, claude-opus-5-5)
 - Solicitud: Emi, 24/11/2026, 11:49, en chat, con su versión final del reporte: «De las tablas júntalas y el correo hazlo más natural, humano, fluido, claro, completo, entendible BLUF… Los cambios bien documentados y perfectos».

@@ -130,3 +130,12 @@ def test_reglas_de_la_tabla_unica_en_todo_el_metodo():
         assert "título de una sola tabla" in texto(f) and "120–230" in texto(f) and "80–130" not in texto(f), f
     assert "Lo que Emi cambió en su versión final del 24 de noviembre de 2026" in texto("references/redaccion.md")
     assert "Vigencia/obligatoriedad" in texto("SKILL.md") and "80–130" not in texto("SKILL.md")
+
+
+def test_respuestas_de_emi_del_24_11():
+    # 1) el recorte de filas fue de esa semana; 2) el cierre escribe la opinión de Emi; 3) «por qué importa» siempre con frase.
+    for f in ("prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md", "references/redaccion.md", "SKILL.md"):
+        assert "[Espacio para mi opinión" not in texto(f), f
+    for f in ("prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md"):
+        assert "la opinión de Emi ya escrita" in texto(f) and "siempre con frase" in texto(f), f
+    assert "Pocas filas" not in texto("references/redaccion.md") and "Siempre lleva frase" in texto("references/redaccion.md")
