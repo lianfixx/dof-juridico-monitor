@@ -5,7 +5,7 @@ set -euo pipefail
 cd /workspace/dof
 # Scripts que deben estar en bin/ (copias canónicas en scripts/box/ del repositorio).
 faltan=()
-for s in arranque.sh fuentes.sh lanzar.sh estado.sh dof_fuentes.py paginas.py ocr.py manifiesto.py sjf_fuentes.mjs; do
+for s in arranque.sh fuentes.sh lanzar.sh estado.sh dof_fuentes.py paginas.py ocr.py manifiesto.py relevo_lista.py sjf_fuentes.mjs; do
   [ -f "bin/$s" ] || faltan+=("$s")
 done
 if ((${#faltan[@]})); then

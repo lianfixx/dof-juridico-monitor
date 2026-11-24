@@ -7,7 +7,7 @@ Complemento de [SKILL.md](../SKILL.md) y de [Fuentes con el box](box.md), en pru
 | | Lector por API | Sesión de Claude (suscripción) |
 |---|---|---|
 | Dónde corre | Servidor de GitHub, en el repositorio privado `lianfixx/dof-trabajo` | Nube de Claude, con el box |
-| Qué hace | Baja el DOF, lo parte en bloques, anota cada publicación y redacta un preliminar | Verifica, lee lo que falte, aplica el criterio jurídico, audita, arma el paquete y envía a Emi |
+| Qué hace | Baja el DOF, lo parte en bloques, anota cada publicación y redacta un preliminar | Comprueba el relevo, lee lo que la API no dejó perfecto y la edición del día, hace la doble lectura, aplica el criterio jurídico, audita, arma el paquete y envía a Emi |
 | Semanario | No lo baja ni lo lee | Sí (tarea del viernes, con el box) |
 | Correo | Nunca | Solo a Emi |
 | Quién declara la cobertura | Nadie: su estado es `INTEGRO` o `PARCIAL` técnico | La sesión que cierra, con las compuertas de siempre |
@@ -62,11 +62,19 @@ notas/SINTESIS_API.md                     lo que redactó el modelo de síntesis
 ESTADO_API.json                           estado, páginas, bloques, lote, tokens, costo de lectura y de síntesis, modelos y SHA-256 de cada PDF leído
 ```
 
-## Relevo con la sesión de la suscripción
+## Relevo con la suscripción (vigente desde la noche del 23/11/2026)
 
-Fase de sombra (vigente): el lector por API corre a las 19:17 y a las 20:37, y la tarea «lector nocturno» de la suscripción corre a las 21:41 **sin cambios**, como si el lector por API no existiera. Se comparan las dos lecturas en al menos cuatro entregas.
+Decisión de Emi del 23/11/2026: se acabó la sombra. Lo que el lector por API deja perfecto no se vuelve a leer con la suscripción; lo que no, lo lee la suscripción como siempre. Nada se hace dos veces y la suscripción nunca se apaga.
 
-Después de la sombra, y solo con aprobación de Emi, la tarea de las 21:41 empezará por leer `ESTADO_API.json` y el preliminar: con `INTEGRO` y los mismos SHA-256 que el inventario del box, verifica por muestreo, lee los títulos «por verificar» y continúa; con `PARCIAL`, sin archivo o con SHA-256 distintos, hace la lectura completa como hoy. La tarea de la suscripción nunca se apaga.
+**Quién decide.** Un programa, no un modelo: `scripts/api/relevo.py comprobar`. Compara, documento por documento (cada edición nueva y cada anexo aparte), lo que el box bajó (`python3 bin/relevo_lista.py <entrega>`) con `ESTADO_API.json`. Un documento queda `por_api` solo si es el mismo PDF (mismo SHA-256), tiene las mismas páginas y el lector lo dejó íntegro (todos sus bloques comprobados, sin huecos, sin páginas sin texto ni OCR). Cualquier otra cosa queda `por_suscripcion` con su motivo. Veredicto: `TOTAL`, `PARCIAL` o `NINGUNO`.
+
+**Noche (lector nocturno, 21:41).** Baja las fuentes al box como siempre y corre la comprobación. Si no es `TOTAL` porque el lector por API no corrió (GitHub puede retrasar u omitir una corrida programada: pasó el 23/11/2026), no terminó o no vio un documento nuevo, lo lanza una vez y lo espera hasta 50 minutos. De lo que quede `por_api` revisa una muestra de control (dos candidatas leídas en el box contra su nota); si un dato es falso, anula el relevo. Lee íntegro lo que quede `por_suscripcion`. Deja en el box `fuentes/<entrega>/notas/RELEVO_API.json` con el veredicto.
+
+**Cierre (martes 05:50, jueves 06:05).** Si hay `RELEVO_API.json`, vuelve a comprobar y toma del repositorio privado las notas y el preliminar de los documentos `por_api`; valen como las del lector nocturno. La edición del día y lo que no tenga nota se leen íntegros. Todo lo demás no cambia: compuertas, doble lectura, auditoría literal, auditor independiente, enlaces y envío solo a Emi.
+
+**Evaluación en real.** La doble lectura del cierre (un lector que no ve la nota) es la prueba del lector por API: cada diferencia se registra en la bitácora de la entrega (`lectura_api.diferencias`). El cierre revisa además lo que la API dejó con relevancia baja o ninguna de autoridades fiscales, financieras, de prevención de lavado y jurisdiccionales. La tarea «DOF · guardia del lector por API» (martes y jueves 11:23) reúne esas diferencias en `sombra/` del repositorio privado y, si el lector omitió algo relevante, propone el ajuste (por ejemplo, lectores Opus).
+
+**Regla de sincronía (Emi, 23/11/2026).** Toda mejora o cambio del método vale para las dos vías: el lector por API y las tareas de la suscripción. Un cambio se hace en el mismo commit en `scripts/api/`, `prompts/tareas/`, `references/` y `SKILL.md`, y después se actualiza el texto de las tareas programadas. `tests/test_sincronia.py` falla si se separan.
 
 ## Primera corrida real y lo que cambió (23/11/2026)
 
