@@ -2,13 +2,13 @@
 name: dof-castorena
 description: Revisa el Diario Oficial de la Federación (DOF) y prepara la actualización jurídica semanal para el Lic. Castorena (martes y jueves), con la síntesis del SJF semanal, fuentes oficiales verificadas, reporte ejecutivo minimalista en PDF, guía de estudio, comentario sugerido y correo BLUF para revisión de Emi. Úsalo siempre que el usuario mencione DOF, Diario Oficial, actualización DOF, SJF semanal, reporte para Castorena, monitor jurídico, novedades fiscales, PLD, administrativas o de amparo publicadas en el DOF, o pida revisar, corregir o rehacer un reporte DOF anterior, aunque no diga «skill» ni «Castorena». No usar para redacción jurídica genérica ni expedientes de clientes.
 metadata:
-  version: "1.5.0"
+  version: "1.5.1"
   release_date: "2026-11-09"
   language: "es-MX"
   jurisdiction: "MX"
 ---
 
-# DOF Castorena · Skill 1.5.0
+# DOF Castorena · Skill 1.5.1
 
 ## Propósito
 Preparar para Emiliano García Milla una actualización jurídica del DOF que pueda revisar antes de decidir si la envía al Lic. Guillermo Castorena Álvarez. Priorizar Fiscal, Compliance/PLD-FT, Administrativo y Amparo. Añadir reformas nacionales significativas solo cuando tengan consecuencias jurídicas prácticas. No enviar al Licenciado ni crear borradores a terceros.
@@ -29,11 +29,11 @@ No generar ni enviar un paquete presentado como final antes de terminar la lectu
 
 ## Entregables
 **Para el Lic. Castorena:** PDF «Actualización DOF | [fecha]» y texto de correo BLUF para revisión de Emi. Reporte sin controles operativos, metodología, guía ni portada vacía.
-**Solo para Emi:** DOCX editable del reporte, guía de estudio/control PDF y DOCX, comentario sugerido separado (40–70 palabras), correo completo (120–230 palabras, BLUF) y bitácora interna. El comentario sugerido NO sustituye automáticamente «Comentario personal: [Espacio para mi opinión antes del envío]».
+**Solo para Emi:** DOCX editable del reporte, guía de estudio/control PDF y DOCX, comentario sugerido separado (40–70 palabras), correo completo (120–230 palabras, BLUF) y bitácora interna. Desde el 24/11/2026 el correo al Licenciado lleva la opinión de Emi ya escrita, natural y en primera persona, en lugar del espacio «Comentario personal»; el comentario sugerido la desarrolla para Emi.
 
 ## Estilo aprobado (obligatorio)
 - Diseño minimalista editorial: fondo blanco, negro y grises neutros, sin bloques de colores tipo IA, dashboards, iconos, degradados o adornos.
-- «Lo relevante» es el título de una sola tabla de cuatro columnas, con el DOF primero y el Semanario después: «Asunto | Qué ocurrió/efecto | Vigencia/obligatoriedad | Por qué importa/qué revisar». Sin párrafos de resumen y con pocas filas (versión final de Emi del 24/11/2026; detalle en [redacción](references/redaccion.md)).
+- «Lo relevante» es el título de una sola tabla de cuatro columnas, con el DOF primero y el Semanario después: «Asunto | Qué ocurrió/efecto | Vigencia/obligatoriedad | Por qué importa/qué revisar». Sin párrafos de resumen; «Por qué importa» siempre con frase (versión final de Emi del 24/11/2026; detalle en [redacción](references/redaccion.md)).
 - Cada hallazgo lleva su fuente oficial DIRECTAMENTE EN SU FILA, con nombre identificable y enlace comprobado. Cuando haya varias fuentes (IMPI, PRODECON, TFJA), separarlas claramente dentro de la misma fila.
 - No incluir la leyenda «Periodo revisado: ... · Ediciones oficiales ... · Revisión cerrada para el encargo del despacho», ni frases internas equivalentes.
 - Redacción: seguir íntegra [redacción](references/redaccion.md), obligatoria desde la 1.4.0. El reporte debe leerse como escrito por Emi: frases completas, primero el cambio y su efecto y después el fundamento entre paréntesis, cifras sin comillas angulares, sin dos puntos dentro del texto, una fila por asunto con sus medidas por columna y nada repetido. La guía enseña cada tema desde cero con siete apartados fijos. Antes de armar, `node scripts/paquete/estilo.js <carpeta>` sin errores. Conservar el contenido sustantivo aprobado al hacer solo cambios visuales.

@@ -75,7 +75,7 @@ Mantener cuatro adjuntos reales: reporte PDF, reporte DOCX editable, guía PDF y
 
 Conservar el diseño blanco/negro/grises y la tabla única bajo «Lo relevante», con la redacción de `references/redaccion.md`. En «Vigencia/obligatoriedad», indicar tipo, obligatoriedad y fecha; no confundirlo con vigencia legislativa. Fuentes oficiales identificables en su propia fila. El PDF para despacho no lleva bitácoras ni metodología interna.
 
-La guía contiene estudio completo, opinión extensa cuando corresponda y control de cobertura. El correo personal incluye «PARA EL LIC. CASTORENA» y «SOLO PARA TI», qué estudiar primero, comentario sugerido de 40–70 palabras y borrador de correo de 120–230 palabras (BLUF, `references/redaccion.md`). Conservar «Comentario personal: [Espacio para mi opinión antes del envío]». El comentario sugerido no ocupa automáticamente ese espacio.
+La guía contiene estudio completo, opinión extensa cuando corresponda y control de cobertura. El correo personal incluye «PARA EL LIC. CASTORENA» y «SOLO PARA TI», qué estudiar primero, comentario sugerido de 40–70 palabras y borrador de correo de 120–230 palabras (BLUF, `references/redaccion.md`). El correo lleva la opinión de Emi ya escrita, en primera persona (decisión del 24/11/2026); el comentario sugerido la desarrolla.
 
 Dirigir el correo sólo a la cuenta de Emi configurada y verificada, sin CC/CCO. No enviar al Licenciado ni crearle borradores en su buzón. Una solicitud limitada a documentación no autoriza enviar un paquete de prueba.
 

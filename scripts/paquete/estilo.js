@@ -32,8 +32,7 @@ function revisar(C, G) {
   if ((C.relevante || []).some((x) => palabras(x))) errores.push("«Lo relevante»: ya no lleva párrafos; el resumen va en el correo al Licenciado");
   const total = (C.filas || []).length + (C.sjf || []).length;
   if (!total) errores.push("Tabla: sin filas");
-  if (total > 9) errores.push(`Tabla: ${total} filas (lo demás va a los avisos de la guía)`);
-  else if (total > 6) avisos.push(`Tabla: ${total} filas; la versión de Emi del 24/11 quedó en cinco. Deja solo lo que el Licenciado usaría`);
+  if (total > 12) avisos.push(`Tabla: ${total} filas; revisa que cada una valga la lectura del Licenciado y que lo secundario esté en la guía`);
   const nPar = (x) => String(x || "").split(/\n\s*\n/).filter((s) => s.trim()).length;
   [["DOF", C.filas || []], ["SJF", C.sjf || []]].forEach(([nombre, filas]) => filas.forEach((f, i) => {
     const d = `${nombre}, fila ${i + 1} («${String(f.asunto || "").slice(0, 40)}»)`;
@@ -45,10 +44,8 @@ function revisar(C, G) {
     prosa(`${d}, qué ocurrió`, f.efecto, { min: 30, max: 90, tope: 110 });
     if (nPar(f.efecto) > 2) errores.push(`${d}: «qué ocurrió» en ${nPar(f.efecto)} párrafos (dos como máximo, separados por una línea en blanco)`);
     prosa(`${d}, vigencia`, f.vigencia, { max: 25, tope: 40 });
-    if (palabras(f.importa)) {
-      prosa(`${d}, por qué importa`, f.importa, { min: 8, max: 45, tope: 70 });
-      if (/\bconviene\b/i.test(String(f.importa))) avisos.push(`${d}: «conviene» en «por qué importa»; Emi quitó esos consejos el 24/11. Di para qué sirve`);
-    }
+    prosa(`${d}, por qué importa`, f.importa, { min: 8, max: 45, tope: 70 });   // siempre lleva frase (Emi, 24/11/2026)
+    if (/\bconviene\b/i.test(String(f.importa || ""))) avisos.push(`${d}: «conviene» en «por qué importa»; Emi quitó esos consejos el 24/11. Di para qué sirve`);
     if (nombre === "SJF" && !/P\.\/J\.|J\/|\(\d+a\.\)/.test(String(f.emisor || ""))) avisos.push(`${d}: el emisor no trae la clave de la tesis (por ejemplo, «Pleno de la Suprema Corte · P./J. 10/2027 (12a.)»)`);
     if (!(f.fuente || []).length) errores.push(`${d}: sin fuente en la fila`);
     if (cuenta(f.efecto, /\d[\d.,]*\s?(%|por ciento|millones|pesos|días|meses|años)/g) > 4) avisos.push(`${d}: más de cuatro cifras en «qué ocurrió»; valora partir la fila`);
@@ -63,7 +60,9 @@ function revisar(C, G) {
     if (n < 120 || n > 230) errores.push(`Correo al Licenciado: ${n} palabras (de 120 a 230)`);
     const bluf = C.correoLic.parrafos[1];
     if (palabras(bluf) > 35) avisos.push(`Correo al Licenciado: el segundo párrafo (lo principal) tiene ${palabras(bluf)} palabras; debe decirse en una frase`);
-    if (/:(?!\d)/.test(texto.replace(/Comentario personal:/g, ""))) errores.push("Correo al Licenciado: dos puntos dentro del texto");
+    if (/:(?!\d)/.test(texto)) errores.push("Correo al Licenciado: dos puntos dentro del texto");
+    if (/\[Espacio para mi opinión|Comentario personal/i.test(texto)) errores.push("Correo al Licenciado: la opinión de Emi va ya escrita, sin el espacio «Comentario personal» (decisión de Emi del 24/11/2026)");
+    if (!/\b(a mi juicio|considero|me parece|en mi opinión|desde mi punto de vista|estimo)\b/i.test(texto)) avisos.push("Correo al Licenciado: no se ve la opinión de Emi en primera persona (por ejemplo, «a mi juicio…»)");
     (C.sjf || []).forEach((f) => {
       const clave = (String(f.emisor || "").match(/P\.\/J\.\s*\d+\/\d{4}/) || [])[0];
       if (clave && !texto.includes(clave)) avisos.push(`Correo al Licenciado: no menciona la ${clave}; cada jurisprudencia de la tabla va con su clave y su criterio`);

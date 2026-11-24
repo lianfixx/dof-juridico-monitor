@@ -53,7 +53,7 @@ martes «actualización del DOF y del Semanario Judicial de la Federación».
 >
 > {{Breve referencia al contenido del reporte, sin asegurar efectos en expedientes que no se hayan revisado.}}
 >
-> Comentario personal: [Espacio para mi opinión antes del envío].
+> {{Opinión de Emi ya escrita, una o dos frases en primera persona, apoyada en la tabla (references/redaccion.md).}}
 >
 > Saludos,
 >

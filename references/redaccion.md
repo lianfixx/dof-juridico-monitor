@@ -30,21 +30,21 @@ La exactitud no cambia: cada dato sigue en `evidencias.json` con su texto litera
 **Lo que Emi cambió en su versión final del 24 de noviembre de 2026** (comparación del reporte enviado con el que él mandó al Licenciado; el detalle, con la entrega real, está en el repositorio privado `lianfixx/dof-trabajo`, carpeta `ejemplos/2026-11-24/`):
 
 - Quitó los párrafos de «Lo relevante» y el subtítulo del DOF. «Lo relevante» quedó como título de la tabla.
-- Dejó 5 de las 14 filas. Conservó los días inhábiles de fin de año de dos autoridades, una declaratoria de amparo en línea y las jurisprudencias del Pleno. Quitó los avisos y listados rutinarios del SAT, las reglas operativas de comercio exterior, la jurisprudencia de un tribunal colegiado y las tesis aisladas.
+- Dejó 5 de las 14 filas (decisión de esa semana, no regla; Emi lo aclaró el mismo día). Conservó los días inhábiles de fin de año de dos autoridades, una declaratoria de amparo en línea y las jurisprudencias del Pleno. Quitó los avisos y listados rutinarios del SAT, las reglas operativas de comercio exterior, la jurisprudencia de un tribunal colegiado y las tesis aisladas.
 - Partió «Qué ocurrió» en dos párrafos (la regla y, aparte, el dato que la completa: precedente, votación o detalle operativo).
-- En «Por qué importa» dejó solo para qué sirve («Sirve para…», «Permite…») y borró los consejos («conviene…») y los datos laterales. En dos filas dejó solo la fuente.
-- Después pidió juntar las dos tablas en una y un correo más claro y más apegado a las jurisprudencias.
+- En «Por qué importa» dejó solo para qué sirve («Sirve para…», «Permite…») y borró los consejos («conviene…») y los datos laterales. En dos filas dejó solo la fuente (también decisión de ese reporte: la columna siempre lleva frase).
+- Después pidió juntar las dos tablas en una y un correo más claro y más apegado a las jurisprudencias, con su opinión ya escrita por el cierre.
 
 **«Lo relevante».** Es el título de la única tabla del reporte. No lleva párrafos de resumen: el resumen es el correo al Licenciado.
 
-**La tabla.** Una sola, con el DOF primero y el Semanario después. Una fila por asunto, no por publicación. Pocas filas, de tres a seis; la versión de Emi quedó en cinco. Criterio de selección deducido de esa versión (provisional hasta que Emi lo confirme): entra lo que cambia cómo litiga o asesora el despacho, es decir, jurisprudencia del Pleno o de las Salas, reglas de plazos y días inhábiles, procedimiento de amparo y juicios en línea, y reformas de fondo en materia fiscal, de prevención de lavado o administrativa. Va a los avisos de la guía lo rutinario o de un solo contribuyente (listados del 69-B, comprobantes falsos de un emisor), las reglas operativas de comercio exterior, las tesis aisladas y la jurisprudencia de colegiados, salvo que toquen un asunto del despacho. El preliminar del lector por API sigue proponiendo candidatas con criterio amplio: la selección es del cierre.
+**La tabla.** Una sola, con el DOF primero y el Semanario después. Una fila por asunto, no por publicación. Orden por importancia para el despacho (fiscal, prevención de lavado, administrativo, amparo), no por fecha. Lo secundario no entra: va a los avisos de la guía. El número de filas lo marca la semana; no hay tope fijo, pero cada fila tiene que valer la lectura del Licenciado. El preliminar del lector por API propone candidatas con criterio amplio y la selección es del cierre.
 
 | Columna | Qué lleva | Medida |
 |---|---|---|
 | Asunto | El cambio, nombrado como lo diría un abogado. Sin dos puntos. Debajo, en gris, quién lo emite y su clave (en el Semanario, «Pleno de la Suprema Corte · P./J. 10/2027 (12a.)») | Hasta 12 palabras |
 | Qué ocurrió / efecto | Primer párrafo, la regla o el criterio, dicho en llano y con su fundamento entre paréntesis. Segundo párrafo, si hace falta, el dato que lo completa (precedente y votación, horario, excepción) | 30 a 90 palabras, dos párrafos como máximo |
 | Vigencia / obligatoriedad | En el DOF, cuándo entra en vigor y el plazo que corre. En el Semanario, si es jurisprudencia o tesis aislada y desde cuándo obliga | Una frase, hasta 25 palabras |
-| Por qué importa / qué revisar | Para qué sirve en un asunto, en una o dos frases. Sin consejos genéricos ni datos que no estén en la fuente. Puede quedar solo la fuente | Hasta 45 palabras |
+| Por qué importa / qué revisar | Siempre lleva frase. Para qué sirve en un asunto, en una o dos frases. Sin consejos genéricos ni datos que no estén en la fuente | 8 a 45 palabras |
 
 Si una celda necesita más de tres cifras, la fila se parte en dos o el detalle baja a la guía.
 
@@ -63,12 +63,12 @@ El correo es el resumen del reporte y se escribe como si Emi lo hubiera redactad
 1. Apertura fija. «Licenciado, buen día. Le comparto la actualización del DOF y del Semanario Judicial de la Federación del …» (los jueves, solo «del DOF»).
 2. Lo principal, en una frase de hasta 35 palabras. Por ejemplo, «Lo principal son tres jurisprudencias del Pleno de la Corte, obligatorias desde el 23 de noviembre.»
 3. Un párrafo corto por cada asunto de la tabla, en su orden. Cada jurisprudencia con su clave, su criterio en una frase con las palabras de la tesis y para qué sirve. Lo del DOF puede ir junto en un solo párrafo.
-4. «Comentario personal: [Espacio para mi opinión antes del envío].» Emi lo sustituye por su opinión antes de enviar; el comentario sugerido le da una base.
+4. La opinión de Emi, ya escrita por el cierre (decisión de Emi del 24 de noviembre de 2026, que sustituye al espacio «Comentario personal»). Una o dos frases en primera persona, naturales y claras, sobre lo que más le sirve al despacho de lo reportado y por qué, apoyadas solo en la tabla. Puede ir dentro del párrafo del asunto que comenta. Nada de opinión de relleno ni de afirmaciones sobre expedientes concretos.
 5. Cierre y firma fijos. «Adjunto el reporte. Quedo atento a sus comentarios.» y «Emiliano García Milla».
 
 De 120 a 230 palabras. Sin dos puntos dentro del texto, sin listas y sin datos que no estén en la tabla. `estilo.js` avisa si falta la clave de una jurisprudencia de la tabla.
 
-**Ejemplo** (ficticio, con la estructura del correo que Emi aprobó el 24 de noviembre de 2026; el real está en `ejemplos/2026-11-24/` del repositorio privado):
+**Ejemplo** (ficticio, con la estructura del correo que Emi aprobó el 24 de noviembre de 2026, opinión incluida; el real está en `ejemplos/2026-11-24/` del repositorio privado):
 
 > Licenciado, buen día. Le comparto la actualización del DOF y del Semanario Judicial de la Federación del 1 al 3 de marzo de 2027.
 >
