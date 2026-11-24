@@ -73,7 +73,7 @@ Separar expresamente decisión del tribunal, análisis propio y sugerencia prác
 
 Mantener cuatro adjuntos reales: reporte PDF, reporte DOCX editable, guía PDF y guía DOCX. El viernes, titular el reporte «Semanario Judicial | [fecha de publicación]»; el martes incorporarlo como sección identificada dentro del reporte DOF, con su propia fecha de publicación y corte. No llamarlo una nueva edición del SJF.
 
-Conservar el diseño blanco/negro/grises, «Lo relevante» en 2–4 líneas y la tabla aprobada. En «Vigencia/estado», indicar tipo, obligatoriedad y fecha; no confundirlo con vigencia legislativa. Fuentes oficiales identificables en su propia fila. El PDF para despacho no lleva bitácoras ni metodología interna.
+Conservar el diseño blanco/negro/grises, «Lo relevante» en 2 a 4 párrafos breves y la tabla aprobada, con la redacción de `references/redaccion.md`. En «Vigencia/estado», indicar tipo, obligatoriedad y fecha; no confundirlo con vigencia legislativa. Fuentes oficiales identificables en su propia fila. El PDF para despacho no lleva bitácoras ni metodología interna.
 
 La guía contiene estudio completo, opinión extensa cuando corresponda y control de cobertura. El correo personal incluye «PARA EL LIC. CASTORENA» y «SOLO PARA TI», qué estudiar primero, comentario sugerido de 40–70 palabras y borrador de correo de 80–130 palabras. Conservar «Comentario personal: [Espacio para mi opinión antes del envío]». El comentario sugerido no ocupa automáticamente ese espacio.
 

@@ -85,7 +85,7 @@ def test_sintesis_incompleta_no_impide_el_relevo_pero_se_avisa():
 
 
 def test_box_sin_ediciones_nuevas_o_sin_inventario():
-    assert relevo.comprobar(estado(TODOS), {"entrega": "2026-01-06", "documentos": []})["relevo"] == "SIN_DOCUMENTOS"
+    assert relevo.comprobar(estado(TODOS), lista_box.lista({"ediciones": []}, "2026-01-06"))["relevo"] == "SIN_DOCUMENTOS"
     assert relevo.comprobar(estado(TODOS), {"entrega": "2026-01-06", "error": "sin inventario"})["relevo"] == "NINGUNO"
 
 
@@ -116,3 +116,19 @@ def test_el_lector_deja_integro_por_documento(tmp_path, monkeypatch):
     dest2 = prueba.montar(tmp_path / "b")
     monkeypatch.setattr(la, "llamar", falla)
     assert la.correr(dest2, False, 8, 3, 1, "claude-sonnet-5-5", "claude-opus-5-5")["documentos_leidos"][0]["integro"] is False
+
+
+def test_lista_copiada_con_un_error_se_detecta_por_su_huella(tmp_path):
+    l = lista_box.lista(INVENTARIO, "2026-01-06")
+    assert len(l["huella"]) == 64 and relevo.comprobar(estado(TODOS), l)["relevo"] == "TOTAL"
+    mala = json.loads(json.dumps(l))
+    mala["documentos"][0]["sha256"] = "b" * 63 + "c"            # un carácter cambiado al copiar
+    v = relevo.comprobar(estado(TODOS), mala)
+    assert v["relevo"] == "LISTA_MAL_COPIADA" and v["por_api"] == [] and "huella" in v["motivos"][0]
+    sin = {k: x for k, x in l.items() if k != "huella"}          # una lista sin huella tampoco vale
+    assert relevo.comprobar(estado(TODOS), sin)["relevo"] == "LISTA_MAL_COPIADA"
+    f = tmp_path / "l.json"
+    f.write_text(json.dumps(mala))
+    e = tmp_path / "e.json"
+    e.write_text(json.dumps(estado(TODOS)))
+    assert relevo.main(["relevo.py", "comprobar", str(e), str(f)]) == 5

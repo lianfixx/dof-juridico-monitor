@@ -5,10 +5,12 @@ Uso (en el box):  python3 bin/relevo_lista.py <entrega>      (por ejemplo 2026-1
 
 Imprime un JSON pequeño: cada edición nueva (no `ya_reportada`) y cada anexo publicado aparte, con su
 SHA-256 y sus páginas, tal como quedaron en fuentes/<entrega>/dof/inventario.json. Lo ya reportado y lo que
-no se pudo descargar van aparte. No lee ni decide nada: la decisión es de scripts/api/relevo.py.
+no se pudo descargar van aparte. La `huella` permite a scripts/api/relevo.py detectar si la lista se copió con
+un error al pasarla del box a la sesión. No lee ni decide nada: la decisión es de scripts/api/relevo.py.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -34,7 +36,12 @@ def lista(inventario: dict, entrega: str) -> dict:
             documentos.append({**base, "id": "anexo_" + a["archivo"][:-4], "tipo": "anexo", "sha256": a["sha256"],
                                "paginas": a.get("paginas"), "paginas_ok": True})
     return {"formato": "dof-relevo-lista-v1", "entrega": entrega, "documentos": documentos, "sin_descargar": sin_descargar,
-            "errores_de_fuentes": len(inventario.get("errores", []))}
+            "errores_de_fuentes": len(inventario.get("errores", [])), "huella": huella(documentos)}
+
+
+def huella(documentos: list) -> str:
+    """SHA-256 de los identificadores, hashes y páginas, en orden: prueba de que la lista se copió sin errores."""
+    return hashlib.sha256("|".join(f"{d.get('id')}:{d.get('sha256')}:{d.get('paginas')}" for d in documentos).encode()).hexdigest()
 
 
 def main(argv: list[str]) -> int:
