@@ -33,6 +33,7 @@ El [módulo SJF](docs/sjf/METODO.md) añade criterios judiciales, estudio y opin
 - [Cómo estudiar los criterios](docs/sjf/GUIA.md).
 - [Prompt de ejecución](prompts/sjf.md) y plantillas de [reporte](templates/sjf-report.md), [guía](templates/sjf-study.md) y [correo](templates/sjf-email.md).
 - [Auditoría del método](docs/sjf/AUDITORIA_2026-10-15.md).
+- Actas históricas de fuentes del Semanario: [30 de octubre](docs/sjf/AUDITORIA_FUENTES_2026-10-30.md) y [6 de noviembre](docs/sjf/AUDITORIA_FUENTES_2026-11-06.md) (preparaciones que quedaron PARCIAL por bloqueo del portal).
 
 La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-2026.
 

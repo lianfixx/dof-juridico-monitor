@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · actas históricas del Semanario incorporadas; PR 7 y 8 cerrados
+- Agente: claude.ai (sesión en la nube, claude-opus-5-5)
+- Solicitud: Emi, 23/11/2026, 21:55, en chat: cerrar los dos pull requests viejos del Semanario si es lo correcto.
+- Cambios: los PR 7 (30/10, Codex/ChatGPT) y 8 (6/11, Codex) solo agregaban un acta de auditoría de fuentes cada uno y su entrada de registro; nunca se fusionaron y su registro ya no encaja en el actual. Para no perder esa evidencia, las dos actas pasan a `docs/sjf/` sin cambios en su texto y el README las enlaza. Son históricas: describen el bloqueo del portal en esas fechas y el método de entonces (skill 1.1.x); el vigente es `docs/sjf/METODO.md` con el box. Después se cierran los dos PR remitiendo a este cambio.
+- Archivos: `docs/sjf/AUDITORIA_FUENTES_2026-10-30.md`, `docs/sjf/AUDITORIA_FUENTES_2026-11-06.md`, `README.md`, este registro.
+- Verificación: el texto de cada acta es idéntico al de la cabeza de su PR; `python3 -m pytest -q`.
+- Pendiente: ninguno.
+
 ### Skill 1.4.1 — 2026-11-23: causa real del reloj de GitHub y tarea lanzadora
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, 21:11, en chat: «Busca y deja todo de manera perfecta sí o sí, soluciona, tienes expreso mi sí de todo».
