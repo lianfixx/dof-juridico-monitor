@@ -80,3 +80,11 @@ def test_el_revisor_de_estilo_distingue_una_fila_buena_de_una_mala(tmp_path):
     assert no.returncode == 1
     for pista in ("dos puntos en el asunto", "citas entre comillas", "cadena de punto y coma", "muletilla «cabe señalar»"):
         assert pista in no.stdout, pista
+
+
+def test_lanzador_y_plantillas_siguen_al_metodo():
+    lanzador = texto("prompts/api/lanzador-api.md")
+    assert "lector-api.yml/dispatches" in lanzador and "no lances otra" in lanzador
+    assert "lanzador-api.md" in texto("references/api.md") and "Lanzador del lector por API" in texto("references/box.md")
+    assert "De qué se trata" in texto("templates/operator-study.md") and "redaccion.md" in texto("templates/report.md")
+    assert "anulado" in texto("references/api.md") and "LISTA_MAL_COPIADA" in texto("references/api.md")

@@ -3,7 +3,7 @@
 ## Qué conviene estudiar
 {{study_topics}}
 
-Cada tema debe explicar contexto, sujetos, regla, efectos, excepciones/transitorios, aplicación práctica, qué debe poder explicar el operador, qué dato falta para un caso concreto y fuente/localizador.
+De uno a cinco temas. Cada tema lleva, en este orden, los apartados de `references/redaccion.md`: De qué se trata, Qué cambió, Fundamento, Cómo opera, Por qué importa, Dónde está la discusión (opcional) y Para dominarlo. La guía enseña desde cero y no copia la tabla del reporte.
 
 ## Control de cobertura
 {{coverage_log}}

@@ -10,12 +10,14 @@ si es el mismo PDF (mismo SHA-256), tiene las mismas páginas y el lector lo dej
 comprobados, sin huecos y sin páginas sin texto ni OCR. Cualquier otra cosa queda «por suscripción», con su
 motivo. No usa modelo ni red: mismas entradas, mismo veredicto.
 
-Veredicto y código de salida: TOTAL (0), todo por API; PARCIAL (3), una parte; NINGUNO (4), nada.
+Veredicto y código de salida: TOTAL (0), todo por API; PARCIAL (3), una parte; NINGUNO (4), nada;
+LISTA_MAL_COPIADA (5), la lista del box llegó alterada (su huella no coincide): hay que volver a copiarla.
 La suscripción lee íntegro lo que quede «por suscripción»; lo que quedó «por API» no se vuelve a leer desde cero
 (sí pasa por la doble lectura y la auditoría del cierre, como cualquier nota).
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -35,6 +37,11 @@ def comprobar(estado: dict | None, lista: dict) -> dict:
 
     if lista.get("error"):
         return nada(f"el box no tiene inventario de la entrega ({lista['error']})")
+    calculada = hashlib.sha256("|".join(f"{d.get('id')}:{d.get('sha256')}:{d.get('paginas')}" for d in docs_box).encode()).hexdigest()
+    if lista.get("huella") != calculada:
+        v["relevo"] = "LISTA_MAL_COPIADA"
+        return nada("la lista del box no coincide con su huella: se copió con un error. Vuelve a correr `python3 bin/relevo_lista.py` "
+                    "en el box y guarda su salida tal cual, sin reescribirla")
     if not docs_box:
         v["relevo"] = "SIN_DOCUMENTOS"
         v["motivos"].append("el box no tiene ediciones nuevas en esta entrega")
@@ -93,7 +100,7 @@ def main(argv: list[str]) -> int:
         estado = None
     v = comprobar(estado, lista)
     print(json.dumps(v, ensure_ascii=False, indent=1))
-    return {"TOTAL": 0, "PARCIAL": 3}.get(v["relevo"], 4)
+    return {"TOTAL": 0, "PARCIAL": 3, "LISTA_MAL_COPIADA": 5}.get(v["relevo"], 4)
 
 
 if __name__ == "__main__":

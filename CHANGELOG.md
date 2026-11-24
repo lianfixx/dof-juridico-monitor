@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · auditoría del relevo y de la redacción: cinco correcciones
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, 20:53, en chat: «Audita de fondo y arregla por favor».
+- Hallazgos y correcciones: (1) GitHub no disparó ninguna corrida programada el 23/11/2026 en `dof-trabajo`, `Cerebro-Castorena-` ni `INDEP` (cero corridas de tipo `schedule` en los tres; en `MATRIZ`, cuya programación no subió una sesión de Claude, sí corren); causa probable, que GitHub asocia la programación con quien firmó el commit. Corrección que no depende de GitHub: tarea de Claude «DOF · lanzar el lector por API» (lunes y miércoles 19:17, Haiku 5.5; `prompts/api/lanzador-api.md`); el lector nocturno ya la lanzaba si faltaba. (2) La lista del box pasa a la sesión copiada por un modelo: un carácter mal copiado en un SHA-256 habría mandado ese documento a la suscripción sin motivo. Ahora la lista lleva una `huella` y `relevo.py` responde `LISTA_MAL_COPIADA` (código 5) si no coincide. (3) «sin `anulado`» en el texto de los cierres era ambiguo, porque el lector nocturno escribe `anulado: false`; `references/api.md` lo define (solo `true` anula). (4) `templates/operator-study.md`, `templates/report.md` y `docs/sjf/METODO.md` contradecían la redacción nueva; ya remiten a `references/redaccion.md`. (5) `estilo.js` daba un error ilegible si faltaba `content.js`.
+- Archivos: `scripts/api/relevo.py`, `scripts/box/relevo_lista.py`, `scripts/paquete/estilo.js`, `tests/test_relevo.py`, `tests/test_sincronia.py`, `prompts/api/lanzador-api.md`, `references/api.md`, `references/box.md`, `references/guardia.md`, `templates/operator-study.md`, `templates/report.md`, `docs/sjf/METODO.md`, este registro.
+- Verificación: `python3 -m pytest -q` 116 aprobadas (2 nuevas); `relevo_lista.py` actualizado en el box con el mismo SHA-256 del repositorio; comprobación con los datos reales de la entrega 2026-11-24.
+- Pendiente: que Emi confirme la causa de la programación (editar una línea `cron` desde su cuenta) y decida si la lanzadora se queda.
+
 ### Skill 1.4.0 — 2026-11-23: redacción del reporte y de la guía, relevo en operación y regla de sincronía
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, 20:20, en chat: «la redacción del reporte debe ser muy natural, humana, fluida y completa […] debe parecer escrito realmente por mí […] que no dé hueva leer, súper fácil de entender, técnico también, argumentado, fundado»; «la guía debe ser muy concisa, completa y de los puntos relevantes, debo entenderlo desde cero, teórico, conceptual, fundado, argumentado, no repetitivo»; «cualquier mejora o cambio debe estar tanto en la API como en la suscripción».

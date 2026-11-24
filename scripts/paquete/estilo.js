@@ -80,7 +80,8 @@ module.exports = { revisar, APARTADOS };
 
 if (require.main === module) {
   const dir = path.resolve(process.argv[2] || ".");
-  const C = require(path.join(dir, "content.js"));
+  let C;
+  try { C = require(path.join(dir, "content.js")); } catch (e) { console.log(`ERROR: no se pudo cargar content.js de ${dir} (${e.message.split("\n")[0]})`); process.exit(1); }
   let G = null;
   try { G = require(path.join(dir, "guia.js")); } catch (e) { console.log("AVISO: no hay guia.js en la carpeta"); }
   const { errores, avisos } = revisar(C, G);

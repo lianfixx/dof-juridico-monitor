@@ -4,6 +4,7 @@
 
 ## Lo relevante
 {{summary}}
+<!-- De 2 a 4 párrafos breves; redacción conforme a references/redaccion.md: una fila por asunto, frases completas, cifras sin comillas angulares. -->
 
 | Asunto | Qué ocurrió / efecto | Vigencia / estado | Por qué importa / qué revisar |
 |---|---|---|---|
