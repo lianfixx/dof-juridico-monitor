@@ -5,7 +5,7 @@ Procedimiento de la tarea programada de Claude «DOF · guardia del lector por A
 Contexto que no cambia: si el lector por API falla, esa noche la suscripción ya leyó lo que faltaba (relevo, [api.md](api.md)). Nunca hay urgencia que justifique saltarse una regla.
 
 ## Preparación
-1. Adjuntar `lianfixx/dof-juridico-monitor` y `lianfixx/dof-trabajo` con add_repo (access "push") y clonarlos. Leer `AGENTS.md` de ambos, `ia/REGLAS.md`, `ia/PROTOCOLO.md`, este archivo, `references/api.md` completo, `sombra/README.md` del privado y las entradas recientes de los dos `CHANGELOG.md`. En el público, `python3 ia/verificar.py inicio`.
+1. Adjuntar `lianfixx/dof-juridico-monitor` y `lianfixx/dof-trabajo` con add_repo (access "push") y clonarlos. add_repo está diferida: cargarla antes con ToolSearch («select:mcp__claude-code-remote__add_repo»). Leer `AGENTS.md` de ambos, `ia/REGLAS.md`, `ia/PROTOCOLO.md`, este archivo, `references/api.md` completo, `sombra/README.md` del privado y las entradas recientes de los dos `CHANGELOG.md`. En el público, `python3 ia/verificar.py inicio`.
 2. Fecha de hoy en hora de México (`TZ=America/Mexico_City date +%F`). La entrega de hoy es `fuentes/<hoy>/` del privado.
 
 ## A. Corridas de la víspera (siempre)
