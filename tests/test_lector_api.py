@@ -490,6 +490,49 @@ def test_sintesis_por_grupos_se_une_en_dos_secciones():
     assert la.unir_sintesis([]) == ""
 
 
+def test_sintesis_descarta_las_afirmaciones_de_ausencia_de_cada_grupo():
+    # Cada grupo ve solo una parte de las notas: lo que dice que «no hay» vale para su grupo, no para la entrega.
+    partes = [
+        "## Candidatas a la tabla del reporte\n\nNinguna nota de la edición MAT 3/2026 (5 de enero de 2026) trae relevancia alta o media "
+        "en fiscal, PLD, administrativo o amparo.\n\n## Avisos secundarios para la guía\n"
+        "- Indicadores periódicos: las notas de esta edición no incluyen tipo de cambio, tasas, UDIS, INPC ni cuotas o estímulos semanales.\n"
+        "- 5700010 · Aviso de prueba de relevancia baja (MAT, p. 4).",
+        "## Candidatas a la tabla del reporte\n\n### 5700011 · Reglas de prueba (MAT 3/2026, pp. 5-6)\n"
+        "Modifica una regla ficticia. La nota no indica fecha de entrada en vigor y, sobre transitorios, no consta. "
+        "Ninguna disposición de la nota fija plazo.\n\n- «cita de prueba» (p. 5)\n\n## Avisos secundarios para la guía\n"
+        "- 5700012 · Tipo de cambio de prueba (MAT, p. 7).\n- 5700013 · Tasa de prueba (MAT, p. 7); vigencia: no consta.",
+        "## Avisos secundarios para la guía\n- **Indicadores periódicos:** las notas de esta edición no reportan indicadores de rutina.\n"
+        "- Sin indicadores periódicos en esta parte.\n- No hay otras publicaciones de relevancia baja.",
+        "## Candidatas a la tabla del reporte\n\nNo hay candidatas en este grupo. \n\n## Avisos secundarios para la guía\n\n"
+        "Las notas recibidas no traen avisos\nde relevancia baja.",
+    ]
+    texto = la.unir_sintesis(partes)
+    for falso in ("Ninguna nota", "no incluyen", "no reportan", "Sin indicadores", "No hay", "no traen", "Indicadores periódicos"):
+        assert falso not in texto, falso
+    for codigo in ("5700010", "### 5700011", "5700012", "5700013", "«cita de prueba»"):
+        assert codigo in texto, codigo
+    # Lo que la nota dice de sí misma («no consta», «no indica») es un dato de la ficha y se conserva.
+    assert "no indica fecha de entrada en vigor" in texto and "sobre transitorios, no consta" in texto
+    assert "Ninguna disposición de la nota fija plazo." in texto and "vigencia: no consta." in texto
+    assert texto.count("## Candidatas a la tabla del reporte") == 1 and texto.count("## Avisos secundarios para la guía") == 1
+    # Si un grupo arranca con la ausencia y sigue con una entrada en el mismo renglón, solo se va la frase de ausencia.
+    mixto = la.unir_sintesis(["## Avisos secundarios para la guía\n- Indicadores periódicos: no hay en esta edición. 5700014 · UDIS de prueba (MAT, p. 8)."])
+    assert "no hay" not in mixto and "- 5700014 · UDIS de prueba (MAT, p. 8)." in mixto
+    # Una sección que queda vacía tras filtrar no imprime su encabezado.
+    solo = la.unir_sintesis(["## Candidatas a la tabla del reporte\n\nNinguna nota trae relevancia alta o media.\n\n"
+                             "## Avisos secundarios para la guía\n- 5700015 · Aviso de prueba (MAT, p. 9)."])
+    assert "Candidatas" not in solo and solo.startswith("## Avisos secundarios para la guía") and "5700015" in solo
+    assert la.unir_sintesis(["## Candidatas a la tabla del reporte\n\nNinguna nota trae relevancia alta o media.\n\n"
+                             "## Avisos secundarios para la guía\n- Indicadores periódicos: ninguno."]) == ""
+    assert "nunca escribas" in la.S_SINTESIS and "solo una parte" in la.S_SINTESIS
+    # El filtro es conservador: frases de una ficha que se parecen, pero hablan de la nota, quedan intactas.
+    for dato in ("La nota no indica vigencia. No consta fecha de publicación de las reglas.", "Ningún transitorio fija plazo.",
+                 "Sin transitorios en la nota. Entra en vigor al día siguiente.", "No hay plazo expreso en la nota; revisar el artículo 3.",
+                 "Esta parte de la regla no incluye a los contribuyentes del régimen de prueba.",
+                 "- Indicadores periódicos: 5700016 tipo de cambio de prueba; 5700017 tasa de prueba."):
+        assert la.sin_ausencias(dato) == dato, dato
+
+
 def test_material_va_por_publicacion_y_en_grupos_pequenos():
     def nota(ini, fin, pubs):
         return {"doc": "05012026-MAT", "ini": ini, "fin": fin, "estado": "INTEGRO", "publicaciones": pubs}
