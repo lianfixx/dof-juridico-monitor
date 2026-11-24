@@ -10,7 +10,7 @@ Contexto que no cambia: si el lector por API falla, esa noche la suscripción ya
 
 ## A. Corridas de la víspera (siempre)
 1. Leer las corridas del workflow (`gh api "repos/lianfixx/dof-trabajo/actions/workflows/lector-api.yml/runs?per_page=8"`: evento, estado, conclusión, hora), `bitacora/AAAA-MM.md`, `fuentes/<hoy>/ESTADO_API.json` y los issues abiertos cuyo título empieza con «Lector del DOF por API».
-2. Anotar quién disparó la corrida: GitHub (evento `schedule`) o la tarea «lector nocturno» (`workflow_dispatch`; también la tarea «DOF · lanzar el lector por API», si Emi llegó a crearla). El 23/11/2026 GitHub no disparó ninguna programada. Mientras GitHub siga sin dispararlas, recordárselo a Emi en el resumen, con cuánto esperó el lector nocturno.
+2. Anotar quién disparó la corrida: la tarea «DOF · lanzar el lector por API» o la tarea «lector nocturno» (las dos, `workflow_dispatch`) o GitHub (evento `schedule`). Que GitHub no dispare no es una falla: su reloj no es confiable (medido el 23/11/2026) y solo es la tercera red. Sí es una falla que la tarea lanzadora no haya corrido el lunes o el miércoles a las 19:17 (se ve en `list_triggers`, `last_run`) o que el lector nocturno haya tenido que lanzar el workflow y esperar: decírselo a Emi en el resumen.
 3. Todo bien = la última corrida de la víspera terminó en success con `INTEGRO` o `SIN_EDICIONES_NUEVAS` y no hay issue abierto. Sumar el gasto del mes en la bitácora (campo USD); si pasa de 45 USD, avisar.
 4. Si falló, quedó `PARCIAL` o `ERROR_INTERNO`, o el issue sigue abierto, buscar la causa raíz (registro de la corrida con `gh api repos/lianfixx/dof-trabajo/actions/jobs/<id>/logs`, `ESTADO_API.json`, notas con problema) y clasificar:
    - **Crédito, tope del espacio, llave o facturación** (HTTP 401, 402 o 403; mensajes de billing o credit): no es reparable aquí. Decirle a Emi qué pasó y qué hacer en Claude Console. No comprar crédito, no crear ni cambiar llaves, no subir topes.
@@ -28,7 +28,7 @@ Desde el 23/11/2026 no hay sombra: el cierre usa las notas de la API y su doble 
 
 ## C. Sincronía (cada martes)
 1. `python3 -m pytest -q tests/test_sincronia.py` en el público.
-2. Con `mcp__claude-code-remote__list_triggers` (todas las páginas), comparar el texto (`derived_state.prompt`) de «DOF Castorena · lector nocturno», «cierre martes», «cierre jueves» y «SJF viernes» con `prompts/tareas/*.md`. Si alguno difiere, avisarle a Emi cuál y en qué: la guardia no cambia tareas.
+2. Con `mcp__claude-code-remote__list_triggers` (todas las páginas), comparar el texto (`derived_state.prompt`) de «DOF Castorena · lector nocturno», «cierre martes», «cierre jueves» y «SJF viernes» con `prompts/tareas/*.md`, y el de «DOF · lanzar el lector por API» con `prompts/api/lanzador-api.md`. Si alguno difiere, avisarle a Emi cuál y en qué: la guardia no cambia tareas.
 
 ## Reglas que no cambian
 - No crear, pausar, borrar ni modificar tareas programadas. Box solo para leer. Sin correos, ni al Licenciado ni a terceros.

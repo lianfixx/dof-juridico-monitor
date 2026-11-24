@@ -55,7 +55,7 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 6. prompts/master.md
 7. config/default.yaml
 
-Versión de la skill: **1.4.0**.
+Versión de la skill: **1.4.1**.
 
 Validación local reproducible con Python 3.10 o posterior:
 
