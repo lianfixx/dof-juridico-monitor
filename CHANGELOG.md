@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · corrección: la tarea lanzadora no existe todavía
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, 20:53, en chat: «Audita de fondo y arregla por favor».
+- Cambios: la entrada anterior daba por creada la tarea «DOF · lanzar el lector por API». No lo está: al crearla, el control de permisos de la sesión lo negó. `references/api.md`, `references/box.md` y `references/guardia.md` ahora dicen lo que es cierto: el texto está listo en `prompts/api/lanzador-api.md`, la tarea queda pendiente de que Emi la pida, y mientras tanto el lector nocturno lanza el workflow cuando falta. También quedó igualado en el box `sjf_fuentes.mjs` con el del repositorio (difería desde el cambio del proxy configurable; mismos valores por defecto), para que ninguna tarea tenga que reescribirlo a mano.
+- Archivos: `references/api.md`, `references/box.md`, `references/guardia.md`, este registro.
+- Verificación: `python3 -m pytest -q` 116 aprobadas; los diez scripts de `/workspace/dof/bin` del box tienen el mismo SHA-256 que `scripts/box/`.
+- Pendiente: decisión de Emi sobre la lanzadora o la edición del `cron` desde su cuenta.
+
 ### 2026-11-23 · auditoría del relevo y de la redacción: cinco correcciones
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, 20:53, en chat: «Audita de fondo y arregla por favor».
