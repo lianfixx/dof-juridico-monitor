@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · relevo entre el lector por API y la suscripción (fin de la sombra)
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, 20:20, en chat: «implementa desde esta corrida que viene o la próxima, que si la API no lo hace de manera perfecta, ya entre mi suscripción de Claude (para no hacer lo mismo dos veces), ya ejecutemos todo a la realidad y evaluemos»; «cualquier mejora o cambio debe estar tanto en la API como en la suscripción, ambas deben estar sincronizadas».
+- Cambios: `scripts/api/relevo.py` (veredicto determinista TOTAL, PARCIAL o NINGUNO, documento por documento: mismo SHA-256, mismas páginas e íntegro) y `scripts/box/relevo_lista.py` (lista compacta del inventario del box; `arranque.sh` ya lo exige). `lector_api.py` anota en `ESTADO_API.json`, por documento, tipo, páginas, bloques e `integro`. Textos de las tareas: «lector nocturno» con el paso B2 (comprobar, lanzar el lector por API si GitHub no lo corrió, esperar hasta 50 minutos, muestra de control, `RELEVO_API.json` en el box, leer solo lo que quede por suscripción); cierres de martes y jueves con el paso B (notas de la API desde el repositorio privado) y la evaluación en la doble lectura (`lectura_api.diferencias` en la bitácora). `references/api.md` (sección «Relevo con la suscripción» y regla de sincronía), `references/box.md` y ADR 0007. Hallazgo de auditoría: el 23/11/2026 GitHub no disparó la corrida programada de las 19:17; por eso el lector nocturno lanza el workflow cuando falta.
+- Archivos: `scripts/api/relevo.py`, `scripts/api/lector_api.py`, `scripts/box/relevo_lista.py`, `scripts/box/arranque.sh`, `tests/test_relevo.py`, `prompts/tareas/lector-nocturno.md`, `prompts/tareas/cierre-martes.md`, `prompts/tareas/cierre-jueves.md`, `references/api.md`, `references/box.md`, `docs/adr/0007-relevo-api-suscripcion.md`, este registro.
+- Verificación: `python3 -m pytest -q` 108 aprobadas (9 nuevas).
+- Pendiente: actualizar el texto de las tres tareas programadas en Claude con estos archivos; primera noche con relevo y primer cierre con notas de la API.
+
 ### Skill 1.3.2 — 2026-11-23: horario 19:17 con reintento, aviso por issue, guardia y comprobación real de las tablas
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, en chat: «revisa que esté bien sincronizado, ajustado y programado por si un día falla, entres para arreglar de fondo con Fable alto o medio o con Opus alto dependiendo que esté disponible y si no se puede continúe en mi suscripción»; hacer la comparación de la sombra en automático.

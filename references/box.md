@@ -24,6 +24,7 @@ bin/dof_fuentes.py   índice oficial por fecha → ediciones → PDF completo �
 bin/paginas.py       índice de líneas por página (<archivo>.paginas.json) para leer por tramos exactos
 bin/ocr.py           Tesseract 'spa' (2 procesos) de las páginas de `paginas_ocr` y de los anexos en imagen del DOF y del SJF (<archivo>.ocr.txt, reanudable)
 bin/manifiesto.py    manifiesto.json con SHA-256 de todo, resumen DOF y SJF y `compuerta_fuentes` (listo / faltantes)
+bin/relevo_lista.py  lista compacta (id, SHA-256, páginas) de las ediciones nuevas y anexos de una entrega, para decidir el relevo con el lector por API
 bin/sjf_fuentes.mjs  Semanario del viernes: tesis, ejecutorias, votos, acuerdos, detalle, anexos PDF, control.json (con `errores`)
 fuentes/<entrega>/   dof/raw, dof/anexos, dof/inventario.json, sjf/raw, sjf/txt, sjf/pdf, sjf/control.json, manifiesto.json, estado.json, fuentes.log, notas/
 entregas/<fecha>/    los cuatro archivos, el correo HTML, la bitácora y el control SJF de cada entrega
@@ -55,8 +56,9 @@ Cada llamada a `mcp__box__shell` tiene un tope de 600 s; si se rebasa, la sesió
 | Tarea | Cuándo | Qué hace | Correo |
 |---|---|---|---|
 | **SJF viernes** | viernes 15:37 | `fuentes.sh viernes`; lectura íntegra de tesis, ejecutorias, votos, acuerdos y anexos; notas y control en el box | No |
-| **Lector nocturno** | lunes y miércoles 21:41 | `lanzar.sh noche`: ediciones ya publicadas del periodo que cierra al día siguiente desde el corte anterior, anexos, vespertinas y OCR; lectura íntegra por bloques; notas en `fuentes/<entrega>/notas/` | No |
-| **Cierre martes** | martes 05:50 | `lanzar.sh martes` (baja la matutina del día; se relanza cada 15 min hasta las 08:00 si aún no está; recoge vespertinas o extraordinarias tardías desde el corte del jueves); lee lo nuevo; consolida con las notas de la noche y el SJF; compuertas; cuatro archivos; entrega | Sí, a Emi |
+| **Lector por API** (GitHub Actions, créditos de API; [api.md](api.md)) | lunes y miércoles 19:17, reintento 20:37 | En el repositorio privado: baja el DOF del periodo, lo lee por bloques y deja notas, preliminar y `ESTADO_API.json` | No |
+| **Lector nocturno** | lunes y miércoles 21:41 | `lanzar.sh noche`: ediciones ya publicadas del periodo que cierra al día siguiente desde el corte anterior, anexos, vespertinas y OCR; **relevo** (`relevo_lista.py` en el box y `scripts/api/relevo.py` en la sesión): lo que el lector por API dejó íntegro no se relee; lectura íntegra por bloques de lo demás; notas en `fuentes/<entrega>/notas/` y `RELEVO_API.json` | No |
+| **Cierre martes** | martes 05:50 | `lanzar.sh martes` (baja la matutina del día; se relanza cada 15 min hasta las 08:00 si aún no está; recoge vespertinas o extraordinarias tardías desde el corte del jueves); lee lo nuevo; consolida con las notas de la noche (del box o, si hubo relevo, del lector por API) y el SJF; compuertas; cuatro archivos; entrega | Sí, a Emi |
 | **Cierre jueves** | jueves 06:05 | igual, solo DOF desde el corte del martes (tardías del martes, miércoles y jueves), sin sección SJF | Sí, a Emi |
 | **Vigía** | monitor TinyFish «DOF Castorena · vigía», lunes a jueves, cada hora de 13:00 a 20:00 (portada `https://dof.gob.mx/index.php`) | registra si aparece vespertina, extraordinaria o fe de erratas; los cierres lo consultan con `get_monitor` como confirmación (el inventario del box manda) | No |
 
@@ -82,7 +84,7 @@ Regla: ningún paso se detiene en un aviso. Se agotan A, B y C, la bitácora reg
 
 ## Compuertas (nada sale si falla una)
 1. **Universo cerrado:** números de edición consecutivos desde la última edición ya reportada del corte anterior; cada fecha consultada; páginas reales = declaradas; SHA-256 de cada PDF y anexo en `manifiesto.json`; `compuerta_fuentes.listo` en true o cada faltante resuelto o declarado.
-2. **Lectura completa:** cada bloque cita su última línea; publicaciones partidas entre bloques cotejadas de punta a punta; cada página de `paginas_ocr` (sin texto o con imagen grande) revisada también por su OCR, y por la vista de la imagen cuando el OCR dude.
+2. **Lectura completa:** cada bloque cita su última línea (en las notas del lector por API lo comprueba el programa y el relevo lo decide `relevo.py`, documento por documento); publicaciones partidas entre bloques cotejadas de punta a punta; cada página de `paginas_ocr` (sin texto o con imagen grande) revisada también por su OCR, y por la vista de la imagen cuando el OCR dude.
 3. **Doble lectura:** cada publicación que entra en la tabla la lee un segundo lector que no vio las notas del primero; se concilian las diferencias por escrito.
 4. **Auditoría literal:** cada dato del reporte y la guía (plazos, montos, reglas, votaciones, registros) se encuentra textualmente en la fuente (`tools/audit.py` del paquete, 100 %).
 5. **Auditor independiente:** un agente que no vio la redacción la contrasta con la fuente; cada hallazgo se corrige o se refuta por escrito.

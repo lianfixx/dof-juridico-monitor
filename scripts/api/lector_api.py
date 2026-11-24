@@ -1011,9 +1011,14 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
             heredados += k
     malos = [f"{n['doc']} p. {n['ini']}-{n['fin']}: {n['estado']}" for n in notas if n["estado"] != "INTEGRO"]
     # Cobertura: las notas de cada documento deben cubrir todas sus páginas, sin huecos.
+    doc_integro = {}
     for d in docs:
         esperadas = {x for b in plan if b["doc"] == d["id"] for x in range(b["ini"], b["fin"] + 1)}
         leidas = {x for n in por_doc.get(d["id"], []) for x in range(n["ini"], n["fin"] + 1)}
+        # Íntegro por documento: lo que usa el relevo con la suscripción (scripts/api/relevo.py).
+        doc_integro[d["id"]] = {"paginas": len(esperadas), "bloques": len(por_doc.get(d["id"], [])),
+                                "integro": bool(esperadas) and esperadas == leidas and d["id"] not in sin_lectura
+                                and all(n["estado"] == "INTEGRO" for n in por_doc.get(d["id"], []))}
         if esperadas - leidas:
             malos.append(f"{d['id']} p. {rangos(sorted(esperadas - leidas))}: SIN_NOTA")
     # Cruce con el índice oficial: códigos que ninguna nota de esa edición menciona.
@@ -1112,8 +1117,9 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
                    "costo_usd": round(gasto["usd"], 4), "costo_lectura_usd": round(gasto["lectura"], 4),
                    "costo_sintesis_usd": round(gasto["sintesis"], 4),
                    "segundos": int(time.time() - t0), "fin_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                   "documentos_leidos": [{"id": d["id"], "sha256_pdf": d.get("sha256_pdf"), "fecha": d["fecha"],
-                                          "edicion": d["edicion"], "numero": d.get("numero")} for d in docs]})
+                   "documentos_leidos": [{"id": d["id"], "tipo": d["tipo"], "sha256_pdf": d.get("sha256_pdf"), "fecha": d["fecha"],
+                                          "edicion": d["edicion"], "numero": d.get("numero"),
+                                          **doc_integro.get(d["id"], {"paginas": 0, "bloques": 0, "integro": False})} for d in docs]})
     (dest / "ESTADO_API.json").write_text(json.dumps(estado, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     return estado
 
