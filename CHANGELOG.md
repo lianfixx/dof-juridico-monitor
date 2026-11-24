@@ -3,6 +3,15 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-23 · las tareas cargan add_repo antes de usarlo
+- Agente: claude.ai (sesión en la nube, claude-opus-5-5)
+- Solicitud: Emi, 23/11/2026, 22:14, en chat, con el resumen del lector nocturno: «¿Todo va bien?».
+- Hallazgo: la primera noche con relevo terminó en NINGUNO aunque el lector por API tenía la entrega 2026-11-24 íntegra (9 documentos, 1,128 páginas). La sesión del lector nocturno dijo no tener `add_repo`: es una herramienta diferida que hay que cargar con ToolSearch, y el texto de la tarea no lo decía. Otras tareas programadas de la misma cuenta sí la cargan y suben cambios (selector de modelos, 22/11). La suscripción leyó todo, como prevé el relevo, así que la entrega no corre riesgo; solo se gastó dos veces la lectura.
+- Cambios: el lector nocturno, los dos cierres, la tarea lanzadora y la guardia cargan `add_repo` con ToolSearch antes de usarlo y no concluyen que falta sin buscarlo. Prueba nueva en `tests/test_sincronia.py`. Texto de las cinco tareas programadas actualizado igual.
+- Archivos: `prompts/tareas/lector-nocturno.md`, `prompts/tareas/cierre-martes.md`, `prompts/tareas/cierre-jueves.md`, `prompts/api/lanzador-api.md`, `references/guardia.md`, `tests/test_sincronia.py`, este registro.
+- Verificación: `python3 -m pytest -q`. La prueba real es la tarea lanzadora del miércoles 25/11 a las 19:17 (revisión propia a las 19:27).
+- Pendiente: si aun cargándola la herramienta no existe en esas sesiones, el plan B es que el box lea `dof-trabajo` con un token de solo lectura, que tendría que crear Emi.
+
 ### 2026-11-23 · actas históricas del Semanario incorporadas; PR 7 y 8 cerrados
 - Agente: claude.ai (sesión en la nube, claude-opus-5-5)
 - Solicitud: Emi, 23/11/2026, 21:55, en chat: cerrar los dos pull requests viejos del Semanario si es lo correcto.

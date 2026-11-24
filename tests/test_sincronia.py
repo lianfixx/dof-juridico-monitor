@@ -91,3 +91,9 @@ def test_lanzador_y_plantillas_siguen_al_metodo():
     assert "firmó el commit (hipótesis descartada" in texto("references/api.md") and "20:37, en el repositorio" not in texto("SKILL.md")
     assert "De qué se trata" in texto("templates/operator-study.md") and "redaccion.md" in texto("templates/report.md")
     assert "anulado" in texto("references/api.md") and "LISTA_MAL_COPIADA" in texto("references/api.md")
+
+
+def test_tareas_cargan_add_repo_antes_de_usarlo():
+    # 23/11/2026: el lector nocturno no cargó add_repo (herramienta diferida) y el relevo quedó en NINGUNO.
+    for f in ("prompts/tareas/lector-nocturno.md", "prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md", "prompts/api/lanzador-api.md"):
+        assert "select:mcp__claude-code-remote__add_repo" in texto(f), f
