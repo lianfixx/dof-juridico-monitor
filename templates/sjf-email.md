@@ -38,7 +38,7 @@ Emi, {{entrada breve con el hallazgo central y su utilidad, sin elogios vacíos 
 **Texto completo del correo al Licenciado**
 
 <!--
-El texto siguiente, ya sustituido, debe tener 80–130 palabras, incluido saludo,
+El texto siguiente, ya sustituido, debe tener 120–230 palabras, incluido saludo,
 espacio de opinión y firma. Comprobar el conteo real. BLUF, natural, sin tecnicismos
 innecesarios ni afirmaciones de envío. El inicio se adapta al origen:
 viernes «actualización del Semanario Judicial de la Federación»;

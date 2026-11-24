@@ -3,6 +3,17 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.5.0 — 2026-11-24: una sola tabla y correo BLUF, con la versión final de Emi
+- Agente: claude.ai (sesión en la nube, claude-opus-5-5)
+- Solicitud: Emi, 24/11/2026, 11:49, en chat, con su versión final del reporte: «De las tablas júntalas y el correo hazlo más natural, humano, fluido, claro, completo, entendible BLUF… Los cambios bien documentados y perfectos».
+- Qué cambió Emi (comparación del DOCX enviado con el suyo): quitó los párrafos de «Lo relevante»; dejó 5 de 14 filas; partió «Qué ocurrió» en dos párrafos; en «Por qué importa» dejó solo para qué sirve y borró consejos y datos laterales. El detalle con la entrega real está en el repositorio privado (`ejemplos/2026-11-24/`); aquí solo van ejemplos ficticios.
+- Cambios: (1) `build.js` y `email.js` arman una sola tabla bajo «Lo relevante» (DOF y después Semanario, columna «Vigencia / obligatoriedad»), sin párrafos de resumen, con «Qué ocurrió» y «Por qué importa» en hasta dos párrafos y emisor y «Por qué importa» opcionales. (2) `estilo.js`: error si hay párrafos de resumen o más de nueve filas, aviso desde siete; «qué ocurrió» de 30 a 90 palabras en dos párrafos como máximo; aviso por «conviene» en «Por qué importa»; correo de 120 a 230 palabras, lo principal en una frase, sin dos puntos y con la clave de cada jurisprudencia de la tabla. (3) `references/redaccion.md`: lo que cambió Emi, la tabla única con sus medidas, un criterio de selección provisional (pendiente de que Emi lo confirme) y la estructura del correo BLUF con un ejemplo ficticio. (4) SKILL.md 1.5.0, README, `references/box.md`, `references/sjf-y-distribucion.md`, `docs/sjf/METODO.md`, plantillas y los textos de los cierres del martes y del jueves con la misma regla. (5) Prueba con contenido ficticio de la misma forma (`tests/fixtures/entrega_ficticia/`): pasa el estilo sin errores y sale en un DOCX y un correo con una sola tabla.
+- Sincronía con el lector por API: el núcleo de redacción no cambió, así que su instrucción tampoco. El preliminar de la API sigue proponiendo candidatas con criterio amplio; la selección de filas es del cierre.
+- Fuera de uso: `src/dof_monitor/sjf_artifacts.py` y `docs/sjf/OPERACION.md` son la vía anterior en Python, que ninguna tarea usa; conservan su medida de 80–130 palabras.
+- Archivos: `scripts/paquete/build.js`, `scripts/paquete/email.js`, `scripts/paquete/estilo.js`, `scripts/paquete/content.ejemplo.js`, `scripts/paquete/README.md`, `references/redaccion.md`, `references/box.md`, `references/sjf-y-distribucion.md`, `docs/sjf/METODO.md`, `templates/report.md`, `templates/sjf-email.md`, `prompts/tareas/cierre-martes.md`, `prompts/tareas/cierre-jueves.md`, `SKILL.md`, `README.md`, `tests/test_sincronia.py`, `tests/fixtures/entrega_ficticia/content.js`, este registro.
+- Verificación: `python3 -m pytest -q` 120 aprobadas; DOCX armado con `build.js` y revisado en PDF (una tabla, párrafos separados).
+- Pendiente: que Emi confirme el criterio de selección; primera entrega con la regla nueva, jueves 26/11/2026.
+
 ### 2026-11-24 · causa real del relevo NINGUNO: el acceso viene de los repositorios de cada tarea
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 24/11/2026, 11:22, en chat: «Audita y arregla de fondo ese error».

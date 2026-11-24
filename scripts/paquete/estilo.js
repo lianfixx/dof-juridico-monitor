@@ -27,9 +27,14 @@ function revisar(C, G) {
     if (largas) avisos.push(`${donde}: ${largas} frase(s) de más de 45 palabras`);
   };
 
-  const rel = C.relevante || [];
-  if (rel.length < 2 || rel.length > 4) errores.push(`«Lo relevante»: ${rel.length} párrafos (de 2 a 4)`);
-  rel.forEach((t, i) => prosa(`«Lo relevante», párrafo ${i + 1}`, t, { min: 12, max: 60, tope: 80 }));
+  // Versión final de Emi del 24/11/2026: «Lo relevante» es el título de una sola tabla, sin párrafos de resumen
+  // (el resumen es el correo), y la tabla lleva pocas filas.
+  if ((C.relevante || []).some((x) => palabras(x))) errores.push("«Lo relevante»: ya no lleva párrafos; el resumen va en el correo al Licenciado");
+  const total = (C.filas || []).length + (C.sjf || []).length;
+  if (!total) errores.push("Tabla: sin filas");
+  if (total > 9) errores.push(`Tabla: ${total} filas (lo demás va a los avisos de la guía)`);
+  else if (total > 6) avisos.push(`Tabla: ${total} filas; la versión de Emi del 24/11 quedó en cinco. Deja solo lo que el Licenciado usaría`);
+  const nPar = (x) => String(x || "").split(/\n\s*\n/).filter((s) => s.trim()).length;
   [["DOF", C.filas || []], ["SJF", C.sjf || []]].forEach(([nombre, filas]) => filas.forEach((f, i) => {
     const d = `${nombre}, fila ${i + 1} («${String(f.asunto || "").slice(0, 40)}»)`;
     const na = palabras(f.asunto);
@@ -37,9 +42,14 @@ function revisar(C, G) {
     if (na > 16) errores.push(`${d}: asunto de ${na} palabras (hasta 12)`);
     else if (na > 12) avisos.push(`${d}: asunto de ${na} palabras (hasta 12)`);
     if (/:(?!\d)/.test(String(f.asunto || ""))) errores.push(`${d}: dos puntos en el asunto`);
-    prosa(`${d}, qué ocurrió`, f.efecto, { min: 35, max: 80, tope: 110 });
+    prosa(`${d}, qué ocurrió`, f.efecto, { min: 30, max: 90, tope: 110 });
+    if (nPar(f.efecto) > 2) errores.push(`${d}: «qué ocurrió» en ${nPar(f.efecto)} párrafos (dos como máximo, separados por una línea en blanco)`);
     prosa(`${d}, vigencia`, f.vigencia, { max: 25, tope: 40 });
-    prosa(`${d}, por qué importa`, f.importa, { min: 20, max: 60, tope: 80 });
+    if (palabras(f.importa)) {
+      prosa(`${d}, por qué importa`, f.importa, { min: 8, max: 45, tope: 70 });
+      if (/\bconviene\b/i.test(String(f.importa))) avisos.push(`${d}: «conviene» en «por qué importa»; Emi quitó esos consejos el 24/11. Di para qué sirve`);
+    }
+    if (nombre === "SJF" && !/P\.\/J\.|J\/|\(\d+a\.\)/.test(String(f.emisor || ""))) avisos.push(`${d}: el emisor no trae la clave de la tesis (por ejemplo, «Pleno de la Suprema Corte · P./J. 10/2027 (12a.)»)`);
     if (!(f.fuente || []).length) errores.push(`${d}: sin fuente en la fila`);
     if (cuenta(f.efecto, /\d[\d.,]*\s?(%|por ciento|millones|pesos|días|meses|años)/g) > 4) avisos.push(`${d}: más de cuatro cifras en «qué ocurrió»; valora partir la fila`);
   }));
@@ -50,7 +60,14 @@ function revisar(C, G) {
   if (C.correoLic && Array.isArray(C.correoLic.parrafos)) {
     const texto = C.correoLic.parrafos.join(" ");
     const n = palabras(texto);
-    if (n < 80 || n > 130) errores.push(`Correo al Licenciado: ${n} palabras (de 80 a 130)`);
+    if (n < 120 || n > 230) errores.push(`Correo al Licenciado: ${n} palabras (de 120 a 230)`);
+    const bluf = C.correoLic.parrafos[1];
+    if (palabras(bluf) > 35) avisos.push(`Correo al Licenciado: el segundo párrafo (lo principal) tiene ${palabras(bluf)} palabras; debe decirse en una frase`);
+    if (/:(?!\d)/.test(texto.replace(/Comentario personal:/g, ""))) errores.push("Correo al Licenciado: dos puntos dentro del texto");
+    (C.sjf || []).forEach((f) => {
+      const clave = (String(f.emisor || "").match(/P\.\/J\.\s*\d+\/\d{4}/) || [])[0];
+      if (clave && !texto.includes(clave)) avisos.push(`Correo al Licenciado: no menciona la ${clave}; cada jurisprudencia de la tabla va con su clave y su criterio`);
+    });
     MULETILLAS.filter((m) => texto.toLowerCase().includes(m)).forEach((m) => errores.push(`Correo al Licenciado: muletilla «${m}»`));
   }
 
