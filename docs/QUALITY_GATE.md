@@ -21,7 +21,7 @@
 ## Editorial
 - [ ] Solo contenido útil.
 - [ ] Sin repetición.
-- [ ] Lenguaje natural/profesional.
+- [ ] Redacción conforme a `references/redaccion.md` (se lee como escrita por Emi) y `node scripts/paquete/estilo.js` sin errores.
 - [ ] Enlaces abiertos.
 - [ ] Despacho separado de material interno.
 

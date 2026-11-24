@@ -2,13 +2,13 @@
 name: dof-castorena
 description: Revisa el Diario Oficial de la Federación (DOF) y prepara la actualización jurídica semanal para el Lic. Castorena (martes y jueves), con la síntesis del SJF semanal, fuentes oficiales verificadas, reporte ejecutivo minimalista en PDF, guía de estudio, comentario sugerido y correo BLUF para revisión de Emi. Úsalo siempre que el usuario mencione DOF, Diario Oficial, actualización DOF, SJF semanal, reporte para Castorena, monitor jurídico, novedades fiscales, PLD, administrativas o de amparo publicadas en el DOF, o pida revisar, corregir o rehacer un reporte DOF anterior, aunque no diga «skill» ni «Castorena». No usar para redacción jurídica genérica ni expedientes de clientes.
 metadata:
-  version: "1.3.2"
+  version: "1.4.0"
   release_date: "2026-11-09"
   language: "es-MX"
   jurisdiction: "MX"
 ---
 
-# DOF Castorena · Skill 1.3.2
+# DOF Castorena · Skill 1.4.0
 
 ## Propósito
 Preparar para Emiliano García Milla una actualización jurídica del DOF que pueda revisar antes de decidir si la envía al Lic. Guillermo Castorena Álvarez. Priorizar Fiscal, Compliance/PLD-FT, Administrativo y Amparo. Añadir reformas nacionales significativas solo cuando tengan consecuencias jurídicas prácticas. No enviar al Licenciado ni crear borradores a terceros.
@@ -33,10 +33,10 @@ No generar ni enviar un paquete presentado como final antes de terminar la lectu
 
 ## Estilo aprobado (obligatorio)
 - Diseño minimalista editorial: fondo blanco, negro y grises neutros, sin bloques de colores tipo IA, dashboards, iconos, degradados o adornos.
-- Mantener «Lo relevante» en 2–4 líneas sustantivas y una tabla de cuatro columnas: «Asunto | Qué ocurrió/efecto | Vigencia/estado | Por qué importa/qué revisar».
+- Mantener «Lo relevante» en 2 a 4 párrafos breves y una tabla de cuatro columnas: «Asunto | Qué ocurrió/efecto | Vigencia/estado | Por qué importa/qué revisar».
 - Cada hallazgo lleva su fuente oficial DIRECTAMENTE EN SU FILA, con nombre identificable y enlace comprobado. Cuando haya varias fuentes (IMPI, PRODECON, TFJA), separarlas claramente dentro de la misma fila.
 - No incluir la leyenda «Periodo revisado: ... · Ediciones oficiales ... · Revisión cerrada para el encargo del despacho», ni frases internas equivalentes.
-- Redacción natural, humana, fluida, precisa, profesional, sobria; conservar contenido sustantivo aprobado al hacer solo cambios visuales.
+- Redacción: seguir íntegra [redacción](references/redaccion.md), obligatoria desde la 1.4.0. El reporte debe leerse como escrito por Emi: frases completas, primero el cambio y su efecto y después el fundamento entre paréntesis, cifras sin comillas angulares, sin dos puntos dentro del texto, una fila por asunto con sus medidas por columna y nada repetido. La guía enseña cada tema desde cero con siete apartados fijos. Antes de armar, `node scripts/paquete/estilo.js <carpeta>` sin errores. Conservar el contenido sustantivo aprobado al hacer solo cambios visuales.
 - Correo personal a Emi: HTML responsive con fondo gris muy claro, contenedor blanco (~640 px), líneas finas, tipografía sistema, secciones «PARA EL LIC. CASTORENA» y «SOLO PARA TI», hallazgos, texto íntegro del correo al Licenciado, comentario sugerido separado, qué estudiar primero y nota breve de control. Sin logos inventados.
 - Correo al Licenciado inicia «Licenciado, buen día. Le comparto la actualización del DOF correspondiente a ...»; firma «Emiliano García Milla». BLUF, directo y sin burocratismos.
 
@@ -76,5 +76,5 @@ Para frenos activos, reparto en paralelo, `/goal`, `/loop`, programación y nave
 ## Fuentes con el box y ejecución automática
 Desde la 1.2.0 las fuentes salen del box «main» de Simular (conector `box`): inventario oficial del DOF, PDFs completos verificados, anexos aparte, OCR en español y Semanario del viernes por la API que usa la propia aplicación del SJF, con Chrome real. Los lectores leen directo del box por rangos de página; la sesión de Claude lee, redacta, audita y entrega; TinyFish coteja títulos y vigila vespertinas; la Mac de Emi es solo plan C y copia local. Cada paso tiene plan A, B y C y ocho compuertas de cierre. Antes de operar con el box o de tocar las tareas programadas, leer íntegra [Fuentes con el box](references/box.md). El material de trabajo (fuentes, notas, entregas) vive en el box y en Drive, nunca en este repositorio público.
 
-## Lector por API (en sombra)
-Desde la 1.3.0 un lector previo corre con los créditos de API de Emi, no con su suscripción: lunes y miércoles a las 19:17, con reintento automático a las 20:37, en el repositorio privado `lianfixx/dof-trabajo`. Baja el DOF, lo parte en bloques sin huecos, anota cada publicación (por lote, a mitad de precio; las tablas de pura cifra, con el modelo barato) y deja `fuentes/<entrega>/notas/PRELIMINAR_API.md` y `ESTADO_API.json`. Es material de apoyo: su `INTEGRO` es técnico, no declara cobertura, no lee el Semanario, no envía nada y no sustituye la lectura, la doble lectura ni la auditoría de la sesión que cierra. Mientras dure la fase de sombra, las tareas programadas trabajan como si no existiera; el relevo lo decide Emi con las comparaciones de `sombra/` de ese repositorio. Si una corrida no queda íntegra, abre un issue allí y la tarea «DOF · guardia del lector por API» (martes y jueves) la diagnostica y la repara; esa noche la suscripción hace el trabajo completo, como siempre. Antes de usar sus notas o de tocar ese lector, leer íntegro `references/api.md` del repositorio `lianfixx/dof-juridico-monitor`.
+## Lector por API (en relevo)
+Desde la 1.3.0 un lector previo corre con los créditos de API de Emi, no con su suscripción: lunes y miércoles a las 19:17, con reintento a las 20:37, en el repositorio privado `lianfixx/dof-trabajo`. Baja el DOF, lo parte en bloques sin huecos, anota cada publicación y deja `fuentes/<entrega>/notas/PRELIMINAR_API.md` y `ESTADO_API.json`. Desde la 1.4.0 (decisión de Emi del 23/11/2026) ya no corre en sombra: lo que deja íntegro no se vuelve a leer con la suscripción. El relevo lo decide un programa, documento por documento (`scripts/api/relevo.py`: mismo SHA-256, mismas páginas, íntegro); la tarea «lector nocturno» lo comprueba, lanza el lector si GitHub no lo corrió, revisa una muestra y lee solo lo que falte; el cierre toma esas notas del repositorio privado y sigue con todas las compuertas. La doble lectura del cierre es la evaluación continua: cada diferencia con la nota de la API va a la bitácora (`lectura_api.diferencias`). Su `INTEGRO` es técnico: no declara cobertura, no lee el Semanario y no envía nada. Regla de sincronía: toda mejora o cambio se hace a la vez en la vía de API y en la de suscripción (código, `prompts/tareas/`, referencias y esta skill) y después se actualiza el texto de las tareas programadas. Antes de usar sus notas o de tocar ese lector, leer íntegro `references/api.md` del repositorio `lianfixx/dof-juridico-monitor`.

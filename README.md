@@ -55,7 +55,7 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 6. prompts/master.md
 7. config/default.yaml
 
-Versión de la skill: **1.3.2**.
+Versión de la skill: **1.4.0**.
 
 Validación local reproducible con Python 3.10 o posterior:
 
@@ -69,7 +69,7 @@ sido leída, que los entregables se hayan renderizado ni que un correo se enviar
 
 
 ## Estado de implementación y límites (2026-11-09)
-Desde la skill 1.2.0 las fuentes se bajan en el box «main» de Simular y cuatro tareas programadas de Claude hacen el lector nocturno, los cierres de martes y jueves y la revisión SJF del viernes (ver [references/box.md](references/box.md)). No se debe interpretar una ejecución exitosa de `pytest` ni un manifiesto con `compuerta_fuentes.listo` como prueba de lectura jurídica completa: la lectura, la doble lectura y la auditoría siguen siendo de la sesión. La versión de la skill (1.3.2) y la versión del paquete Python (1.0.0) son independientes.
+Desde la skill 1.2.0 las fuentes se bajan en el box «main» de Simular y cuatro tareas programadas de Claude hacen el lector nocturno, los cierres de martes y jueves y la revisión SJF del viernes (ver [references/box.md](references/box.md)). No se debe interpretar una ejecución exitosa de `pytest` ni un manifiesto con `compuerta_fuentes.listo` como prueba de lectura jurídica completa: la lectura, la doble lectura y la auditoría siguen siendo de la sesión. La versión de la skill (1.4.0) y la versión del paquete Python (1.0.0) son independientes.
 
 ### Flujo práctico SJF con PDF adjuntos
 Ver [operación asistida y enlaces oficiales](docs/sjf/OPERACION.md). El comando local `python -m src.dof_monitor.sjf_intake` crea un control privado, incorpora PDF adjuntos con hash y bloquea el cierre cuando falta lectura o investigación. No equivale a un servicio autónomo de publicación, generación de cuatro documentos o envío Gmail.

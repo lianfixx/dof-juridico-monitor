@@ -7,11 +7,12 @@ module.exports = {
   fecha: "30 de octubre al 3 de noviembre de 2026", // pie de la guía
   titulo: "Actualización DOF y Semanario Judicial | 30 de octubre al 3 de noviembre de 2026", // jueves: «Actualización DOF | …»
   dofTitulo: "Diario Oficial de la Federación · 30 de octubre, 2 y 3 de noviembre de 2026",
-  relevante: ["2–4 líneas sustantivas.", "…"],
+  relevante: ["De 2 a 4 párrafos de una o dos frases: qué cambió, para quién y desde cuándo.", "…"], // references/redaccion.md manda sobre la forma
   filas: [{ asunto: "", emisor: "", efecto: "", vigencia: "", importa: "", fuente: [["DOF 30/10/2026", N(5802597, "30/10/2026")]] }],
   sjfTitulo: "Semanario Judicial de la Federación · publicación del viernes 30 de octubre de 2026", // martes
   sjf: [{ asunto: "", emisor: "Pleno de la Suprema Corte · P./J. 216/2026 (12a.)", efecto: "", vigencia: "", importa: "", fuente: [["Registro 2032862", T(2032862)]] }], // jueves: []
   correoLic: { asunto: "", parrafos: ["Licenciado, buen día. Le comparto la actualización del DOF correspondiente a …", "…", "Comentario personal: [Espacio para mi opinión antes del envío].", "Adjunto el reporte. Quedo atento a sus comentarios.", "Emiliano García Milla"] }, // 80–130 palabras
   comentario: "40–70 palabras.",
 };
-// guia.js: { titulo, estado, estudiar: [{tema, puntos: [[clave, texto]]}], cobertura: [[a, b]], avisos: [], pendientes: [] }
+// guia.js: { titulo, estado (dos frases), estudiar: [{tema, puntos: [[clave, texto]]}] (1 a 5 temas), cobertura: [[a, b]], avisos: [], pendientes: [] }
+// claves de `puntos`, en este orden: "De qué se trata", "Qué cambió", "Fundamento", "Cómo opera", "Por qué importa", "Dónde está la discusión" (opcional), "Para dominarlo"
