@@ -93,7 +93,10 @@ def test_lanzador_y_plantillas_siguen_al_metodo():
     assert "anulado" in texto("references/api.md") and "LISTA_MAL_COPIADA" in texto("references/api.md")
 
 
-def test_tareas_cargan_add_repo_antes_de_usarlo():
-    # 23/11/2026: el lector nocturno no cargó add_repo (herramienta diferida) y el relevo quedó en NINGUNO.
-    for f in ("prompts/tareas/lector-nocturno.md", "prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md", "prompts/api/lanzador-api.md"):
-        assert "select:mcp__claude-code-remote__add_repo" in texto(f), f
+def test_tareas_clonan_el_privado_sin_add_repo():
+    # 23 y 24/11/2026: en las ejecuciones programadas add_repo no existe; el acceso viene de los repositorios de la tarea.
+    for f in ("prompts/tareas/lector-nocturno.md", "prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md"):
+        assert "git clone --depth 1 https://github.com/lianfixx/dof-trabajo" in texto(f), f
+        assert "select:mcp__claude-code-remote__add_repo" not in texto(f), f
+    assert "No adjuntes nada" in texto("prompts/api/lanzador-api.md")
+    assert "Acceso de las tareas al repositorio privado" in texto("references/api.md")
