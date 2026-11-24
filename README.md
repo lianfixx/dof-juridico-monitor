@@ -43,7 +43,7 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 - [references/](references/): texto que SKILL.md manda leer íntegro según la tarea: [fuentes con el box y ejecución automática](references/box.md), [SJF y distribución](references/sjf-y-distribucion.md), [desbloqueo](references/desbloqueo.md) y [Claude Code](references/claude-code.md) (frenos, reparto, `/goal`, `/loop`, [ejecución programada](scripts/headless.sh) y navegador).
 - [scripts/box/](scripts/box/): copias canónicas de los scripts del box «main» de Simular; [scripts/paquete/](scripts/paquete/README.md): armado de los cuatro archivos y del correo; [prompts/tareas/](prompts/tareas/): texto íntegro de las cuatro tareas programadas.
 - Para instalar la skill en claude.ai: `sh scripts/empaquetar_skill.sh` genera un ZIP con un solo SKILL.md (claude.ai rechaza el ZIP del repositorio completo porque los puentes de `.agents/` y `.claude/` cuentan como SKILL.md adicionales).
-- Reporte blanco/negro/grises, fuentes directas dentro de cada fila, sin leyendas operativas, con «Lo relevante» y tabla ejecutiva.
+- Reporte blanco/negro/grises, fuentes directas dentro de cada fila, sin leyendas operativas, con «Lo relevante» como título de una sola tabla ejecutiva (DOF y Semanario).
 - Paquete completo para Emi: PDF del Licenciado, editable DOCX, guía PDF/DOCX, comentario sugerido separado y correo HTML BLUF.
 - Revisión profesional proporcional al encargo: distinguirla expresamente de la certificación exhaustiva de cobertura. Los requisitos estrictos de cobertura completa no cambian.
 
@@ -56,7 +56,7 @@ La extensión se documentó el 15-10-2026; su primer corte previsto es el 16-10-
 6. prompts/master.md
 7. config/default.yaml
 
-Versión de la skill: **1.4.1**.
+Versión de la skill: **1.5.0**.
 
 Validación local reproducible con Python 3.10 o posterior:
 

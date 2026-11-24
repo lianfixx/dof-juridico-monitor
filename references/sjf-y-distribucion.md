@@ -9,7 +9,7 @@ Antes de declarar integración, recuperar en Library los cinco controles/entrega
 
 Leer íntegramente publicaciones, sentencias, tesis, votos y anexos del SJF sin selección previa; verificar fuente oficial, razones, votación, ámbito, fecha y fundamento de obligatoriedad, efectos y temporalidad. Distinguir jurisprudencia obligatoria, tesis aislada y votos. Cada ficha debe explicar hechos, resolución, relevancia, aplicación y límites; en la guía de Emi añadir estudio, ejemplos hipotéticos, preguntas y opinión/contraargumento separados.
 
-Integrar SJF en los mismos cuatro archivos DOF, sin adjuntos duplicados. Mantener PDF ejecutivo del Licenciado sin metodología interna, DOCX editable y guía personal PDF/DOCX, comentario sugerido 40–70 palabras y correo BLUF 80–130 palabras con «Comentario personal: [Espacio para mi opinión antes del envío]». Antes de cualquier envío comprobar duplicados, tentativa, versiones, renderizado y adjuntos; si el resultado de envío es ambiguo, bloquear reenvío. Destinatario exclusivo: emilianogarciamilla@gmail.com; nunca el Licenciado.
+Integrar SJF en los mismos cuatro archivos DOF, sin adjuntos duplicados. Mantener PDF ejecutivo del Licenciado sin metodología interna, DOCX editable y guía personal PDF/DOCX, comentario sugerido 40–70 palabras y correo BLUF de 120–230 palabras con «Comentario personal: [Espacio para mi opinión antes del envío]». Antes de cualquier envío comprobar duplicados, tentativa, versiones, renderizado y adjuntos; si el resultado de envío es ambiguo, bloquear reenvío. Destinatario exclusivo: emilianogarciamilla@gmail.com; nunca el Licenciado.
 
 Las instrucciones prioritarias de lectura exhaustiva y bloqueo ante evidencia incompleta prevalecen sobre cualquier simplificación documental del módulo.
 

@@ -1,6 +1,6 @@
 # Redacción del reporte, la guía y el correo
 
-Obligatoria desde la skill 1.4.0 (23 de noviembre de 2026). La pidió Emi después de leer cuatro entregas: «debe parecer escrito realmente por mí», «claro, completo y no redundante», «que no dé flojera leerlo», «técnico, argumentado y fundado». Aplica igual a las dos vías: la sesión de la suscripción que redacta el paquete y el lector por API que redacta el preliminar (su instrucción carga el núcleo de este archivo; `tests/test_sincronia.py` lo comprueba).
+Obligatoria desde la skill 1.4.0 (23 de noviembre de 2026); la forma del reporte y del correo se ajustó en la 1.5.0 (24 de noviembre de 2026) con la versión final que Emi envió ese día. La pidió Emi después de leer cuatro entregas: «debe parecer escrito realmente por mí», «claro, completo y no redundante», «que no dé flojera leerlo», «técnico, argumentado y fundado». Aplica igual a las dos vías: la sesión de la suscripción que redacta el paquete y el lector por API que redacta el preliminar (su instrucción carga el núcleo de este archivo; `tests/test_sincronia.py` lo comprueba).
 
 ## Qué estaba mal (entregas del 10 al 19 de noviembre de 2026)
 
@@ -27,32 +27,62 @@ La exactitud no cambia: cada dato sigue en `evidencias.json` con su texto litera
 
 ## El reporte (para el Licenciado)
 
-**«Lo relevante».** De dos a cuatro párrafos de una o dos frases. Cada párrafo, un tema: qué cambió, para quién y desde cuándo. Primero lo que más pesa para el despacho. Es lo que el Licenciado debe saber si solo lee eso; no es el índice de lo publicado.
+**Lo que Emi cambió en su versión final del 24 de noviembre de 2026** (comparación del reporte enviado con el que él mandó al Licenciado; el detalle, con la entrega real, está en el repositorio privado `lianfixx/dof-trabajo`, carpeta `ejemplos/2026-11-24/`):
 
-**La tabla.** Una fila por asunto, no por publicación. Una ley con cinco cambios que importan son cinco filas, cada una con su título. Orden por importancia para el despacho (fiscal, prevención de lavado, administrativo, amparo), no por fecha. Lo secundario no entra a la tabla: va a los avisos de la guía.
+- Quitó los párrafos de «Lo relevante» y el subtítulo del DOF. «Lo relevante» quedó como título de la tabla.
+- Dejó 5 de las 14 filas. Conservó los días inhábiles de fin de año de dos autoridades, una declaratoria de amparo en línea y las jurisprudencias del Pleno. Quitó los avisos y listados rutinarios del SAT, las reglas operativas de comercio exterior, la jurisprudencia de un tribunal colegiado y las tesis aisladas.
+- Partió «Qué ocurrió» en dos párrafos (la regla y, aparte, el dato que la completa: precedente, votación o detalle operativo).
+- En «Por qué importa» dejó solo para qué sirve («Sirve para…», «Permite…») y borró los consejos («conviene…») y los datos laterales. En dos filas dejó solo la fuente.
+- Después pidió juntar las dos tablas en una y un correo más claro y más apegado a las jurisprudencias.
+
+**«Lo relevante».** Es el título de la única tabla del reporte. No lleva párrafos de resumen: el resumen es el correo al Licenciado.
+
+**La tabla.** Una sola, con el DOF primero y el Semanario después. Una fila por asunto, no por publicación. Pocas filas, de tres a seis; la versión de Emi quedó en cinco. Criterio de selección deducido de esa versión (provisional hasta que Emi lo confirme): entra lo que cambia cómo litiga o asesora el despacho, es decir, jurisprudencia del Pleno o de las Salas, reglas de plazos y días inhábiles, procedimiento de amparo y juicios en línea, y reformas de fondo en materia fiscal, de prevención de lavado o administrativa. Va a los avisos de la guía lo rutinario o de un solo contribuyente (listados del 69-B, comprobantes falsos de un emisor), las reglas operativas de comercio exterior, las tesis aisladas y la jurisprudencia de colegiados, salvo que toquen un asunto del despacho. El preliminar del lector por API sigue proponiendo candidatas con criterio amplio: la selección es del cierre.
 
 | Columna | Qué lleva | Medida |
 |---|---|---|
-| Asunto | El cambio, nombrado como lo diría un abogado. Sin dos puntos. | Hasta 12 palabras |
-| Qué ocurrió / efecto | Qué cambia, dicho en llano. A quién aplica. Cómo opera, con la cifra o la condición clave. Fundamento entre paréntesis. | 2 a 4 frases, 35 a 80 palabras, tres cifras como máximo |
-| Vigencia / estado | Cuándo entra en vigor y, si existe, la excepción o el plazo que corre. | Una frase, hasta 25 palabras |
-| Por qué importa / qué revisar | A qué clientes o asuntos del despacho les pega y qué conviene hacer. Si se ve venir una discusión jurídica, en una frase. | 1 a 3 frases, 20 a 60 palabras |
+| Asunto | El cambio, nombrado como lo diría un abogado. Sin dos puntos. Debajo, en gris, quién lo emite y su clave (en el Semanario, «Pleno de la Suprema Corte · P./J. 10/2027 (12a.)») | Hasta 12 palabras |
+| Qué ocurrió / efecto | Primer párrafo, la regla o el criterio, dicho en llano y con su fundamento entre paréntesis. Segundo párrafo, si hace falta, el dato que lo completa (precedente y votación, horario, excepción) | 30 a 90 palabras, dos párrafos como máximo |
+| Vigencia / obligatoriedad | En el DOF, cuándo entra en vigor y el plazo que corre. En el Semanario, si es jurisprudencia o tesis aislada y desde cuándo obliga | Una frase, hasta 25 palabras |
+| Por qué importa / qué revisar | Para qué sirve en un asunto, en una o dos frases. Sin consejos genéricos ni datos que no estén en la fuente. Puede quedar solo la fuente | Hasta 45 palabras |
 
-Si una celda necesita más de tres cifras, la fila se parte en dos o el detalle baja a la guía. En el Semanario, la fila dice el criterio en una frase, si es jurisprudencia o tesis aislada y desde cuándo obliga, y para qué sirve en un asunto.
+Si una celda necesita más de tres cifras, la fila se parte en dos o el detalle baja a la guía.
 
 **Antes y después** (fila real de la entrega del 17 de noviembre de 2026):
 
 > Antes. *Asunto:* «Reforma a la Ley del ISR: deducciones de grandes personas morales, pérdidas y…». *Qué ocurrió:* «Personas morales con ingresos «superiores a 50 millones de pesos» que determinen utilidad fiscal: sus deducciones se limitan con los factores «0.9667» y «0.9900» (artículos 78-A a 78-E) y el excedente…».
 
-> Después. *Asunto:* Límite a las deducciones de personas morales grandes. *Qué ocurrió:* Las personas morales con ingresos acumulables superiores a 50 millones de pesos ya no podrán deducir todo en el ejercicio. Sus deducciones se topan con un factor de 0.9667 sobre los ingresos o de 0.9900 sobre las propias deducciones, según el caso, y lo que no se deduzca se recupera en los veinte ejercicios siguientes (artículos 78-A a 78-E de la Ley del ISR). *Vigencia:* En vigor el 1 de enero de 2027. *Por qué importa:* Pega a clientes medianos y grandes con márgenes bajos, que pagarán ISR aun con poca utilidad. Conviene proyectar su ISR de 2027 con ambos supuestos y revisar si alguno cae en las exclusiones del artículo 78-E.
+> Después. *Asunto:* Límite a las deducciones de personas morales grandes. *Qué ocurrió:* Las personas morales con ingresos acumulables superiores a 50 millones de pesos ya no podrán deducir todo en el ejercicio. Sus deducciones se topan con un factor de 0.9667 sobre los ingresos o de 0.9900 sobre las propias deducciones, según el caso, y lo que no se deduzca se recupera en los veinte ejercicios siguientes (artículos 78-A a 78-E de la Ley del ISR). *Vigencia:* En vigor el 1 de enero de 2027. *Por qué importa:* Pega a clientes medianos y grandes con márgenes bajos, que pagarán ISR aun con poca utilidad. Sirve para proyectar su ISR de 2027 con ambos supuestos.
 
 Las pérdidas fiscales, los intereses y los grupos de sociedades, que iban en esa misma celda, son otras filas.
 
 ## El correo al Licenciado y el comentario
 
-El correo conserva sus fórmulas fijas (apertura «Licenciado, buen día. Le comparto la actualización…», «Comentario personal: [Espacio para mi opinión antes del envío].», cierre y firma «Emiliano García Milla») y sus 80 a 130 palabras. El cuerpo dice lo más importante en dos o tres frases, con la voz de Emi: directa, segura, con postura y sin adornos. No resume la tabla ni enumera todo.
+El correo es el resumen del reporte y se escribe como si Emi lo hubiera redactado después de estudiar cada criterio. Va en orden BLUF (lo principal primero):
 
-El comentario sugerido (40 a 70 palabras) es una opinión jurídica en primera persona: qué le parece lo más delicado del periodo y por qué. Tiene postura; no es un resumen. Si la skill `estilo-emi` está disponible, el correo y el comentario se redactan con ella.
+1. Apertura fija. «Licenciado, buen día. Le comparto la actualización del DOF y del Semanario Judicial de la Federación del …» (los jueves, solo «del DOF»).
+2. Lo principal, en una frase de hasta 35 palabras. Por ejemplo, «Lo principal son tres jurisprudencias del Pleno de la Corte, obligatorias desde el 23 de noviembre.»
+3. Un párrafo corto por cada asunto de la tabla, en su orden. Cada jurisprudencia con su clave, su criterio en una frase con las palabras de la tesis y para qué sirve. Lo del DOF puede ir junto en un solo párrafo.
+4. «Comentario personal: [Espacio para mi opinión antes del envío].» Emi lo sustituye por su opinión antes de enviar; el comentario sugerido le da una base.
+5. Cierre y firma fijos. «Adjunto el reporte. Quedo atento a sus comentarios.» y «Emiliano García Milla».
+
+De 120 a 230 palabras. Sin dos puntos dentro del texto, sin listas y sin datos que no estén en la tabla. `estilo.js` avisa si falta la clave de una jurisprudencia de la tabla.
+
+**Ejemplo** (ficticio, con la estructura del correo que Emi aprobó el 24 de noviembre de 2026; el real está en `ejemplos/2026-11-24/` del repositorio privado):
+
+> Licenciado, buen día. Le comparto la actualización del DOF y del Semanario Judicial de la Federación del 1 al 3 de marzo de 2027.
+>
+> Lo principal son dos jurisprudencias del Pleno de la Corte, obligatorias desde el 1 de marzo.
+>
+> La P./J. 10/2027 resuelve que la notificación por estrados solo procede cuando el domicilio no puede localizarse después de dos visitas. Sirve para impugnar notificaciones hechas sin agotar esas visitas.
+>
+> La P./J. 11/2027 precisa que el plazo para ampliar la demanda de nulidad corre desde que se conoce la resolución complementaria. Permite ampliar en asuntos que el tribunal daba por extemporáneos, y a mi juicio es la de uso más inmediato.
+>
+> En el DOF, el Tribunal Federal de Justicia Administrativa publicó sus días inhábiles de Semana Santa.
+>
+> Adjunto el reporte. Quedo atento a sus comentarios.
+>
+> Emiliano García Milla
 
 ## La guía (para Emi)
 
@@ -79,7 +109,7 @@ Sirve para que Emi entienda cada tema desde cero y pueda explicarlo. El reporte 
 ## Revisión antes de armar
 
 1. `node scripts/paquete/estilo.js <carpeta con content.js y guia.js>` sin errores. Revisa medidas, comillas, dos puntos, punto y coma, muletillas y los apartados de la guía. Sus avisos se leen y se atienden o se justifican en la bitácora.
-2. Leer en voz alta «Lo relevante» y dos filas. Si suenan a acta, se reescriben.
+2. Leer en voz alta el correo y dos filas. Si suenan a acta, se reescriben.
 3. Cada fila contesta qué cambió, a quién, desde cuándo y qué hacer.
-4. Ningún dato repetido entre «Lo relevante», la tabla y el correo. Ninguna fila de la tabla copiada en la guía.
+4. El correo resume la tabla sin agregar datos. Ninguna fila de la tabla copiada en la guía.
 5. Cada sigla desarrollada la primera vez.

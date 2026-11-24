@@ -2,8 +2,9 @@
 const P=require("path"),DIR=P.resolve(process.argv[2]),OUT=process.argv[3];
 const C=require(P.join(DIR,"content.js")),G=require(P.join(DIR,"guia.js"));const SJF=Array.isArray(C.sjf)&&C.sjf.length>0;
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-const mk=arr=>arr.map(f=>`<tr><td style="padding:10px 0;border-bottom:1px solid #e5e5e5;vertical-align:top"><div style="font-weight:600;color:#111">${esc(f.asunto)}</div><div style="margin-top:4px;color:#333">${esc(f.efecto)}</div><div style="margin-top:4px;color:#666;font-size:13px">${esc(f.vigencia)}</div></td></tr>`).join("");
-const rows=mk(C.filas), rowsS=SJF?mk(C.sjf):"";
+const par=x=>String(x||"").split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+const mk=arr=>arr.map(f=>`<tr><td style="padding:10px 0;border-bottom:1px solid #e5e5e5;vertical-align:top"><div style="font-weight:600;color:#111">${esc(f.asunto)}</div>${f.emisor?`<div style="color:#666;font-size:13px">${esc(f.emisor)}</div>`:""}${par(f.efecto).map(x=>`<div style="margin-top:4px;color:#333">${esc(x)}</div>`).join("")}<div style="margin-top:4px;color:#666;font-size:13px">${esc(f.vigencia)}</div></td></tr>`).join("");
+const rows=mk([...C.filas,...(SJF?C.sjf:[])]);
 const correo=C.correoLic.parrafos.map(x=>`<p style="margin:0 0 10px">${esc(x)}</p>`).join("");
 const pend=G.pendientes.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("");
 const h=`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(C.titulo)}</title></head>
@@ -13,8 +14,7 @@ const h=`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="
 <div style="color:#666;font-size:13px;margin-top:4px">Para tu revisión antes de enviar al Lic. Castorena</div>
 <hr style="border:0;border-top:1px solid #e5e5e5;margin:20px 0">
 <div style="font-size:12px;letter-spacing:.08em;color:#666;font-weight:600">PARA EL LIC. CASTORENA</div>
-<div style="margin-top:10px">${C.relevante.map(x=>`<p style="margin:0 0 10px">${esc(x)}</p>`).join("")}</div>
-<div style="margin-top:6px;font-weight:600">Diario Oficial de la Federación</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px">${rows}</table>${SJF?`<div style="margin-top:16px;font-weight:600">${esc(C.sjfTitulo)}</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px">${rowsS}</table>`:""}
+<div style="margin-top:10px;font-weight:600">Lo relevante</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px">${rows}</table>
 <div style="margin-top:22px;font-size:13px;color:#666">Asunto: ${esc(C.correoLic.asunto)}</div>
 <div style="margin-top:8px;padding:14px 16px;border-left:2px solid #111;background:#fafafa">${correo}</div>
 <hr style="border:0;border-top:1px solid #e5e5e5;margin:24px 0">

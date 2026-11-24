@@ -66,9 +66,9 @@ def test_los_apartados_de_la_guia_son_los_mismos_en_la_referencia_y_en_el_reviso
 def test_el_revisor_de_estilo_distingue_una_fila_buena_de_una_mala(tmp_path):
     if not shutil.which("node"):
         return
-    buena = """{ asunto: "Límite a las deducciones de personas morales grandes", efecto: "Las personas morales con ingresos acumulables superiores a 50 millones de pesos ya no podrán deducir todo en el ejercicio. Sus deducciones se topan con un factor de 0.9667 sobre los ingresos o de 0.9900 sobre las propias deducciones, según el caso, y lo que no se deduzca se recupera en los veinte ejercicios siguientes (artículos 78-A a 78-E de la Ley del ISR).", vigencia: "En vigor el 1 de enero de 2027.", importa: "Pega a clientes medianos y grandes con márgenes bajos, que pagarán ISR aun con poca utilidad. Conviene proyectar su ISR de 2027 con ambos supuestos y revisar si alguno cae en las exclusiones del artículo 78-E.", fuente: [["DOF", "https://dof.gob.mx/x"]] }"""
+    buena = """{ asunto: "Límite a las deducciones de personas morales grandes", efecto: "Las personas morales con ingresos acumulables superiores a 50 millones de pesos ya no podrán deducir todo en el ejercicio. Sus deducciones se topan con un factor de 0.9667 sobre los ingresos o de 0.9900 sobre las propias deducciones, según el caso, y lo que no se deduzca se recupera en los veinte ejercicios siguientes (artículos 78-A a 78-E de la Ley del ISR).", vigencia: "En vigor el 1 de enero de 2027.", importa: "Pega a clientes medianos y grandes con márgenes bajos, que pagarán ISR aun con poca utilidad. Sirve para proyectar su ISR de 2027 con ambos supuestos.", fuente: [["DOF", "https://dof.gob.mx/x"]] }"""
     mala = """{ asunto: "Ley de Ingresos 2027: tasas", efecto: "Recargos «1.38 por ciento»; multas «50 por ciento»; retención «0.68 por ciento»; cabe señalar que aplica: todo.", vigencia: "En vigor.", importa: "Revisar.", fuente: [["DOF", "https://dof.gob.mx/x"]] }"""
-    rel = '["La reforma al ISR limita desde 2027 las deducciones de las personas morales con ingresos superiores a 50 millones de pesos.", "La Ley de Ingresos condona multas y recargos de adeudos de 2025 o anteriores a quien pague durante 2027."]'
+    rel = "[]"   # desde el 24/11/2026 «Lo relevante» no lleva párrafos
 
     def correr(fila):
         d = tmp_path / str(abs(hash(fila)))
@@ -100,3 +100,33 @@ def test_tareas_clonan_el_privado_sin_add_repo():
         assert "select:mcp__claude-code-remote__add_repo" not in texto(f), f
     assert "No adjuntes nada" in texto("prompts/api/lanzador-api.md")
     assert "Acceso de las tareas al repositorio privado" in texto("references/api.md")
+
+
+def test_la_forma_aprobada_el_24_11_pasa_el_estilo_y_sale_en_una_sola_tabla(tmp_path):
+    # Forma de la versión final de Emi del 24/11/2026, con contenido ficticio: una sola tabla y correo BLUF.
+    if not shutil.which("node"):
+        return
+    d = RAIZ / "tests/fixtures/entrega_ficticia"
+    r = subprocess.run(["node", str(RAIZ / "scripts/paquete/estilo.js"), str(d)], capture_output=True, text=True)
+    assert r.returncode == 0 and "0 errores" in r.stdout, r.stdout
+    assert "no menciona la P./J." not in r.stdout
+    (tmp_path / "guia.js").write_text('module.exports = { titulo: "g", estado: "e", estudiar: [], cobertura: [], avisos: [], pendientes: [] };', encoding="utf-8")
+    (tmp_path / "content.js").write_text((d / "content.js").read_text(encoding="utf-8").replace("module.exports = {", 'module.exports = { comentario: "c",', 1), encoding="utf-8")
+    b = subprocess.run(["node", str(RAIZ / "scripts/paquete/build.js"), str(tmp_path), str(tmp_path)], capture_output=True, text=True)
+    if "Cannot find module 'docx'" in b.stderr:
+        return
+    assert b.returncode == 0, b.stderr
+    import zipfile
+    xml = zipfile.ZipFile(tmp_path / "Actualizacion_DOF_SJF_01-03_03-03-2027.docx").read("word/document.xml").decode("utf-8")
+    assert xml.count("<w:tbl>") == 1 and "Vigencia / obligatoriedad" in xml and "Semanario Judicial de la Federación ·" not in xml
+    e = subprocess.run(["node", str(RAIZ / "scripts/paquete/email.js"), str(tmp_path), str(tmp_path)], capture_output=True, text=True)
+    assert e.returncode == 0, e.stderr
+    html = (tmp_path / "Correo_revision_DOF_SJF_01-03_03-03-2027.html").read_text(encoding="utf-8")
+    assert html.count("<table") == 1 and "P./J. 11/2027" in html
+
+
+def test_reglas_de_la_tabla_unica_en_todo_el_metodo():
+    for f in ("prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md"):
+        assert "título de una sola tabla" in texto(f) and "120–230" in texto(f) and "80–130" not in texto(f), f
+    assert "Lo que Emi cambió en su versión final del 24 de noviembre de 2026" in texto("references/redaccion.md")
+    assert "Vigencia/obligatoriedad" in texto("SKILL.md") and "80–130" not in texto("SKILL.md")

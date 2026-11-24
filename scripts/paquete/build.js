@@ -5,8 +5,9 @@ const {
   BorderStyle, ExternalHyperlink, AlignmentType, ShadingType, LevelFormat, Footer, PageNumber,
 } = require("docx");
 // Uso: NODE_PATH=<node_modules> node build.js DIR_CONTENIDO DIR_SALIDA
-// DIR_CONTENIDO tiene content.js y guia.js (ver content.ejemplo.js). Si C.sjf está vacío o
-// no existe (jueves), el reporte no lleva sección del Semanario.
+// DIR_CONTENIDO tiene content.js y guia.js (ver content.ejemplo.js). El reporte lleva una sola tabla
+// bajo «Lo relevante»: primero las filas del DOF (C.filas) y después las del Semanario (C.sjf, vacío los
+// jueves). Versión final de Emi del 24/11/2026: sin párrafos de resumen y con las tablas juntas.
 const path0 = require("path");
 const DIR = path0.resolve(process.argv[2]);
 const C = require(path0.join(DIR, "content.js"));
@@ -29,16 +30,18 @@ const footer = (label) => new Footer({ children: [p([t(label + "  ·  ", { size:
 const noB = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
 const cellBorders = { top: noB, left: noB, right: noB, bottom: { style: BorderStyle.SINGLE, size: 4, color: RULE } };
 
+const parrafos = (x) => String(x || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+
 function table(filas, h3) {
   const widths = [1900, 3700, 1800, 2680];
   const head = new TableRow({ tableHeader: true, children: ["Asunto", "Qué ocurrió / efecto", h3, "Por qué importa / qué revisar"].map((h, i) =>
     new TableCell({ width: { size: widths[i], type: WidthType.DXA }, borders: { ...cellBorders, bottom: { style: BorderStyle.SINGLE, size: 8, color: INK } }, margins: { top: 60, bottom: 80, left: 80, right: 80 },
       children: [p(t(h, { bold: true, size: 16, color: INK }), { after: 0 })] })) });
   const rows = filas.map((f) => new TableRow({ cantSplit: true, children: [
-    [p(t(f.asunto, { bold: true, size: 18 }), { after: 40, line: 252 }), p(t(f.emisor, { size: 15, color: GRAY }), { after: 0 })],
-    [p(t(f.efecto, { size: 17 }), { after: 0, line: 252 })],
+    [p(t(f.asunto, { bold: true, size: 18 }), { after: 40, line: 252 }), ...(f.emisor ? [p(t(f.emisor, { size: 15, color: GRAY }), { after: 0 })] : [])],
+    parrafos(f.efecto).map((x, i, a) => p(t(x, { size: 17 }), { after: i < a.length - 1 ? 100 : 0, line: 252 })),
     [p(t(f.vigencia, { size: 17 }), { after: 0, line: 252 })],
-    [p(t(f.importa, { size: 17 }), { after: 60, line: 252 }),
+    [...parrafos(f.importa).map((x) => p(t(x, { size: 17 }), { after: 80, line: 252 })),
      ...f.fuente.map(([l, u]) => p([t("Fuente: ", { size: 15, color: GRAY }), link(l, u)], { after: 0, line: 240 }))],
   ].map((ch, i) => new TableCell({ width: { size: widths[i], type: WidthType.DXA }, borders: cellBorders, margins: { top: 100, bottom: 100, left: 80, right: 80 }, children: ch })) }));
   return new Table({ width: { size: W, type: WidthType.DXA }, columnWidths: widths, rows: [head, ...rows] });
@@ -50,14 +53,8 @@ function reportDoc() {
     sections: [{ properties: { page }, footers: { default: footer(C.titulo) }, children: [
       p(t(C.titulo, { bold: true, size: 28 }), { after: 60 }),
       rule(),
-      p(t("Lo relevante", { bold: true, size: 21 }), { after: 100 }),
-      ...C.relevante.map((x) => p(t(x, { size: 19 }), { after: 120, line: 288 })),
-      p(t(C.dofTitulo, { bold: true, size: 21 }), { before: 160, after: 120 }),
-      table(C.filas, "Vigencia / estado"),
-      ...(SJF ? [
-        p(t(C.sjfTitulo, { bold: true, size: 21 }), { before: 320, after: 120, pageBreakBefore: true }),
-        table(C.sjf, "Tipo, obligatoriedad y fecha"),
-      ] : []),
+      p(t("Lo relevante", { bold: true, size: 21 }), { after: 120 }),
+      table([...C.filas, ...(SJF ? C.sjf : [])], "Vigencia / obligatoriedad"),
     ] }],
   });
 }

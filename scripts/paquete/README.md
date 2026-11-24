@@ -10,4 +10,4 @@ python3 scripts/paquete/audit.py DIR_CONTENIDO/evidencias.json                  
 node scripts/paquete/estilo.js DIR_CONTENIDO                                           # forma: medidas, comillas, dos puntos, muletillas, apartados de la guía (sin errores o no sale)
 ```
 
-Requiere `docx` (npm) y LibreOffice. Los nombres salen `Actualizacion_DOF_SJF_<sufijo>` los martes y `Actualizacion_DOF_<sufijo>` los jueves (sin sección SJF cuando `C.sjf` está vacío). Comprobar siempre: comentario 40–70 palabras, correo al Licenciado 80–130, sin leyendas visibles, y revisar el PDF renderizado.
+Requiere `docx` (npm) y LibreOffice. Los nombres salen `Actualizacion_DOF_SJF_<sufijo>` los martes y `Actualizacion_DOF_<sufijo>` los jueves (sin filas del Semanario cuando `C.sjf` está vacío). El reporte lleva una sola tabla bajo «Lo relevante», sin párrafos de resumen (versión final de Emi del 24/11/2026). Comprobar siempre: comentario 40–70 palabras, correo al Licenciado 120–230, sin leyendas visibles, y revisar el PDF renderizado.
