@@ -86,5 +86,8 @@ def test_lanzador_y_plantillas_siguen_al_metodo():
     lanzador = texto("prompts/api/lanzador-api.md")
     assert "lector-api.yml/dispatches" in lanzador and "no lances otra" in lanzador
     assert "lanzador-api.md" in texto("references/api.md") and "Lanzador del lector por API" in texto("references/box.md")
+    assert "19:17 y a las 20:17" in lanzador and "now-5400" in lanzador
+    assert "lanzador-api.md" in texto("references/guardia.md") and "19:17 y 20:17" in texto("references/box.md")
+    assert "firmó el commit (hipótesis descartada" in texto("references/api.md") and "20:37, en el repositorio" not in texto("SKILL.md")
     assert "De qué se trata" in texto("templates/operator-study.md") and "redaccion.md" in texto("templates/report.md")
     assert "anulado" in texto("references/api.md") and "LISTA_MAL_COPIADA" in texto("references/api.md")

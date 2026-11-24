@@ -3,6 +3,15 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.4.1 — 2026-11-23: causa real del reloj de GitHub y tarea lanzadora
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 23/11/2026, 21:11, en chat: «Busca y deja todo de manera perfecta sí o sí, soluciona, tienes expreso mi sí de todo».
+- Corrección de las dos entradas de abajo: la causa de que GitHub no disparara no es quién firmó el commit. Prueba: en `lianfixx/MATRIZ` la programación también la subió una sesión de Claude y sus corridas programadas salen a nombre de `lianfixx`; pero de una programación de cada 15 minutos GitHub disparó 39 corridas en 12 días (de unas 1,100), con huecos de 5 a 9 horas. GitHub documenta que las corridas programadas pueden retrasarse o descartarse. Que Emi editara el `cron` no habría cambiado nada.
+- Cambios: (1) creada la tarea programada de Claude «DOF · lanzar el lector por API» (lunes y miércoles 19:17 y 20:17, Haiku 5.5, sin avisos): lanza el workflow si no hay una corrida válida en los últimos 90 minutos, con un comando que decide solo; su texto es `prompts/api/lanzador-api.md`. (2) En `lianfixx/dof-trabajo`, el workflow tiene un trabajo previo «reloj» que termina sin leer ni gastar la corrida programada que GitHub dispare fuera de lunes o miércoles (antes habría abierto un aviso falso). (3) ADR 0008. (4) SKILL.md 1.4.1, `references/api.md`, `references/box.md` y `references/guardia.md` dicen quién lanza y por qué; la guardia compara también el texto de la tarea lanzadora y avisa si no corrió.
+- Archivos: `SKILL.md`, `README.md`, `prompts/api/lanzador-api.md`, `references/api.md`, `references/box.md`, `references/guardia.md`, `docs/adr/0008-quien-lanza-el-lector-por-api.md`, `tests/test_sincronia.py`, este registro.
+- Verificación: `python3 -m pytest -q`; el comando de decisión de la tarea probado contra las corridas reales (da 1 con una corrida válida en la ventana); corrida de comprobación en seco del workflow con el trabajo «reloj».
+- Pendiente: primera corrida real de la tarea lanzadora, el miércoles 25/11/2026 a las 19:17.
+
 ### 2026-11-23 · corrección: la tarea lanzadora no existe todavía
 - Agente: claude.ai (sesión en la nube, claude-fable-5-2)
 - Solicitud: Emi, 23/11/2026, 20:53, en chat: «Audita de fondo y arregla por favor».
