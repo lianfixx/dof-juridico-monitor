@@ -89,7 +89,7 @@ Regla: ningún paso se detiene en un aviso. Se agotan A, B y C, la bitácora reg
 4. **Auditoría literal:** cada dato del reporte y la guía (plazos, montos, reglas, votaciones, registros) se encuentra textualmente en la fuente (`tools/audit.py` del paquete, 100 %).
 5. **Auditor independiente:** un agente que no vio la redacción la contrasta con la fuente; cada hallazgo se corrige o se refuta por escrito.
 6. **Enlaces:** cada nota del DOF se abre y su título coincide (TinyFish en paralelo); cada registro del SJF se abre.
-7. **Forma:** comentario 40–70 palabras; correo 80–130; sin leyendas visibles; PDF renderizado y revisado; exactamente cuatro archivos.
+7. **Forma:** redacción conforme a [redaccion.md](redaccion.md) y `estilo.js` sin errores; comentario 40–70 palabras; correo 80–130; sin leyendas visibles; PDF renderizado y revisado; exactamente cuatro archivos.
 8. **Envío:** solo `emilianogarciamilla@gmail.com`, sin CC/CCO; duplicados buscados en Enviados; confirmación de Gmail releída.
 
 ## Primer mes
