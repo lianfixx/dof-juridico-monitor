@@ -11,6 +11,14 @@ Formato inspirado en Keep a Changelog. Versionado SemVer.
 - Archivos: `prompts/tareas/lector-nocturno.md`, `prompts/tareas/cierre-martes.md`, `prompts/tareas/cierre-jueves.md`, `prompts/api/lanzador-api.md`, `references/guardia.md`, `references/api.md`, `tests/test_sincronia.py`, este registro.
 - Verificación: `python3 -m pytest -q`; evidencia real: commit f784df8 de la guardia en `dof-trabajo` (24/11, 11:31).
 - Pendiente: primera noche con relevo real, miércoles 25/11.
+### 2026-11-24 · la síntesis del lector por API ya no afirma ausencias que solo valen para un grupo
+- Agente: Claude Code (ejecución programada)
+- Solicitud: guardia del lector por API, autorización de Emi del 23/11/2026 para reparar scripts/api/.
+- Hallazgo: en la corrida real 45312710700 (entrega 2026-11-24) la síntesis se redactó por grupos de unos 45 000 caracteres y cada grupo vio solo una parte de las notas. En varios grupos el redactor escribió afirmaciones de ausencia ciertas para su grupo y falsas para la entrega, y `unir_sintesis` las pegó tal cual. Los ejemplos están en `sombra/2026-11-24.md` del repositorio privado (material de trabajo, no se copia aquí). Es un dato falso en material que usa la sesión de cierre.
+- Cambios: dos capas, sin cambiar el método. (1) `S_SINTESIS` avisa al redactor que recibe solo una parte de las notas, le prohíbe afirmar lo que falta o no hay y le pide dejar vacía la sección sin nada. (2) `unir_sintesis` pasa cada parte por `sin_ausencias`, que quita los párrafos y viñetas que empiezan con una afirmación de ausencia de alcance global («Ninguna nota…», «las notas no incluyen/reportan/traen…», «no hay/sin indicadores, avisos, candidatas…», y el rótulo «Indicadores periódicos:» seguido de una negación); si después de esa frase el mismo renglón trae una entrada, solo se va la frase. Es conservador: lo que una ficha dice de su nota («no consta», «la nota no indica…», «ningún transitorio fija plazo») se conserva. Una sección que queda vacía no imprime su encabezado. Como cambia el texto de `S_SINTESIS`, la siguiente corrida redacta la síntesis de nuevo en lugar de reutilizar la anterior.
+- Archivos: `scripts/api/lector_api.py`, `tests/test_lector_api.py`, `references/api.md`, este registro.
+- Verificación: prueba nueva `test_sintesis_descarta_las_afirmaciones_de_ausencia_de_cada_grupo` (texto ficticio), que falla con el código anterior (1 falla, 117 aprobadas) y pasa con el cambio; `python3 -m pytest -q` 118 aprobadas, incluida `tests/test_sincronia.py`, sin tocar `prompts/tareas/`, `scripts/box/`, `SKILL.md`, `references/redaccion.md` ni plantillas.
+- Pendiente: el preliminar ya publicado de la entrega 2026-11-24 conserva esas frases; la sesión de cierre no debe apoyarse en ellas. La comprobación real es la síntesis de la próxima corrida del lector.
 
 ### 2026-11-23 · las tareas cargan add_repo antes de usarlo
 - Agente: claude.ai (sesión en la nube, claude-opus-5-5)
