@@ -3,6 +3,15 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### 2026-11-24 · causa real del relevo NINGUNO: el acceso viene de los repositorios de cada tarea
+- Agente: claude.ai (sesión en la nube, claude-fable-5-2)
+- Solicitud: Emi, 24/11/2026, 11:22, en chat: «Audita y arregla de fondo ese error».
+- Corrección de la entrada del 23/11 («las tareas cargan add_repo»): era una hipótesis y resultó falsa. La guardia del 24/11 comprobó que en las ejecuciones programadas add_repo no existe ni buscándola; aun así leyó y escribió en `lianfixx/dof-trabajo`, porque se creó desde una sesión que lo tenía adjunto. El lector nocturno y los cierres se crearon el 9/11 desde una sesión que solo tenía el repositorio público.
+- Cambios: los textos del lector nocturno, los cierres, la lanzadora y la guardia ya no piden add_repo: clonan el repositorio privado directamente y, si no pueden, lo dicen con una frase fija. `references/api.md` explica la regla. Las tres tareas afectadas se vuelven a crear desde una sesión con ambos repositorios (estado en la respuesta a Emi y en `lianfixx/dof-trabajo`).
+- Archivos: `prompts/tareas/lector-nocturno.md`, `prompts/tareas/cierre-martes.md`, `prompts/tareas/cierre-jueves.md`, `prompts/api/lanzador-api.md`, `references/guardia.md`, `references/api.md`, `tests/test_sincronia.py`, este registro.
+- Verificación: `python3 -m pytest -q`; evidencia real: commit f784df8 de la guardia en `dof-trabajo` (24/11, 11:31).
+- Pendiente: primera noche con relevo real, miércoles 25/11.
+
 ### 2026-11-23 · las tareas cargan add_repo antes de usarlo
 - Agente: claude.ai (sesión en la nube, claude-opus-5-5)
 - Solicitud: Emi, 23/11/2026, 22:14, en chat, con el resumen del lector nocturno: «¿Todo va bien?».
