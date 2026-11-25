@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Seguridad — 2026-11-25: acciones de GitHub fijadas a su versión exacta
+- Agente: claude.ai (sesión en la nube desde Claude in Chrome, claude-opus-5-5)
+- Solicitud: Emi, 25/11/2026, en chat: «revisa todo lo demás» de la auditoría del Guardián de la Matriz (`lianfixx/MATRIZ`, `docs/GUARDIAN.md`).
+- Cambios: `tests.yml` usaba `actions/checkout@v4` y `actions/setup-python@v5` (etiquetas que pueden moverse); ahora usa los mismos SHA fijos que el resto de los workflows (v4.2.2 y v5.6.0). Mismo comportamiento.
+- Archivos: `.github/workflows/tests.yml`, este registro.
+- Verificación: YAML válido; los SHA son los de `registro-ia.yml`.
+- Pendiente: ninguno.
+
 ### Skill 1.5.1 — 2026-11-24: respuestas de Emi sobre la versión final
 - Agente: claude.ai (sesión en la nube, claude-opus-5-5)
 - Solicitud: Emi, 24/11/2026, 12:10, en chat, a las tres dudas de la 1.5.0: «1.- Cosa de esta semana 2.- Que lo sigas haciendo tú, de manera muy natural, humana y clara por favor 3.- Que siempre lleve frase, solo fue cosa de este reporte».
