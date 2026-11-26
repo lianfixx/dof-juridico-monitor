@@ -861,7 +861,8 @@ def correr(dest: Path, seco: bool, max_usd: float, por_bloque: int, hilos: int, 
               "paginas": paginas, "por_lote": bool(lote),
               "costo_estimado_lectura_usd": round(sum(previsto(b, factor_lote) for b in plan), 2), "tope_usd": max_usd,
               "problemas_de_fuentes": problemas, "paginas_sin_texto_ni_ocr": sin_lectura,
-              "run_id": os.environ.get("GITHUB_RUN_ID", "")}
+              "run_id": os.environ.get("GITHUB_RUN_ID", ""),
+              "escala_relevancia": bool(escala_relevancia()) and escala_relevancia() in S_LECTOR}
     if seco:
         estado["estado"] = "SECO"
         return estado

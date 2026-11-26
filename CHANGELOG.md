@@ -3,6 +3,15 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.6.1 — 2026-11-26: auditoría de la escala de relevancia
+- Agente: Claude Code (sesión de la guardia del lector por API, claude-fable-5-2)
+- Solicitud: Emi, 26/11/2026, en chat: «Haz todo, tienes mi autorización. Al final audita de fondo por favor».
+- Hallazgos de la auditoría y corrección: (1) si `references/relevancia.md` faltara o perdiera sus marcadores, el lector por API habría leído sin escala y sin avisar; ahora `tests/test_lector_api.py` (el archivo que el workflow corre antes de pagar) falla si la escala no está en la instrucción, y `ESTADO_API.json` lo dice en `escala_relevancia`. (2) La tarea del Semanario del viernes seguía con el criterio anterior («fiscal/PLD/administrativa/amparo»), más estrecho que `docs/sjf/METODO.md`; ahora propone también jurisprudencia de trascendencia nacional de otra materia (inconstitucionalidad de normas generales, derechos humanos, laboral y seguridad social, electoral, relevancia social o política), con su sección en `references/relevancia.md`. (3) La guardia comprueba `escala_relevancia` y evalúa la relevancia mal puesta contra la escala.
+- Sin cambio: la instrucción que recibe el lector por API es la de la 1.6.0 (la sección del Semanario queda fuera de los marcadores). Costo medido de la escala: unos 770 tokens más por bloque, cerca de 0.02 USD por corrida de miércoles y 0.06 por corrida de lunes, en lote.
+- Archivos: `references/relevancia.md`, `prompts/tareas/sjf-viernes.md`, `scripts/api/lector_api.py`, `references/guardia.md`, `references/api.md`, `SKILL.md`, `README.md`, `tests/test_lector_api.py`, `tests/test_sincronia.py`, este registro.
+- Verificación: `python3 -m pytest -q` 124 aprobadas; la petición armada con `cuerpo_de` lleva la escala y las materias nuevas. Textos de las tareas «lector nocturno (con relevo)», «cierre martes (con relevo)», «cierre jueves (con relevo)» y «SJF viernes» actualizados igual que `prompts/tareas/`, con autorización de Emi en la conversación.
+- Pendiente: la skill instalada en la cuenta de Claude de Emi sigue en la 1.2.1 (solo afecta al uso en chat; las tareas programadas leen este repositorio): se le entrega el ZIP de `scripts/empaquetar_skill.sh` para que la guarde.
+
 ### Skill 1.6.0 — 2026-11-26: escala de relevancia común, con lo político, social y de Presidencia
 - Agente: Claude Code (sesión de la guardia del lector por API, claude-opus-5-5)
 - Solicitud: Emi, 26/11/2026, en chat, al preguntar qué determina la relevancia: «Si, igual temas de relevancia social, de política, cosas de presidencia, todo lo IMPORTANTE debe estar».

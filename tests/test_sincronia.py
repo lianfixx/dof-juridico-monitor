@@ -163,3 +163,12 @@ def test_escala_de_relevancia_igual_en_las_dos_vias():
     assert "## Revisión del cierre" in ref and "Presidencia de la República; secretarías de Estado" in ref
     assert "references/relevancia.md" in texto("SKILL.md") and "relevancia.md" in texto("references/api.md")
     assert "relevancia.md" in texto("references/redaccion.md")
+
+
+def test_el_semanario_y_la_guardia_siguen_la_misma_escala():
+    viernes = texto("prompts/tareas/sjf-viernes.md")
+    assert "references/relevancia.md" in viernes and "relevancia fiscal/PLD/administrativa/amparo" not in viernes
+    assert "trascendencia nacional" in viernes and "Semanario Judicial de la Federación" in texto("references/relevancia.md")
+    assert "escala_relevancia" in texto("references/guardia.md") and "escala_relevancia" in texto("references/api.md")
+    # La sección del Semanario queda fuera de lo que recibe el lector por API.
+    assert "Semanario" not in lector().escala_relevancia()

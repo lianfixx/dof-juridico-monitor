@@ -653,3 +653,15 @@ def test_releer_tablas_vuelve_a_leer_solo_las_pedidas(tmp_path, monkeypatch):
     est = la.correr(dest, False, 8, 1, 1, "claude-sonnet-5-5", "claude-opus-5-5", m_tablas="claude-haiku-5-5", releer_tablas=1)
     assert vistos == [("claude-haiku-5-5", 2, 2)] and est["bloques_reutilizados"] == 2 and est["estado"] == "INTEGRO"
     assert est["sintesis"].startswith("ok (la de la corrida anterior")   # las notas no cambiaron de estado: no se paga otra síntesis
+
+
+def test_la_instruccion_del_lector_lleva_la_escala_de_relevancia(tmp_path):
+    # Emi, 26/11/2026: todo lo importante debe estar. Si la escala no se carga, esta prueba detiene la corrida
+    # antes de pagar (el workflow corre este archivo) y esa noche lee la suscripción.
+    escala = la.escala_relevancia()
+    assert len(escala) > 1500 and escala in la.S_LECTOR
+    for pieza in ("- alta:", "- media:", "- baja:", "- ninguna:", "elige el más alto", "Presidencia de la República"):
+        assert pieza in escala, pieza
+    assert {"politica", "social"} <= set(la.E_LECTOR["properties"]["publicaciones"]["items"]["properties"]["materias"]["items"]["enum"])
+    estado = la.correr(montar(tmp_path), True, 8.0, 30, 1, "claude-sonnet-5-5", "claude-opus-5-5")
+    assert estado["estado"] == "SECO" and estado["escala_relevancia"] is True
