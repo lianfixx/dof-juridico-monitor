@@ -80,7 +80,7 @@ MAX_DIVISIONES = 3
 # USD por millón de tokens (entrada, salida). Precios oficiales al 20/11/2026.
 PRECIOS = {"claude-haiku-5-5": (0.10, 0.50), "claude-sonnet-5-5": (2.0, 10.0), "claude-opus-5-5": (4.0, 20.0)}
 MAX_CARACTERES_BLOQUE = 110_000
-MATERIAS = ["fiscal", "pld", "administrativo", "amparo", "laboral", "otra"]
+MATERIAS = ["fiscal", "pld", "administrativo", "amparo", "laboral", "politica", "social", "otra"]
 RELEVANCIAS = ["alta", "media", "baja", "ninguna"]
 
 S_LECTOR = """Eres un lector jurídico del Diario Oficial de la Federación (México). Recibes un bloque de páginas \
@@ -101,8 +101,8 @@ Nunca inventes un código.
 - resumen: qué dispone, en dos a cuatro frases concretas.
 - sujetos_obligados, plazos, vigencia, transitorios, efectos: lo que diga el texto; «no consta» si no lo dice. \
 Distingue publicación, entrada en vigor y plazos. No extrapoles efectos a casos concretos.
-- materias: las que apliquen de la lista. relevancia: para un despacho que sigue Fiscal, Compliance y PLD, \
-Administrativo y Amparo.
+- materias: las que apliquen de la lista (politica incluye Presidencia, gobierno y elecciones; social, programas \
+sociales, salud, educación, seguridad y derechos humanos). relevancia: según la escala que va al final.
 - citas: de una a cuatro frases copiadas literalmente del texto que sustenten lo más importante (regla, plazo, \
 monto, fecha de vigencia, transitorio). Cópialas tal cual, sin corregir ni resumir; se comprobarán contra el texto.
 
@@ -136,13 +136,15 @@ E_LECTOR = {
 }
 
 S_SINTESIS = """Eres el redactor del preliminar del lector nocturno del DOF para Emi (Emiliano García Milla), que prepara \
-una actualización jurídica para un despacho: Fiscal, Compliance y PLD-FT, Administrativo y Amparo. Recibes las notas \
+una actualización jurídica para un despacho: Fiscal, Compliance y PLD-FT, Administrativo y Amparo, más lo importante \
+de la vida pública del país (política, social y de Presidencia). Recibes las notas \
 que dejaron los lectores, ya comprobadas contra el texto: completas las de relevancia alta o media y abreviadas las \
 de relevancia baja. No tienes las fuentes: trabaja solo con las notas y no añadas nada que no esté en ellas. El \
 inventario completo y los pendientes de verificación los arma el programa; no los repitas.
 
 Escribe en Markdown, español de México, sobrio y preciso, con estas dos secciones y nada más:
-«## Candidatas a la tabla del reporte»: las de relevancia alta o media en fiscal, PLD, administrativo o amparo. \
+«## Candidatas a la tabla del reporte»: las de relevancia alta o media, de cualquier materia (también las de \
+política, social y Presidencia). \
 Cada una empieza con «### código · título breve (edición, páginas)» y sigue con un párrafo de cuatro a ocho renglones: \
 qué ocurrió y su efecto, vigencia o estado, por qué importa y qué revisar; después, sus citas literales con página. \
 Separa publicación, entrada en vigor y plazos. Si la nota dice «no consta», dilo. Una publicación que viene en varios \
@@ -168,6 +170,18 @@ def nucleo_redaccion() -> str:
     except (OSError, ValueError):
         return ""
 
+
+def escala_relevancia() -> str:
+    """La escala de references/relevancia.md: la misma para la API y para la suscripción (Emi, 26/11/2026)."""
+    try:
+        t = (Path(__file__).resolve().parents[2] / "references" / "relevancia.md").read_text(encoding="utf-8")
+        return t[t.index("<!-- escala:inicio -->") + 22:t.index("<!-- escala:fin -->")].strip()
+    except (OSError, ValueError):
+        return ""
+
+
+if escala_relevancia():
+    S_LECTOR += "\n\nEscala de relevancia (obligatoria):\n" + escala_relevancia()
 
 if nucleo_redaccion():
     S_SINTESIS += "\n\nReglas de redacción de Emi (las mismas del reporte y de la guía; síguelas en cada entrada):\n" + nucleo_redaccion()

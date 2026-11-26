@@ -7,7 +7,7 @@ Monitorear el DOF con rigor profesional y producir una síntesis útil, no un re
 Fiscal; Compliance/PLD-FT; Administrativo; Amparo.
 
 ## Adicional
-Reformas, decretos, decisiones nacionales e iniciativas del Ejecutivo de alta relevancia jurídica/económica/empresarial/social.
+Reformas, decretos, decisiones nacionales e iniciativas del Ejecutivo de alta relevancia jurídica/económica/empresarial/social. También lo político, social y de Presidencia que la escala de `references/relevancia.md` califica alto o medio (Emi, 26/11/2026).
 
 ## Periodos
 Martes: viernes anterior, lunes anterior, martes actual.

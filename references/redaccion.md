@@ -37,7 +37,7 @@ La exactitud no cambia: cada dato sigue en `evidencias.json` con su texto litera
 
 **«Lo relevante».** Es el título de la única tabla del reporte. No lleva párrafos de resumen: el resumen es el correo al Licenciado.
 
-**La tabla.** Una sola, con el DOF primero y el Semanario después. Una fila por asunto, no por publicación. Orden por importancia para el despacho (fiscal, prevención de lavado, administrativo, amparo), no por fecha. Lo secundario no entra: va a los avisos de la guía. El número de filas lo marca la semana; no hay tope fijo, pero cada fila tiene que valer la lectura del Licenciado. El preliminar del lector por API propone candidatas con criterio amplio y la selección es del cierre.
+**La tabla.** Una sola, con el DOF primero y el Semanario después. Una fila por asunto, no por publicación. Orden por importancia para el despacho (fiscal, prevención de lavado, administrativo, amparo), no por fecha. Lo político, social y de Presidencia que la [escala de relevancia](relevancia.md) califica alto también entra (Emi, 26/11/2026). Lo secundario no entra: va a los avisos de la guía. El número de filas lo marca la semana; no hay tope fijo, pero cada fila tiene que valer la lectura del Licenciado. El preliminar del lector por API propone candidatas con criterio amplio y la selección es del cierre.
 
 | Columna | Qué lleva | Medida |
 |---|---|---|

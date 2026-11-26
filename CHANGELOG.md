@@ -3,6 +3,14 @@
 Formato inspirado en Keep a Changelog. Versionado SemVer.
 
 ## [Unreleased]
+### Skill 1.6.0 — 2026-11-26: escala de relevancia común, con lo político, social y de Presidencia
+- Agente: Claude Code (sesión de la guardia del lector por API, claude-opus-5-5)
+- Solicitud: Emi, 26/11/2026, en chat, al preguntar qué determina la relevancia: «Si, igual temas de relevancia social, de política, cosas de presidencia, todo lo IMPORTANTE debe estar».
+- Hallazgo: no había criterio escrito. La API solo recibía «relevancia para un despacho que sigue Fiscal, Compliance y PLD, Administrativo y Amparo» y los lectores de la suscripción «relevancia fiscal/PLD/administrativa/amparo»; el nivel quedaba al juicio de cada modelo. El cierre solo revisaba lo bajo de autoridades fiscales, financieras y jurisdiccionales.
+- Cambios: (1) `references/relevancia.md`: escala alta, media, baja y ninguna con ejemplos, que incluye leyes, decretos y acuerdos de Presidencia, programas sociales, reformas electorales, de seguridad, salud, educación y derechos humanos; en la duda, el nivel más alto; y la lista ampliada de autoridades cuyo «bajo» revisa el cierre (Presidencia, secretarías, IMSS, INFONAVIT, CONAMER, Congreso, tribunales, INE y órganos autónomos, además de las fiscales y financieras). (2) `lector_api.py` carga esa escala tal cual en la instrucción del lector (`escala_relevancia()`), agrega las materias `politica` y `social`, y la síntesis propone candidatas de cualquier materia. (3) Textos del lector nocturno y de los cierres: leen la escala, califican con ella y revisan la lista ampliada; el cierre incluye en la tabla lo político, social y de Presidencia que la escala califica alto. (4) SKILL.md 1.6.0, `references/redaccion.md`, `references/api.md`, `docs/SPECIFICATION.md` y README.
+- Archivos: `references/relevancia.md`, `scripts/api/lector_api.py`, `prompts/tareas/lector-nocturno.md`, `prompts/tareas/cierre-martes.md`, `prompts/tareas/cierre-jueves.md`, `SKILL.md`, `README.md`, `references/redaccion.md`, `references/api.md`, `docs/SPECIFICATION.md`, `tests/test_sincronia.py`, este registro.
+- Verificación: `python3 -m pytest -q` 122 aprobadas; la prueba nueva comprueba que la escala es la misma en la instrucción de la API y en las tareas. Texto de las tareas «lector nocturno (con relevo)», «cierre martes (con relevo)» y «cierre jueves (con relevo)» actualizado igual, con autorización de Emi en la misma conversación.
+- Pendiente: primera entrega con la escala, cierre del martes 1/12/2026 (lector por API y nocturno del lunes 30/11).
 ### Seguridad — 2026-11-25: acciones de GitHub fijadas a su versión exacta
 - Agente: claude.ai (sesión en la nube desde Claude in Chrome, claude-opus-5-5)
 - Solicitud: Emi, 25/11/2026, en chat: «revisa todo lo demás» de la auditoría del Guardián de la Matriz (`lianfixx/MATRIZ`, `docs/GUARDIAN.md`).

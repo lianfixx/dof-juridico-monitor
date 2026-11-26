@@ -2,16 +2,16 @@
 name: dof-castorena
 description: Revisa el Diario Oficial de la Federación (DOF) y prepara la actualización jurídica semanal para el Lic. Castorena (martes y jueves), con la síntesis del SJF semanal, fuentes oficiales verificadas, reporte ejecutivo minimalista en PDF, guía de estudio, comentario sugerido y correo BLUF para revisión de Emi. Úsalo siempre que el usuario mencione DOF, Diario Oficial, actualización DOF, SJF semanal, reporte para Castorena, monitor jurídico, novedades fiscales, PLD, administrativas o de amparo publicadas en el DOF, o pida revisar, corregir o rehacer un reporte DOF anterior, aunque no diga «skill» ni «Castorena». No usar para redacción jurídica genérica ni expedientes de clientes.
 metadata:
-  version: "1.5.1"
+  version: "1.6.0"
   release_date: "2026-11-09"
   language: "es-MX"
   jurisdiction: "MX"
 ---
 
-# DOF Castorena · Skill 1.5.1
+# DOF Castorena · Skill 1.6.0
 
 ## Propósito
-Preparar para Emiliano García Milla una actualización jurídica del DOF que pueda revisar antes de decidir si la envía al Lic. Guillermo Castorena Álvarez. Priorizar Fiscal, Compliance/PLD-FT, Administrativo y Amparo. Añadir reformas nacionales significativas solo cuando tengan consecuencias jurídicas prácticas. No enviar al Licenciado ni crear borradores a terceros.
+Preparar para Emiliano García Milla una actualización jurídica del DOF que pueda revisar antes de decidir si la envía al Lic. Guillermo Castorena Álvarez. Priorizar Fiscal, Compliance/PLD-FT, Administrativo y Amparo. Incluir también lo importante de la vida pública del país (política, social y de Presidencia): desde el 26/11/2026, por decisión de Emi, todo lo importante debe estar. La relevancia de cada publicación se califica con [la escala de relevancia](references/relevancia.md), la misma para el lector por API y para la suscripción. No enviar al Licenciado ni crear borradores a terceros.
 
 ## Periodicidad
 Martes: viernes anterior, lunes y martes. Jueves: miércoles y jueves. Zona America/Mexico_City; objetivo: paquete terminado en el correo de Emi alrededor de las 07:30 (cierre automático desde las 05:50 los martes y 06:05 los jueves), sin prometer cumplimiento cuando existan bloqueos. Complementar con correcciones, fes de erratas, ediciones tardías y fines de semana desde el corte anterior. Registrar hora real de última consulta.
@@ -19,7 +19,7 @@ Martes: viernes anterior, lunes y martes. Jueves: miércoles y jueves. Zona Amer
 ## Investigación y control
 1. Identificar las ediciones de cada fecha mediante calendario/índice oficial DOF/SIDOF, incluyendo matutina, vespertina y extraordinaria. No inventar ediciones.
 2. Obtener el PDF completo real por la ruta oficial, no su icono: primera vía, el box (`scripts/box/dof_fuentes.py`, que verifica páginas declaradas contra reales y localiza anexos publicados aparte); si falla, las vías B y C de [Fuentes con el box](references/box.md). Si ninguna funciona, emplear índice oficial y notas individuales y señalar limitaciones.
-3. OBLIGATORIO: leer íntegramente, palabra por palabra, TODAS las publicaciones de todas las ediciones y colecciones, incluyendo contenido secundario, artículos, resolutivos, transitorios, tablas, notas al pie y anexos. No filtrar por relevancia antes de completar la lectura. Solo después seleccionar los hallazgos que aparecerán en el reporte ejecutivo. Registrar rangos/páginas y estados sin huecos.
+3. OBLIGATORIO: leer íntegramente, palabra por palabra, TODAS las publicaciones de todas las ediciones y colecciones, incluyendo contenido secundario, artículos, resolutivos, transitorios, tablas, notas al pie y anexos. No filtrar por relevancia antes de completar la lectura; después, calificarla con references/relevancia.md. Solo después seleccionar los hallazgos que aparecerán en el reporte ejecutivo. Registrar rangos/páginas y estados sin huecos.
 4. Confirmar cada enlace directo de nota oficial y cada fundamento. Separar anuncio, iniciativa, dictamen, aprobación, publicación y vigencia. Nunca presentar sentencia aislada como jurisprudencia.
 5. Prohibido sustituir la lectura íntegra por revisión selectiva o proporcional. Solo declarar «COBERTURA COMPLETA AL CORTE» cuando todas las ediciones, publicaciones y anexos hayan sido leídos íntegramente y se cumplan docs/QUALITY_GATE.md. Si existe un solo tramo sin cerrar, marcar PARCIAL y no presentar ni enviar una versión como final.
 6. No extrapolar efectos a expedientes concretos sin documentación autorizada y suficiente. Corregir cualquier error en todos los entregables antes de cerrar.
