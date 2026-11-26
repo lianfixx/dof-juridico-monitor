@@ -13,6 +13,10 @@ Califica cada publicación con esta escala, pensando en un despacho que sigue Fi
 Si dudas entre dos niveles, elige el más alto. Una publicación de la Presidencia de la República, de una secretaría de Estado o de una autoridad fiscal, financiera o jurisdiccional no se califica baja o ninguna salvo que sea claramente rutina (por ejemplo, el tipo de cambio diario).
 <!-- escala:fin -->
 
+## Semanario Judicial de la Federación
+
+El Semanario no pasa por el lector por API; lo lee la suscripción el viernes. Vale el mismo principio: todo se lee íntegro y después se ordena. Se proponen para la tabla del martes las jurisprudencias y tesis de las materias del despacho (fiscal, prevención de lavado, administrativo y amparo) y, además, las de trascendencia nacional aunque sean de otra materia: las que declaran inconstitucional una norma general, las de derechos humanos, laboral y seguridad social, electoral y las de relevancia social o política (`docs/sjf/METODO.md`, «Prioridad inicial»). En la duda entre proponer o no, se propone; la selección final es del cierre.
+
 ## Revisión del cierre
 
 El cierre vuelve a mirar, en el inventario, lo que quedó con relevancia baja o ninguna de estas autoridades, y si alguna debió ser candidata la lee en el box y la registra como diferencia (`lectura_api.diferencias`):
