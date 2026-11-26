@@ -139,3 +139,27 @@ def test_respuestas_de_emi_del_24_11():
     for f in ("prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md"):
         assert "la opinión de Emi ya escrita" in texto(f) and "siempre con frase" in texto(f), f
     assert "Pocas filas" not in texto("references/redaccion.md") and "Siempre lleva frase" in texto("references/redaccion.md")
+
+
+def test_escala_de_relevancia_igual_en_las_dos_vias():
+    # Emi, 26/11/2026: «temas de relevancia social, de política, cosas de presidencia, todo lo IMPORTANTE debe estar».
+    la = lector()
+    escala = la.escala_relevancia()
+    assert escala.startswith("Califica cada publicación") and escala in la.S_LECTOR
+    for nivel in ("- alta:", "- media:", "- baja:", "- ninguna:", "elige el más alto"):
+        assert nivel in escala, nivel
+    for tema in ("Presidente o de la Presidenta de la República", "programas sociales", "reformas electorales", "INE"):
+        assert tema in escala, tema
+    assert "politica" in la.MATERIAS and "social" in la.MATERIAS
+    assert "de cualquier materia" in la.S_SINTESIS and "en fiscal, PLD, administrativo o amparo" not in la.S_SINTESIS
+    for f in ("prompts/tareas/lector-nocturno.md", "prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md"):
+        t = texto(f)
+        assert "references/relevancia.md" in t and "relevancia fiscal/PLD/administrativa/amparo" not in t, f
+    for f in ("prompts/tareas/cierre-martes.md", "prompts/tareas/cierre-jueves.md"):
+        t = texto(f)
+        assert "Presidencia de la República, secretarías de Estado" in t and "IMSS, INFONAVIT" in t, f
+        assert "(SHCP, SAT, CNBV, Banco de México, UIF, TFJA, SCJN, CJF y equivalentes)" not in t, f
+    ref = texto("references/relevancia.md")
+    assert "## Revisión del cierre" in ref and "Presidencia de la República; secretarías de Estado" in ref
+    assert "references/relevancia.md" in texto("SKILL.md") and "relevancia.md" in texto("references/api.md")
+    assert "relevancia.md" in texto("references/redaccion.md")
